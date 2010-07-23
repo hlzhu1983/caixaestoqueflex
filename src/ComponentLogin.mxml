@@ -1,3 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="712" height="496">
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="376" height="330">
+ <mx:Dissolve id="dissolveOut" duration="1000" alphaFrom="1.0" alphaTo="0.0"/>
+    <mx:Dissolve id="dissolveIn" duration="1000" alphaFrom="0.0" alphaTo="1.0"/>
+   <mx:Panel id = "painelLogin"  hideEffect="dissolveOut" showEffect="dissolveIn" 
+   	visible="true"
+   	 horizontalCenter="0" verticalCenter="0" width="360" height="300" layout="absolute" fontSize="12" title="Autencicação de Usuário" cornerRadius="8">
+	
+		<mx:Label x="35" y="86" text="Login:" width="57" fontSize="12" fontWeight="bold"/>
+		<mx:Label x="35" y="114" text="Senha:" fontWeight="bold"/>
+		<mx:Button x="199" y="201" label="Autenticar" />
+		<mx:LinkButton x="110" y="142" label="Esqueceu a Senha?" width="145"/>
+		<mx:TextInput x="90" y="86" id="txt_login"/>
+		<mx:TextInput x="90" y="114" id="txt_senha"/>
+		<mx:TextArea x="35" y="10" editable="false" width="295" borderStyle="none">
+			<mx:text>Para ter acesso ao sistema é preciso ser autenticado.</mx:text>
+		</mx:TextArea>
+		
+	</mx:Panel>
 </mx:Canvas>
