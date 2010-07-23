@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" title="Autenticação de Usuário" creationComplete="{PopUpManager.centerPopUp(this)}" horizontalCenter="0" verticalCenter="0" width="306" height="270" fontSize="12" backgroundAlpha="1.0">
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" close="fechamento()" title="Autenticação de Usuário" creationComplete="{PopUpManager.centerPopUp(this)}" horizontalCenter="0" verticalCenter="0" width="306" height="270" fontSize="12" backgroundAlpha="1.0">
 	<mx:Script>
 		<![CDATA[
 			import mx.managers.PopUpManager;
 			
 			public function autenticar():void{
-			PopUpManager.removePopUp(this);
+				PopUpManager.removePopUp(this);
+			}
+			
+			public function fechamento():void{
+				this.
 			}
 		]]>
 	</mx:Script>

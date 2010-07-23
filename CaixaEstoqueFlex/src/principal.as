@@ -9,9 +9,13 @@ public var logou:Boolean;
 
 public function init():void{
 
-this.logou = false;
-TitleWindow(
-PopUpManager.createPopUp(this,ComponentLogin,true));
+	this.logou = false;
+	
+	var tWindow:TitleWindow = TitleWindow(PopUpManager.createPopUp(this,ComponentLogin,true));
+	
+	tWindow.showCloseButton = true;
+	
+	
 }
 
 
