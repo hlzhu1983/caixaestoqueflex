@@ -91,12 +91,11 @@ class ClienteDAO extends DAO {
 	}
 	
 	public function procurar($codigo) {
-		$banco = $this->getBancoDeDados ();
-		$sql = "select * from cliente where nome='" . $codigo . "'";
-		//conxao banco
+		
+		$sql = "select * from cliente where codigo=$codigo";
+		
 		$this->banco->conecta ();
 		
-		$resposta = $banco->executaSQL ( $sql );
 		$dados_clientes ['dados'] = "";
 		$dados_clientes ['dados']['codigo'] = "";
 		$dados_clientes ['dados']['nome'] = "";
@@ -116,6 +115,7 @@ class ClienteDAO extends DAO {
 		$dados_clientes ['dados']['url'] = "";
 		$dados_clientes ['dados']['obs'] = "";
 		
+		$resposta = $this->banco->executaSQL ( $sql );
 		if ($resposta != null) {
 			while ( $linha = mysql_fetch_array ( $resposta ) ) {
 			
@@ -136,9 +136,16 @@ class ClienteDAO extends DAO {
 		$dados_clientes ['dados']['email'] = $linha['email'];
 		$dados_clientes ['dados']['url'] = $linha['url'];
 		$dados_clientes ['dados']['obs'] = $linha['obs'];
-								}
+								
+			}
 		$this->banco->desconecta();	
+		
+		if($linha==false){
+			throw new Exception ( utf8_decode("Não existem clientes com este codigo") );
+		}
+		
 		return $dados_clientes;
+		
 		} else {
 			throw new Exception ( utf8_decode("Não existem clientes com este codigo") );
 		}
@@ -220,4 +227,5 @@ class ClienteDAO extends DAO {
 //$cliente = new ClienteDAO();
 //$cliente->atualizar(31,"anderson murilo",1,1,"","","","","","","","","","","","","");
 //$cliente->inserir(0,"murilo",1,"","","","","","","","","","","","","");
+//$cliente->procurar(1);
 ?>
