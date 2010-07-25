@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+<sessionfactory>
+	<host>localhost</host>
+	<username>root</username>
+	<password>root</password>
+	<database>caixaeestoque</database>
+</sessionfactory>
+</configuration>
