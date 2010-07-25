@@ -10,6 +10,7 @@
 </compiler>
 <applications>
 <application path="main.mxml"/>
+<application path="TiposDialog.mxml"/>
 </applications>
 <modules/>
 <buildCSSFiles/>
