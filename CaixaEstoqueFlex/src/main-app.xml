@@ -18,8 +18,8 @@
 		<content>[This value will be overwritten by Flex Builder in the output app.xml]</content>
 		
 		<title>Sistema de Caixa e Estoque</title>
-		<systemChrome>none</systemChrome>
-        <transparent>true</transparent>
+		<systemChrome>standard</systemChrome>
+        <transparent>false</transparent>
         <visible>true</visible>
         <minimizable>true</minimizable>
         <maximizable>true</maximizable>
