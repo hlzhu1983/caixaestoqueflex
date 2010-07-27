@@ -20,7 +20,7 @@
 	
 	public function frenteLoja():void{
 		this.logou = false;	
-		var newWindow:Window = new FrenteLoja1();
+		var newWindow:Window = new FrenteLoja();
 		
 		newWindow.maximizable=false;
 		newWindow.minimizable = false;
