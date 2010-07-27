@@ -49,7 +49,6 @@
 			//create a new Flex (mx:Window) window
 			private function createNewFlexWindow():void{
 				var newWindow:Window = new Window();
-					
 				newWindow.maximizable = maximizableOption.selected;
 				newWindow.minimizable = minimizableOption.selected;
 				newWindow.resizable = resizableOption.selected; 
