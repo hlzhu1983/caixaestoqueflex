@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" close="applicationExit()" 
 	title="Autenticação de Usuário" creationComplete="{PopUpManager.centerPopUp(this)}"
-	 horizontalCenter="0" verticalCenter="0" width="306" height="270" fontSize="12" backgroundAlpha="0.3" alpha="1.0">
+	 horizontalCenter="0" verticalCenter="0" width="306" height="270" fontSize="12" backgroundAlpha="1.0" alpha="1.0" backgroundColor="#FFFFFF">
 	<mx:Script>
 		<![CDATA[
 			import mx.managers.PopUpManager;
@@ -23,7 +23,7 @@
 	</mx:Script>
 	
 
-	<mx:Canvas  height="100%" width="100%" backgroundAlpha="0">	  
+	<mx:Canvas  height="100%" width="100%" backgroundAlpha="1.0" backgroundColor="#FFFFFF">	  
 			<mx:Label x="35" y="86" text="Usuário:" width="67" fontSize="12" fontWeight="bold"/>
 			<mx:Label x="35" y="114" text="Senha:" fontWeight="bold"/>
 			<mx:Button x="181" y="160" label="Autenticar" click="{autenticar()}" />
