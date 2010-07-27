@@ -1,5 +1,5 @@
 
-	import mx.controls.Alert;
+	import mx.core.Window;
 	import mx.events.MenuEvent;
 	
 	import utilidades.Util;
@@ -20,7 +20,15 @@
 	
 	public function frenteLoja():void{
 		this.logou = false;	
-		Util.abrePopUp(this,FrenteLoja,true);	
+		var newWindow:Window = new FrenteLoja1();
+		
+		newWindow.maximizable=false;
+		newWindow.minimizable = false;
+		newWindow.resizable = false;
+	newWindow.open(false);
+		newWindow.activate();
+		
+		//Util.abrePopUp(this,FrenteLoja,true);	
 	}
 	
 	
