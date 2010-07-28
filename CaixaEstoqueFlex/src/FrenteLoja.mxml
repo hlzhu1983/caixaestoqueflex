@@ -12,7 +12,7 @@
 			public var dProv:ArrayCollection = new ArrayCollection();
 			
 			public function logoutUsuario():void{
-				Util.abrePopUp(this,ComponentLogin,true);
+				Util.abrePopUp(this,ComponenteAutenticacao,true);
 			}
 		]]>
 	</mx:Script>

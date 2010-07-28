@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Label xmlns:mx="http://www.adobe.com/2006/mxml" enterFrame="date(event)">
+	<mx:Script>
+		<![CDATA[
+			import mx.formatters.DateFormatter;
+ 				private var df:DateFormatter = new DateFormatter(); 
+				private function date(e:Event):void {
+					df.formatString = "DD/MM/YYYY - HH:NN:SS";					
+					this.text = df.format(new Date());
+				}
+		]]>
+	</mx:Script>
+</mx:Label>

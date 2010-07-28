@@ -5,15 +5,7 @@
 	 backgroundGradientColors="[#FFFFFF, #000000]" dropShadowEnabled="false" 
 	 xmlns:local="*" verticalAlign="top" horizontalAlign="center">
 	 
-	 
-	 
-	 
-	 
-	<mx:Script source="principal.as"/>
-	
-
-	
-	
+	 <mx:Script source="principal.as"/>
 		
 	<mx:ApplicationControlBar  x="0" dock="true" y="0" width="1024" fillAlphas="[0.01, 0.73]" height="46" cornerRadius="0" color="#FFFFFF" fillColors="[#000000, #000000]">
 		<mx:Label id="nomeUsuario" text="Usuário Visitante" fontWeight="bold" fontSize="12"/>		
@@ -35,9 +27,10 @@
 		               <menuitem  label="Cadastro de Unidades"/>
 		               <menuitem  label="Cadastro de Forma de Pagamento"/>
 		           </menuitem>
-		           <menuitem label="Movimentos">
+		           <menuitem label="Módulos">
 		                <menuitem  label="Frente de Caixa" id ="fLoja"/>
-		                <menuitem  label="Pedido de Compra"/>
+		                <menuitem  label="Pedido de Compra" id="orcamento"/>
+		                <menuitem  label="Orçamento - "/>
 		                <menuitem  label="Venda"/>
 		                <menuitem  label="Transferência entre Filiais"/>
 		                <menuitem  label="Devolução"/>		                
