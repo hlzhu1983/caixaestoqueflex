@@ -48,6 +48,8 @@
 		newWindow.minimizable = false;
 		newWindow.resizable = false;
 		newWindow.open(false);
+		newWindow.nativeWindow.x = 0;
+		newWindow.nativeWindow.y = 0;
 		newWindow.activate();
 		
 		//Util.abrePopUp(this,FrenteLoja,true);	
