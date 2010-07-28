@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TextInput xmlns:mx="http://www.adobe.com/2006/mxml" keyDown="{isEnter(event)}">
+	<mx:Metadata>
+		[Event(name="enterEvent",type = "flash.events.Event")]
+	</mx:Metadata>
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.events.FocusRequestDirection;
+			public var tabEnter:Boolean = true;
+			
+			public function isEnter(event:KeyboardEvent):void{
+				if(event.charCode == 13){
+					this.focusManager.moveFocus(FocusRequestDirection.FORWARD);
+					this.dispatchEvent(new Event("enterEvent"));
+				}
+			}
+		]]>
+	</mx:Script>
+	
+</mx:TextInput>

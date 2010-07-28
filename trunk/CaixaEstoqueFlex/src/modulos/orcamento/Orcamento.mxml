@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Window title="Orçamento" xmlns:mx="http://www.adobe.com/2006/mxml" 
+	layout="absolute" width="{Application.application.width}" 
+	height="{Application.application.height}" 
+	xmlns:utilidades="utilidades.*" >
+	
+	<mx:Model id="prodLista">
+		<produtos>
+			<itemVenda nomeProduto = "AREIA" quantidade = "10" valorItem = "13" valorTotalItem = "130"/>
+			<itemVenda nomeProduto = "CIMENTO" quantidade = "2" valorItem = "20" valorTotalItem = "40"/>
+			<itemVenda nomeProduto = "FERROLHO" quantidade = "1" valorItem = "10" valorTotalItem = "10"/>
+			<itemVenda nomeProduto = "CADEIRA" quantidade = "4" valorItem = "15" valorTotalItem = "60"/>
+			<itemVenda nomeProduto = "MESA" quantidade = "1" valorItem = "30" valorTotalItem = "30"/>
+		</produtos>
+	</mx:Model>
+	
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.events.ValidationResultEvent;
+			import mx.validators.Validator;
+			import mx.collections.ArrayCollection;
+			import utilidades.ValidatorGenerico;
+			import mx.events.FocusRequestDirection;
+			import mx.controls.Alert;
+			import utilidades.Util;
+			import mx.core.Application;
+			
+			[Bindable]
+			private var produtoLista:ArrayCollection = new ArrayCollection();
+			
+			
+			
+			public function inserirProduto():void{
+				if(codV.validate().type == ValidationResultEvent.INVALID){
+					Alert.show("Código Incorreto","Erro",4,this);
+					return;
+				}
+				if(quantV.validate().type == ValidationResultEvent.INVALID){
+					Alert.show("Quantidade Incorreta","Erro",4,this);
+					return;
+				}
+              	this.produtoLista.addItem({codProduto:this.codProduto.text,quantidade:this.quantProduto.text});
+				this.codProduto.text = "";
+				this.quantProduto.text = "";
+				focusManager.setFocus(codProduto);
+                
+			}
+			
+			
+           
+			
+		]]>
+	</mx:Script>
+	
+	<utilidades:ValidatorGenerico id="codV" required="true" source="{codProduto}" 
+		msgErro="Código do Produto Inválido"
+		expRegular="{ValidatorGenerico.INTEIRO}" property="text"/>
+		
+	<utilidades:ValidatorGenerico id="quantV" required="true" source="{quantProduto}" 
+		msgErro="Valor Inválido"
+		expRegular="{ValidatorGenerico.VALOR}" property="text"/>	
+
+	<mx:VBox id="body" width="100%" height="100%">
+		<mx:HBox id="cabecalho" width="100%" height="43" fontWeight="bold">
+			<mx:Label text="Pedido: " fontSize="30"/>
+			<mx:Label id="numPedido" text="0001" fontSize="30"/>
+			<mx:Spacer width="100%"/>
+			<utilidades:RelogioDigital/>	
+		</mx:HBox>
+		<mx:VBox width="100%" height="100%">
+			<mx:Form defaultButton="{inserir}">
+				<mx:HBox id="produto" width="100%" height="40" fontSize="20" verticalAlign="middle">				
+					<mx:FormItem label="Código Produto">
+						<utilidades:TextInputEnter id="codProduto"/>
+					</mx:FormItem>	
+					<mx:FormItem label="Quantidade" width="100%" height="100%">
+						<utilidades:TextInputEnter id="quantProduto"/>
+					</mx:FormItem>
+					<mx:Button id="inserir" label="Inserir" click="{inserirProduto()}" />
+					<mx:Button id="buscarProdutos" label="Produtos" toolTip="Clique para procurar por um produto"/>
+				</mx:HBox>
+			</mx:Form>
+			
+			<mx:DataGrid id="produtos" width="100%" height="100%" rowCount="10" dataProvider="{produtoLista}">
+				<mx:columns>
+					<mx:DataGridColumn headerText="Cod Prod." dataField="codProduto"/>
+					<mx:DataGridColumn headerText="Quantidade" dataField="quantidade"/>					
+				</mx:columns>
+			</mx:DataGrid>
+		</mx:VBox>		
+		<mx:HBox id="rodape" width="100%" height="30">
+			<mx:Button id="gerarOrcamento" label="Gerar Orcamento" toolTip="Clique para gerar orçamento" />
+			<mx:Button id="cancelarOrcamento" label="Cancelar Orcamento" toolTip="Clique para cancelar orçamento"/>
+		</mx:HBox>
+	</mx:VBox>
+	
+</mx:Window>
