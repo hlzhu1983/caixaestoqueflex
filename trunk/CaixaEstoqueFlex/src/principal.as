@@ -1,7 +1,6 @@
 
-	import modulos.orcamento.Orcamento;
-	
-	import mx.controls.Alert;
+	import modulos.caixa.FrenteLoja;
+	import modulos.orcamento.Orcamento;	
 	import mx.core.Window;
 	import mx.events.MenuEvent;
 	
@@ -33,11 +32,11 @@
 		
 		newWindow.maximizable=false;
 		newWindow.minimizable = false;
-		newWindow.resizable = false;
+		newWindow.resizable = false;		
 		newWindow.open(false);
+		newWindow.nativeWindow.x = 0;
+		newWindow.nativeWindow.y = 0;
 		newWindow.activate();
-		
-		//Util.abrePopUp(this,FrenteLoja,true);	
 	}
 	
 	public function orcamentoWindow():void{
