@@ -30,7 +30,7 @@
 		           <menuitem label="Módulos">
 		                <menuitem  label="Frente de Caixa" id ="fLoja"/>
 		                <menuitem  label="Pedido de Compra" id="orcamento"/>
-		                <menuitem  label="Orçamento - "/>
+		                <menuitem  label="Orçamento"/>
 		                <menuitem  label="Venda"/>
 		                <menuitem  label="Transferência entre Filiais"/>
 		                <menuitem  label="Devolução"/>		                
