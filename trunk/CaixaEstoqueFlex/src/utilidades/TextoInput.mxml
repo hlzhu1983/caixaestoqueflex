@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:TextInput xmlns:mx="http://www.adobe.com/2006/mxml" keyDown="{isEnter(event)}">
-	<mx:Metadata>
-		[Event(name="enterEvent",type = "flash.events.Event")]
-	</mx:Metadata>
+<mx:TextInput xmlns:mx="http://www.adobe.com/2006/mxml" keyDown="{isEnter(event)}" xmlns:utilidades="utilidades.*">
+
 	
 	<mx:Script>
 		<![CDATA[
@@ -11,11 +9,11 @@
 			
 			public function isEnter(event:KeyboardEvent):void{
 				if(event.charCode == 13){
-					this.focusManager.moveFocus(FocusRequestDirection.FORWARD);
-					this.dispatchEvent(new Event("enterEvent"));
+					this.focusManager.moveFocus(FocusRequestDirection.FORWARD);					
 				}
+				this.text.toLocaleUpperCase();
 			}
 		]]>
 	</mx:Script>
-	
+
 </mx:TextInput>

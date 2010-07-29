@@ -106,5 +106,5 @@ class GrupoProdutoDAO extends DAO {
 //$grupoproduto = new GrupoProdutoDAO();
 //$grupoproduto->atualizar(31,"anderson murilo",1,1,"","","","","","","","","","","","","");
 //$grupoproduto->inserir(0,"murilo",1,"","","","","","","","","","","","","");
-//$grupoproduto->procurar(1);
+//$grupoproduto->remover(2);
 ?>

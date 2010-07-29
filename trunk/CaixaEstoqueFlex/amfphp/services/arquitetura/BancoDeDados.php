@@ -27,8 +27,9 @@ class BancoDeDados{
 	}
 	
 	public function updateSQL($sql){
-		$resposta = mysql_query($sql,$this->connection);
-		if($resposta==0)
+		$recordset = mysql_query($sql,$this->connection);
+		$resposta = mysql_affected_rows();
+		if($resposta < 1)
 			return false;
 		else
 			return true;
@@ -36,6 +37,7 @@ class BancoDeDados{
 	
 	public function executaSQL($sql){
 		$resposta = mysql_query($sql,$this->connection);
+		 
 		return $resposta;
 	}
 	
