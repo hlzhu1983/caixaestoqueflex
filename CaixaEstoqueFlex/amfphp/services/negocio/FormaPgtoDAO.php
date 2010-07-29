@@ -42,7 +42,7 @@ class FormaPgtoDAO extends DAO {
 		
 		$resposta = $this->banco->executaSQL ( $sql );
 		if ($resposta != null) {
-$entrou = 0;
+
 			while ( $linha = mysql_fetch_array ( $resposta ) ) {
 			$entrou=1;
 		$dados_formadepgtos ['dados']['codigo'] = $linha['codigo'];
@@ -51,9 +51,9 @@ $entrou = 0;
 			}
 		$this->banco->desconecta();	
 		
-		if($entrou==0){
-			throw new Exception ( utf8_decode("Não existem formadepgtoss com este codigo") );
-		}
+			if(!isset($entrou)){
+				throw new Exception ( "Não existem formadepgtos com este nome" );
+			}
 		
 		return $dados_formadepgtos;
 		
@@ -77,16 +77,19 @@ $entrou = 0;
 		$posicao = 0;
 		if ($resposta != null) {
 			while ( $linha = mysql_fetch_array ( $resposta ) ) {
-				
+				$entrou = 0;
 		$dados_formadepgtos ['dados'] [$posicao] ['codigo'] = $linha['codigo'];
 		$dados_formadepgtos ['dados'] [$posicao] ['descricao'] = $linha['descricao'];
 					$posicao ++;
 			}
+		
 		$this->banco->desconecta();
 			return $dados_formadepgtos;
 		} else {
 			throw new Exception ( "Não existem formadepgtos com este nome" );
 		}
+		
+		
 	
 	}
 	

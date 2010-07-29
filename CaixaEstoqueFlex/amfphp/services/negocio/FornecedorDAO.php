@@ -212,6 +212,6 @@ class FornecedorDAO extends DAO {
 //teste insercao
 //$fornecedor = new FornecedorDAO();
 //$fornecedor->atualizar(31,"anderson murilo",1,1,"","","","","","","","","","","","","");
-//$fornecedor->inserir(0,"murilo",1,"","","","","","","","","","","","","");
+//$fornecedor->inserir("","", "", "", "", "","","","","", "","","","");
 //$fornecedor->procurar(1);
 ?>

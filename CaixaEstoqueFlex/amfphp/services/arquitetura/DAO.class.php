@@ -3,14 +3,13 @@
 class DAO{
 	public $banco;
 	
-	public function setBancoDeDados(BancoDeDados $banco){
+	protected function setBancoDeDados(BancoDeDados $banco){
 		$this->banco = $banco;	
 	}
 	
-	public function getBancoDeDados(){
+	protected function getBancoDeDados(){
 		return $this->banco;
 	}
-
 }
 
 

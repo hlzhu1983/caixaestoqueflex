@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Window title="Orçamento" xmlns:mx="http://www.adobe.com/2006/mxml" 
-	layout="absolute" width="1024" 
+<mx:Window title="Janela de Vendas" xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="1024" 
 	height="700" xmlns:utilidades="utilidades.*" closing="onCloseCommand(event)"
 	keyDown="funcionalidades(event)">
 	
@@ -10,6 +9,7 @@
 			import mx.controls.Alert;
 			import mx.collections.ArrayCollection;
 			import mx.events.CloseEvent;
+			
 			
 			[Bindable]
 			public var produtoLista:ArrayCollection = new ArrayCollection();
@@ -71,16 +71,11 @@
 				this.quantProduto.text = "";
 				focusManager.setFocus(codProduto);
 				this.isProduto = true;
-                
 			}
 			
 			public function orcamento():void{
 				this.close();
-			}
-			
-			
-           
-			
+			}			
 		]]>
 	</mx:Script>
 	
@@ -107,10 +102,10 @@
 			<mx:Form defaultButton="{inserir}">
 				<mx:HBox id="produto" width="100%" height="40" fontSize="20" verticalAlign="middle">				
 					<mx:FormItem label="Código Produto">
-						<utilidades:TextoInput id="codProduto"/>
+						<utilidades:TextoInput id="codProduto" />
 					</mx:FormItem>	
 					<mx:FormItem label="Quantidade" width="100%" height="100%">
-						<utilidades:TextoInput id="quantProduto" />
+						<utilidades:TextoInput id="quantProduto"/>
 					</mx:FormItem>
 					<mx:Button id="inserir" label="Inserir" click="{inserirProduto()}" />
 					<mx:Button id="buscarProdutos" label="Produtos" toolTip="Clique para procurar por um produto"/>
@@ -128,5 +123,4 @@
 			<mx:Button id="cancelarOrcamento" label="Cancelar Orcamento" toolTip="Clique para cancelar orçamento"/>
 		</mx:HBox>
 	</mx:VBox>
-	
 </mx:Window>

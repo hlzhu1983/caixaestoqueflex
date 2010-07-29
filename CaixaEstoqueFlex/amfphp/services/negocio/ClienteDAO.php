@@ -120,7 +120,7 @@ class ClienteDAO extends DAO {
 			while ( $linha = mysql_fetch_array ( $resposta ) ) {
 			
 		$dados_clientes ['dados']['codigo'] = $linha['codigo'];
-		$dados_clientes ['dados']['nome'] = $lina['nome'];
+		$dados_clientes ['dados']['nome'] = $linha['nome'];
 		$dados_clientes ['dados']['tipoPessoa'] = $linha['tipoPessoa'];
 		$dados_clientes ['dados']['sexo'] = $linha['sexo'];
 		$dados_clientes ['dados']['dataNascimento'] = $linha['dataNascimento'];
@@ -224,8 +224,8 @@ class ClienteDAO extends DAO {
 	}
 }
 //teste insercao
-//$cliente = new ClienteDAO();
-//$cliente->atualizar(31,"anderson murilo",1,1,"","","","","","","","","","","","","");
-//$cliente->inserir(0,"murilo",1,"","","","","","","","","","","","","");
+$cliente = new ClienteDAO();
+//$cliente->atualizar(1,"anderson",1,1,"","","","","","","","","","","","","");
+$cliente->inserir(0,"murilo",1,"","","","","","","","","","","","","");
 //$cliente->procurar(1);
 ?>

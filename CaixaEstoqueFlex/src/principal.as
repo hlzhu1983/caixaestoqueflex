@@ -1,6 +1,7 @@
 
-	import modulos.caixa.FrenteLoja;
-	import modulos.orcamento.Orcamento;	
+	import modulos.caixa.Caixa;
+	import modulos.orcamento.Orcamento;
+	
 	import mx.core.Window;
 	import mx.events.MenuEvent;
 	
@@ -28,7 +29,7 @@
 	
 	public function frenteLoja():void{
 		this.logou = false;	
-		var newWindow:Window = new FrenteLoja();
+		var newWindow:Window = new Caixa();
 		
 		newWindow.maximizable=false;
 		newWindow.minimizable = false;

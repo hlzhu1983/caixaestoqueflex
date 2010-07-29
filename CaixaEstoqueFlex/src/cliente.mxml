@@ -9,6 +9,11 @@
 -->
 <mx:WindowedApplication xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" pageTitle="cliente" 
 	creationComplete="initApp()" backgroundGradientColors="[#ffffff, #ffffff]">
+    <mx:Script>
+    	<![CDATA[
+    		import mx.events.FocusRequestDirection;
+    	]]>
+    </mx:Script>
 
 	<!-- 
 		Externalized script "include" tag.
@@ -82,8 +87,8 @@
 
 	<mx:Canvas id="update" width="100%" height="100%">
 		<mx:Form width="100%" height="80%" id="clienteForm">
-                    <mx:FormItem label="Nome:" id="nome_form">
-                        <mx:TextInput id="nomeCol" text=""/>
+                    <mx:FormItem  label="Nome:" id="nome_form">
+                        <mx:TextInput  id="nomeCol" text=""/>
                     </mx:FormItem>
                     <mx:FormItem label="TipoPessoa:" id="tipoPessoa_form">
                         <mx:TextInput id="tipoPessoaCol" text=""/>
