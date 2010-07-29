@@ -18,7 +18,6 @@ package negocio.business
 			service.makeObjectsBindable=true;
 			service.showBusyCursor=true;
 			service.source="ClienteDAO";
-
 			responder = pResponder;
 		}   
 
