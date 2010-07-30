@@ -6,9 +6,9 @@ package utilidades
 	public class ValidatorGenerico extends Validator
 	{
 		
-		public static const INTEIRO:String = "\\d+";
+		public static const INTEIRO:String = "\[0-9]+";
 		
-		public static const VALOR:String = "\\d+,\\d+|\\d+";
+		public static const VALOR:String = "\[0-9]+,\[0-9]+|\[0-9]+";
 		
 		public static const ID:String = "\\[A-Za-z]"; 
 		
