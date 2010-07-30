@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Window title="Orçamento" xmlns:mx="http://www.adobe.com/2006/mxml" 
+<mx:Window title="OrÃ§amento" xmlns:mx="http://www.adobe.com/2006/mxml" 
 	layout="absolute" width="1024" 
 	height="700" xmlns:utilidades="utilidades.*" closing="onCloseCommand(event)"
 	keyDown="funcionalidades(event)">
@@ -20,7 +20,7 @@
         	private function funcionalidades(event:KeyboardEvent):void{
         		switch(event.keyCode){
         			case 123: 
-						this.stage.displayState = StageDisplayState.FULL_SCREEN;
+						this.stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
         				break;
         			case 46:
         				if(event.ctrlKey){
@@ -29,7 +29,7 @@
 	        						Alert.show("Deseja realmente deletar o item?",
 	        							"Alerta",Alert.OK | Alert.CANCEL,this,removeItemArrayCollection,null,Alert.OK);
 	        					}else{
-	        						Alert.show("Não há item selecionado!"+"","",4,this);
+	        						Alert.show("NÃ£o hÃ¡ item selecionado!"+"","",4,this);
 	        					}							
 	        				}
         				}
@@ -50,7 +50,7 @@
 			public function onCloseCommand(event:Event):void{
 				if(isProduto){
 					event.preventDefault();
-					Alert.show("A janela não pode ser fechada","Alerta",4,this);
+					Alert.show("A janela nÃ£o pode ser fechada","Alerta",4,this);
 				}				
    			}	
 			
@@ -58,10 +58,10 @@
 			public function inserirProduto():void{
 				if(codV.validate().type == ValidationResultEvent.INVALID){
 					focusManager.setFocus(codProduto);
-					Alert.show("Código Incorreto","Erro",4,this);
+					Alert.show("CÃ³digo Incorreto","Erro",4,this);
 					return;
 				}
-				if(quantV.validate().type == ValidationResultEvent.INVALID){
+				if(quantProduto.numV.validate().type == ValidationResultEvent.INVALID){
 					Alert.show("Quantidade Incorreta","Erro",4,this);
 					focusManager.setFocus(quantProduto);
 					return;
@@ -85,12 +85,12 @@
 	</mx:Script>
 	
 	<utilidades:ValidatorGenerico id="codV" required="true" source="{codProduto}" 
-		msgErro="Código do Produto Inválido"
+		msgErro="CÃ³digo do Produto InvÃ¡lido"
 		expRegular="{ValidatorGenerico.INTEIRO}" property="text"/>
 		
-	<utilidades:ValidatorGenerico id="quantV" required="true" source="{quantProduto}" 
-		msgErro="Valor Inválido"
-		expRegular="{ValidatorGenerico.VALOR}" property="text"/>	
+	
+		
+	
 
 	<mx:VBox id="body" width="100%" height="100%">
 		<mx:HBox id="cabecalho" width="100%" height="43" fontWeight="bold">
@@ -106,11 +106,11 @@
 			</mx:VBox>	
 			<mx:Form defaultButton="{inserir}">
 				<mx:HBox id="produto" width="100%" height="40" fontSize="20" verticalAlign="middle">				
-					<mx:FormItem label="Código Produto">
-						<utilidades:TextoInput id="codProduto"/>
+					<mx:FormItem label="CÃ³digo Produto">
+						<mx:TextInput id="codProduto"/>
 					</mx:FormItem>	
 					<mx:FormItem label="Quantidade" width="100%" height="100%">
-						<utilidades:TextoInput id="quantProduto" />
+						<utilidades:NumberInput id="quantProduto"/>
 					</mx:FormItem>
 					<mx:Button id="inserir" label="Inserir" click="{inserirProduto()}" />
 					<mx:Button id="buscarProdutos" label="Produtos" toolTip="Clique para procurar por um produto"/>
@@ -124,8 +124,8 @@
 			</mx:DataGrid>
 		</mx:VBox>		
 		<mx:HBox id="rodape" width="100%" height="30">
-			<mx:Button id="gerarOrcamento" label="Gerar Orcamento" toolTip="Clique para gerar orçamento" click="{orcamento()}"/>
-			<mx:Button id="cancelarOrcamento" label="Cancelar Orcamento" toolTip="Clique para cancelar orçamento"/>
+			<mx:Button id="gerarOrcamento" label="Gerar Orcamento" toolTip="Clique para gerar orÃ§amento" click="{orcamento()}"/>
+			<mx:Button id="cancelarOrcamento" label="Cancelar Orcamento" toolTip="Clique para cancelar orÃ§amento"/>
 		</mx:HBox>
 	</mx:VBox>
 	
