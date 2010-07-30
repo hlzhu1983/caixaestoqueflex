@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TextInput xmlns:mx="http://www.adobe.com/2006/mxml"
+	creationComplete="init()" keyDown="{escrever(event)}" textAlign="right" focusIn="{recebeuFoco()}"
+	focusOut="{perdeuFoco()}"
+	enter="{this.focusManager.moveFocus(FocusRequestDirection.FORWARD)}">
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.events.FocusRequestDirection;
+			import mx.validators.NumberValidator;
+			
+			
+			public var numV:NumberValidator = new NumberValidator();
+			[Bindable]
+			private var foiEditado:Boolean = false;
+			
+			public var valorDefault:String = "000000";
+			
+			private var numeros:int = 0;
+			
+			private function init():void{
+				this.numV.required = true;
+				this.numV.allowNegative = false;
+				this.numV.decimalSeparator = ",";
+				this.numV.thousandsSeparator = ".";
+				this.numV.minValue = "0";
+				this.numV.maxValue = "10000";
+				this.numV.domain = "real";
+				this.numV.precision = "2";
+				this.numV.exceedsMaxError = "Valor muito grande!";
+				this.numV.invalidCharError = "Caracter invalido!";
+				this.numV.invalidFormatCharsError = "Formato invalido!";
+				this.numV.lowerThanMinError = "NÃºmero menor que zero!";
+				this.numV.requiredFieldError = "O campo Ã© obrigatÃ³rio";
+				this.numV.source = this;
+				this.numV.property = "text";	
+				
+				this.text = this.valorDefault;
+				this.editable = false;
+				this.maxChars = 6;
+				
+			}
+			
+			private function escrever(event:KeyboardEvent):void{
+				var aux:String;
+				var numero:Boolean;
+				var backSpace:Boolean;
+				switch(event.charCode){
+					case Keyboard.NUMBER_0:
+						aux = "0"
+						numero = true;
+						break;
+					case Keyboard.NUMBER_1:
+						aux = "1"
+						numero = true;
+						break;
+					case Keyboard.NUMBER_2:
+						aux = "2"
+						numero = true;
+						break;
+					case Keyboard.NUMBER_3:
+						aux = "3"
+						numero = true;
+						break;
+					case Keyboard.NUMBER_4:
+						aux = "4"
+						numero = true;
+						break;
+					case Keyboard.NUMBER_5:
+						aux = "5"
+						numero = true;
+						break;
+					case Keyboard.NUMBER_6:
+						aux = "6"
+						numero = true;
+						break;
+					case Keyboard.NUMBER_7:
+						aux = "7"
+						numero = true;
+						break;
+					case Keyboard.NUMBER_8:
+						aux = "8"
+						numero = true;
+						break;
+					case Keyboard.NUMBER_9:
+						aux = "9"
+						numero = true;
+						break;
+					case (Keyboard.BACKSPACE):
+						backSpace = true;
+						break;	
+				}
+				var str:String;
+				this.foiEditado = true;
+				if(numero && this.maxChars>this.text.length){					
+					str = this.text;					
+					str = str.charAt(str.length-2)
+						+ "," + str.charAt(str.length-1)+aux;
+					if(numeros > 2){
+						this.text = this.text.charAt(0) +
+						 this.text.substring(1,this.text.length-3) + str;	
+					}else{
+						this.text = str;	
+					}
+					this.numeros++;
+				}
+				if(backSpace){
+					str = this.text;					
+					str = "," + str.charAt(this.length-4) +	 str.charAt(str.length-2);
+					if(numeros < 4){
+						this.text = "0" + str;	
+					}else{
+						this.text = this.text.substring(0,this.text.length-4)+ str;	
+					}
+					if(--this.numeros < 1){
+						this.foiEditado = false;
+					}
+				}
+				
+			}
+			
+			
+			
+			private function recebeuFoco():void{
+				if(!this.foiEditado){
+					this.text = "0,00";
+				}
+			}
+			
+			private function perdeuFoco():void{
+				if(!this.foiEditado){
+					this.text = this.valorDefault;
+				}
+			}
+			
+			public function reset():void{
+				this.text = this.valorDefault;
+				this.foiEditado = false;
+				this.numeros = 0;
+			}
+			
+			
+		]]>
+	</mx:Script>
+	
+	
+	
+</mx:TextInput>

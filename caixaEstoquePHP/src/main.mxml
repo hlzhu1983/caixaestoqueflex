@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:WindowedApplication width="1024" height="700" creationComplete="init()"
+	 xmlns:mx="http://www.adobe.com/2006/mxml"  
+	layout="absolute" borderThickness="0" cornerRadius="0" backgroundGradientAlphas="[1.0, 1.0]"
+	 backgroundGradientColors="[#FFFFFF, #000000]" dropShadowEnabled="false" 
+	 xmlns:local="*" verticalAlign="top" horizontalAlign="center">
+	 
+	 <mx:Script source="principal.as"/>
+		
+	<mx:ApplicationControlBar  x="0" dock="true" y="0" width="1024" fillAlphas="[0.01, 0.73]" height="46" cornerRadius="0" color="#FFFFFF" fillColors="[#000000, #000000]">
+		<mx:Label id="nomeUsuario" text="Usuário Visitante" fontWeight="bold" fontSize="12"/>		
+		<mx:MenuBar width="100%" labelField="@label" id="menuBar" height="28" cornerRadius="8" color="#000000" fontSize="12">
+		   <mx:XMLList>
+		           <menuitem label="Arquivo">
+		               <menuitem label="Alterar Senha do Usuário"/>
+		               <menuitem label="Fazer Backup"/>
+		               <menuitem label="Imprimir Movimento Diario"/>
+		               <menuitem label="Sair"/>
+		           </menuitem>
+		           <menuitem label="Cadastro">
+		               <menuitem  label="Cadastro de Empresa" id = "cadEmpresa"/>
+		               <menuitem  label="Cadastro de Cliente"/>
+		               <menuitem  label="Cadastro de Usuário"/>
+		               <menuitem  label="Cadastro de Produto"/>
+		               <menuitem  label="Cadastro de Grupo de Produto"/>
+		               <menuitem  label="Cadastro de Fornecedores"/>
+		               <menuitem  label="Cadastro de Unidades"/>
+		               <menuitem  label="Cadastro de Forma de Pagamento"/>
+		           </menuitem>
+		           <menuitem label="Módulos">
+		                <menuitem  label="Frente de Caixa" id ="fLoja"/>
+		                <menuitem  label="Pedido de Compra" id="orcamento"/>
+		                <menuitem  label="Orçamento"/>
+		                <menuitem  label="Venda"/>
+		                <menuitem  label="Transferência entre Filiais"/>
+		                <menuitem  label="Devolução"/>		                
+		           </menuitem>
+		           <menuitem label="Relatórios" >
+		               <menuitem label="Ainda Falta Fazer" />
+		           </menuitem>
+		            <menuitem label="Utilitários" >
+		               <menuitem label="Calculadora" />
+		               <menuitem label="Calculo de Dias" />
+		            </menuitem>
+		               <menuitem label="Ajuda" >
+		               <menuitem label="Sobre o Sistema" />
+		               <menuitem label="Tópicos de Ajuda" />
+		               <menuitem label="Versão" />
+		            </menuitem>
+		       </mx:XMLList>
+		</mx:MenuBar>
+	</mx:ApplicationControlBar>	
+</mx:WindowedApplication>

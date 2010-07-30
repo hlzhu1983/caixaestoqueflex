@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:WindowedApplication xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute">
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.rpc.events.ResultEvent;
+			import dto.ro.UnidadeRO;
+			import dto.DadosUnidadeDTO;
+			
+			
+			private var dadosUnidade:DadosUnidadeDTO = new DadosUnidadeDTO();
+			private var unidadeRO:UnidadeRO = UnidadeRO.getInstance();
+			
+			public function inserirUnidade():void{
+				dadosUnidade.descricao = "Tah pegando o DTO";
+				unidadeRO.insert(dadosUnidade, resultadoInsercao);
+			}
+			
+			public function resultadoInsercao(event:ResultEvent):void{
+				var res:DadosUnidadeDTO = event.result as DadosUnidadeDTO;
+				Alert.show("Unidade adicionada "+ res.codigo+" "+res.descricao,"Sucesso",4,this);
+			}
+			
+			public function removerUnidade():void{		
+				var unidade:DadosUnidadeDTO = new DadosUnidadeDTO();
+				unidade.codigo = 5;						
+				unidadeRO.remover(unidade, resultadoRemocao);
+			}
+			
+			public function resultadoRemocao(event:ResultEvent):void{
+				var res:DadosUnidadeDTO = event.result as DadosUnidadeDTO;
+				Alert.show("Unidade removida "+ res.codigo,"Sucesso",4,this);
+			}
+		]]>
+	</mx:Script>
+	<mx:Button x="87" y="120" label="Button" id="butao" click="{this.removerUnidade()}"/>
+	
+</mx:WindowedApplication>

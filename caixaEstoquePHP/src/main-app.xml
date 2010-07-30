@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application xmlns="http://ns.adobe.com/air/application/1.5">
+
+	<id>CaixaEstoque</id>
+	<filename>Caixa e Estoque</filename>
+	<name>CaixaEstoque</name>
+	<version>1.0</version>
+	<description>
+	
+		É um sistema completo de caixa e estoque. Foi criado utilizando as tecnologias mais avançados.
+	
+	</description>
+	<copyright>© 2010 - PC++ Soluções em TI</copyright>
+
+	<initialWindow>
+		<!-- The main SWF or HTML file of the application. Required. -->
+		<!-- Note: In Flex Builder, the SWF reference is set automatically. -->
+		<content>[This value will be overwritten by Flex Builder in the output app.xml]</content>
+		
+		<title>Sistema de Caixa e Estoque</title>
+		<systemChrome>standard</systemChrome>
+        <transparent>false</transparent>
+        <visible>true</visible>
+        <minimizable>true</minimizable>
+        <maximizable>true</maximizable>
+        <resizable>false</resizable>
+        <width>1024</width>
+        <height>700</height>
+        <x>0</x>
+   		<y>0</y>
+	</initialWindow>
+
+	<installFolder>PCSW</installFolder>
+	<programMenuFolder>PCSW/caixaEstoque</programMenuFolder>	
+	<icon>
+		<image16x16>imagens/caixaEstoque16.png</image16x16>
+		<image32x32>imagens/caixaEstoque32.png</image32x32>
+		<image48x48>imagens/caixaEstoque48.png</image48x48>
+		<image128x128>imagens/caixaEstoque128.png</image128x128>
+	</icon> 
+
+	<customUpdateUI>true</customUpdateUI> 
+	
+	<allowBrowserInvocation>true</allowBrowserInvocation>
+
+	<!-- Listing of file types for which the application can register. Optional. -->
+	<!-- <fileTypes> -->
+
+		<!-- Defines one file type. Optional. -->
+		<!-- <fileType> -->
+
+			<!-- The name that the system displays for the registered file type. Required. -->
+			<!-- <name></name> -->
+
+			<!-- The extension to register. Required. -->
+			<!-- <extension></extension> -->
+			
+			<!-- The description of the file type. Optional. -->
+			<!-- <description></description> -->
+			
+			<!-- The MIME content type. -->
+			<!-- <contentType></contentType> -->
+			
+			<!-- The icon to display for the file type. Optional. -->
+			<!-- <icon>
+				<image16x16>imagens/caixaEstoque16.png</image16x16>
+				<image32x32>imagens/caixaEstoque32.png</image32x32>
+				<image48x48>imagens/caixaEstoque48.png</image48x48>
+				<image128x128>imagens/caixaEstoque128.png</image128x128>
+			</icon>-->
+			
+		<!-- </fileType> -->
+	<!-- </fileTypes> -->
+
+</application>
