@@ -30,8 +30,8 @@
 				this.numV.exceedsMaxError = "Valor muito grande!";
 				this.numV.invalidCharError = "Caracter invalido!";
 				this.numV.invalidFormatCharsError = "Formato invalido!";
-				this.numV.lowerThanMinError = "Número menor que zero!";
-				this.numV.requiredFieldError = "O campo é obrigatório";
+				this.numV.lowerThanMinError = "NÃºmero menor que zero!";
+				this.numV.requiredFieldError = "O campo Ã© obrigatÃ³rio";
 				this.numV.source = this;
 				this.numV.property = "text";	
 				
