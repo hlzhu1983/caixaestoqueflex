@@ -17,19 +17,19 @@
 		               <menuitem label="Imprimir Movimento Diario"/>
 		               <menuitem label="Sair"/>
 		           </menuitem>
-		           <menuitem label="Cadastro">
-		               <menuitem  label="Cadastro de Empresa" id = "cadEmpresa"/>
-		               <menuitem  label="Cadastro de Cliente"/>
-		               <menuitem  label="Cadastro de Usuário"/>
-		               <menuitem  label="Cadastro de Produto"/>
-		               <menuitem  label="Cadastro de Grupo de Produto"/>
-		               <menuitem  label="Cadastro de Fornecedores"/>
-		               <menuitem  label="Cadastro de Unidades" id="gerUnidade"/>
-		               <menuitem  label="Cadastro de Forma de Pagamento"/>
+		           <menuitem label="Ger. Entidades">
+		               <menuitem  label="Gerenciamento de Empresa" />
+		               <menuitem  label="Gerenciamento de Cliente" />
+		               <menuitem  label="Gerenciamento de Usuário" />
+		               <menuitem  label="Gerenciamento de Produto" />
+		               <menuitem  label="Gerenciamento de Grupo de Produto" />
+		               <menuitem  label="Gerenciamento de Fornecedores"/>
+		               <menuitem  label="Gerenciamento de Unidades"/>
+		               <menuitem  label="Gerenciamento de Forma de Pagamento"/>
 		           </menuitem>
 		           <menuitem label="Módulos">
-		                <menuitem  label="Frente de Caixa" id ="fLoja"/>
-		                <menuitem  label="Pedido de Compra" id="orcamento"/>
+		                <menuitem  label="Frente de Caixa"/>		                
+		                <menuitem  label="Pedido de Compra" />
 		                <menuitem  label="Orçamento"/>
 		                <menuitem  label="Venda"/>
 		                <menuitem  label="Transferência entre Filiais"/>

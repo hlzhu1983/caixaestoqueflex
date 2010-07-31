@@ -9,8 +9,6 @@
 			import mx.events.FocusRequestDirection;
 			import mx.validators.NumberValidator;
 			
-			
-			public var numV:NumberValidator = new NumberValidator();
 			[Bindable]
 			private var foiEditado:Boolean = false;
 			
@@ -19,26 +17,10 @@
 			private var numeros:int = 0;
 			
 			private function init():void{
-				this.numV.required = true;
-				this.numV.allowNegative = false;
-				this.numV.decimalSeparator = ",";
-				this.numV.thousandsSeparator = ".";
-				this.numV.minValue = "0";
-				this.numV.maxValue = "10000";
-				this.numV.domain = "real";
-				this.numV.precision = "2";
-				this.numV.exceedsMaxError = "Valor muito grande!";
-				this.numV.invalidCharError = "Caracter invalido!";
-				this.numV.invalidFormatCharsError = "Formato invalido!";
-				this.numV.lowerThanMinError = "Número menor que zero!";
-				this.numV.requiredFieldError = "O campo é obrigatório";
-				this.numV.source = this;
-				this.numV.property = "text";	
 				
 				this.text = this.valorDefault;
 				this.editable = false;
 				this.maxChars = 8;
-				
 			}
 			
 			private function escrever(event:KeyboardEvent):void{
@@ -142,7 +124,6 @@
 			
 		]]>
 	</mx:Script>
-	
 	
 	
 </mx:TextInput>
