@@ -1,4 +1,4 @@
-package remote{
+package negocio.remote{
 
 	
 	import mx.controls.Alert;
@@ -7,13 +7,29 @@ package remote{
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.remoting.mxml.RemoteObject;
 	
+	import negocio.vo.UnidadeVO;
+	
 	public class Remote {
 		
  		
  		
- 		public function listar(result:Function, source:String):void{
- 			_remote.source = source;
+ 		public function listar(result:Function):void{
 			var async:AsyncToken = _remote.getUnidades();
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
+		public function addUnidade(result:Function,unidade:UnidadeVO):void{
+			var async:AsyncToken = _remote.addUnidade(unidade);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
+		public function removerUnidade(result:Function,unidade:UnidadeVO):void{
+			var async:AsyncToken = _remote.removerUnidade(unidade);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
+		public function pesquisarUnidade(result:Function,texto:String,coluna:String):void{
+			var async:AsyncToken = _remote.pesquisarUnidade(texto,coluna);
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
 				
@@ -28,7 +44,8 @@ package remote{
 			_remote = new RemoteObject();
 			_remote.showBusyCursor = true;
 			_remote.destination = 'zend';
-			_remote.endpoint = "http://localhost/CEFlexPHP/php/bridge.php";
+			_remote.source = "UnidadeServicos";
+			_remote.endpoint = "http://localhost/Zendamf/bridge.php";
 			
 		}
 		

@@ -1,6 +1,7 @@
 
 	import modulos.caixa.Caixa;
 	import modulos.orcamento.Orcamento;
+	import modulos.unidade.UnidadeCRUD;
 	
 	import mx.core.Window;
 	import mx.events.MenuEvent;
@@ -24,6 +25,9 @@
           case 2:
          	this.orcamentoWindow();
          	break;
+          case 3:
+         	this.gerUnidade();
+         	break;	
   		}
     }
 	
@@ -51,6 +55,13 @@
 		newWindow.nativeWindow.x = 0;
 		newWindow.nativeWindow.y = 0;
 		newWindow.activate();
+		
+		//Util.abrePopUp(this,FrenteLoja,true);	
+	}
+	
+	public function gerUnidade():void{
+		
+		Util.abrePopUp(this,UnidadeCRUD,true);
 		
 		//Util.abrePopUp(this,FrenteLoja,true);	
 	}

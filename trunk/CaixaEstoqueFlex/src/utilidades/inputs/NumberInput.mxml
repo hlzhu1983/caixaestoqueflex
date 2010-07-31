@@ -14,7 +14,7 @@
 			[Bindable]
 			private var foiEditado:Boolean = false;
 			
-			public var valorDefault:String = "000000";
+			public var valorDefault:String = "1,00";
 			
 			private var numeros:int = 0;
 			
@@ -30,14 +30,14 @@
 				this.numV.exceedsMaxError = "Valor muito grande!";
 				this.numV.invalidCharError = "Caracter invalido!";
 				this.numV.invalidFormatCharsError = "Formato invalido!";
-				this.numV.lowerThanMinError = "NÃºmero menor que zero!";
-				this.numV.requiredFieldError = "O campo Ã© obrigatÃ³rio";
+				this.numV.lowerThanMinError = "Número menor que zero!";
+				this.numV.requiredFieldError = "O campo é obrigatório";
 				this.numV.source = this;
 				this.numV.property = "text";	
 				
 				this.text = this.valorDefault;
 				this.editable = false;
-				this.maxChars = 6;
+				this.maxChars = 8;
 				
 			}
 			
