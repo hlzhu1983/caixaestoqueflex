@@ -2,7 +2,7 @@
 <mx:Window title="OrÃ§amento" xmlns:mx="http://www.adobe.com/2006/mxml" 
 	layout="absolute" width="1024" 
 	height="700" xmlns:utilidades="utilidades.*" closing="onCloseCommand(event)"
-	keyDown="funcionalidades(event)">
+	keyDown="funcionalidades(event)" xmlns:inputs="utilidades.inputs.*">
 	
 	<mx:Script>
 		<![CDATA[
@@ -110,7 +110,7 @@
 						<mx:TextInput id="codProduto"/>
 					</mx:FormItem>	
 					<mx:FormItem label="Quantidade" width="100%" height="100%">
-						<utilidades:NumberInput id="quantProduto"/>
+						<inputs:NumberInput id="quantProduto"/>
 					</mx:FormItem>
 					<mx:Button id="inserir" label="Inserir" click="{inserirProduto()}" />
 					<mx:Button id="buscarProdutos" label="Produtos" toolTip="Clique para procurar por um produto"/>

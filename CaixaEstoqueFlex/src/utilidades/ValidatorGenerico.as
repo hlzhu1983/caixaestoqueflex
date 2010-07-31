@@ -6,16 +6,16 @@ package utilidades
 	public class ValidatorGenerico extends Validator
 	{
 		
-		public static const INTEIRO:String = "\[0-9]+";
+		public static const INTEIRO:RegExp = /[0-9]+/;
 		
-		public static const VALOR:String = "\[0-9]+,\[0-9]+|\[0-9]+";
+		public static const VALOR:RegExp = /[0-9]+,[0-9]+|[0-9]+/;
 		
-		public static const ID:String = "\\[A-Za-z]"; 
+		public static const ID:RegExp = /[A-Za-z]+/; 
 		
 		
 		private var results:Array;
 		
-		public var expRegular:String;
+		public var expRegular:RegExp;
 		
 		public var msgErro:String;
 		
@@ -30,8 +30,7 @@ package utilidades
 			this.results = [];
 			this.results = super.doValidation(value);
 			if(value!=null){
-				var reg:RegExp = new RegExp(expRegular);
-				if(value.search(reg) ==-1){						
+				if(value.search(this.expRegular) ==-1){						
 					results.push(new ValidationResult(true,null,"Erro",msgErro));		
 				}
 			}			

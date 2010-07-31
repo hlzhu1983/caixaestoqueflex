@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Button xmlns:mx="http://www.adobe.com/2006/mxml" icon="@Embed(source='../../icons/SearchRecord.png')" 
+	toolTip="Clique para buscar item!" >
+	
+</mx:Button>

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" close="fechar()" creationComplete="init()" showCloseButton="true" layout="absolute" title="Gerenciamento Unidades" xmlns:utilidades="utilidades.*" xmlns:botoes="utilidades.botoes.*" xmlns:inputs="utilidades.inputs.*">
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.events.ValidationResultEvent;
+			import mx.validators.ValidationResult;
+			import negocio.vo.UnidadeVO;
+			import mx.managers.PopUpManager;
+			import mx.events.CloseEvent;
+			import mx.controls.Alert;
+			import mx.collections.ArrayCollection;
+			import mx.rpc.events.ResultEvent;
+			import negocio.remote.Remote;
+			
+			[Bindable]
+			private var unidadesArray:ArrayCollection;
+			
+			[Bindable]
+			private var unidade:UnidadeVO;
+			
+			private var tipoPesquisa:String;
+		
+			private var ro:Remote = Remote.getInstance();
+			
+			private function init():void{
+				this.listarAllUnidades();
+			}
+			
+			private function addUnidade():void{
+				var u:UnidadeVO = new UnidadeVO();
+				if(this.descInput.validador.validate().type == ValidationResultEvent.INVALID){
+					Alert.show("Campo descrição obrigatorio!","Ops!");
+				}else{
+					u.descricao = this.descInput.text;
+					this.ro.addUnidade(resultadoAddUnidade,u);
+				}
+				
+				
+			}
+			
+			private function resultadoAddUnidade(event:ResultEvent):void{
+				this.unidadesArray.addItem(event.result);
+				Alert.show("O item foi adicionado!","Sucesso!");
+				this.limparCampos();
+			}
+			
+			private function listarAllUnidades():void{
+				this.ro.listar(resultListarUnidades);
+				
+			}
+			
+			private function resultListarUnidades(event:ResultEvent):void{
+								
+				this.unidadesArray = new ArrayCollection(event.result as Array);
+				
+			}
+			
+			public function unidadeSelecionado(event:Event):void{
+				this.unidade = event.currentTarget.selectedItem;
+				this.codInput.text = this.unidade.codigo.toString();
+				this.descInput.text = this.unidade.descricao;
+                this.remover.enabled = true;
+                						
+			}
+			
+			
+			
+			
+			private function removerUnidade():void{
+				this.unidade = this.unidadeGrid.selectedItem as UnidadeVO;
+				this.ro.removerUnidade(resultadoRemoverUnidade, this.unidade);
+				
+				
+			}
+			
+			private function resultadoRemoverUnidade(event:ResultEvent):void{
+				if(event.result){
+					Alert.show("O item foi removido!","Sucesso");
+					this.unidadesArray.removeItemAt(this.unidadeGrid.selectedIndex);
+				}else{
+					Alert.show("O item não pôde ser removido!","Ops!");					
+				}
+				this.limparCampos();
+			}
+			
+			
+			private function pesquisarItem():void{
+				if(this.ti_pesquisa.text == ""){
+					this.listarAllUnidades();
+				}else if(this.ti_pesquisa.validador.validate().type == ValidationResultEvent.VALID ){
+					if(this.radio_codigo.selected){
+						this.ro.pesquisarUnidade(resultadoPesquisaItem,this.ti_pesquisa.text,"codigo");
+					}else{
+						this.ro.pesquisarUnidade(resultadoPesquisaItem,this.ti_pesquisa.text,"descricao");
+					}
+					
+				}else{
+					Alert.show("erro");
+				}
+			}
+			
+			private function resultadoPesquisaItem(event:ResultEvent):void{
+				this.unidadesArray = new ArrayCollection(event.result as Array);
+			}
+			
+			
+			
+			private function fechar():void{
+				PopUpManager.removePopUp(this);
+			}
+			
+			public function limparCampos():void{
+				this.codInput.text = "";
+				this.descInput.text = "";
+				this.ti_pesquisa.text = "";
+			}
+			
+		]]>
+	</mx:Script>
+	
+
+
+	<mx:FormItem defaultButton="{this.bt_buscar}" label="Pesquisa" x="10" y="10" >
+		<inputs:TextoInput x="10" y="10" width="225" id="ti_pesquisa"  isEnter="false"/>
+		<mx:HBox width="100%" height="100%">
+			<mx:RadioButtonGroup id="grupo_pesquisa"/>
+			<mx:RadioButton label="Código" id="radio_codigo" groupName="grupo_pesquisa"/>
+			<mx:RadioButton label="Descrição" id="radio_desc" groupName="grupo_pesquisa" selected="true"/>
+		</mx:HBox>
+			
+	</mx:FormItem>	
+	<botoes:BuscarButton id="bt_buscar" x="312" y="10" click="{this.pesquisarItem()}"/>		
+		<mx:FormItem label="Código" x="10" y="80" >		
+			<mx:Label id="codInput"/>
+		</mx:FormItem>
+		<botoes:RemoveButton id="remover" click="removerUnidade()"  enabled="false" x="140" y="140"/>
+		<botoes:ADDButton id="add" click="addUnidade()" x="92" y="140"/>
+		<mx:FormItem label="Descrição" x="10" y="110" required="true">
+			<inputs:TextoInput id="descInput" requerido="true"/>
+		</mx:FormItem>
+		<mx:DataGrid x="0" y="169" width="388" id="unidadeGrid" change="{unidadeSelecionado(event)}" dataProvider="{this.unidadesArray}">
+			<mx:columns>
+				<mx:DataGridColumn headerText="Código" dataField="codigo"/>
+				<mx:DataGridColumn headerText="Descrição" dataField="descricao"/>			
+			</mx:columns>
+		</mx:DataGrid>
+		<botoes:CleanButton  x="188" y="140" click="{this.limparCampos()}"/>
+	
+</mx:TitleWindow>
