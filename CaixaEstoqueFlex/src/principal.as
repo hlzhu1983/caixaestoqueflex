@@ -1,12 +1,17 @@
 
+	import flash.utils.Dictionary;
+	
 	import modulos.caixa.Caixa;
 	import modulos.orcamento.Orcamento;
 	import modulos.unidade.UnidadeCRUD;
 	
+	import mx.controls.Alert;
 	import mx.core.Window;
 	import mx.events.MenuEvent;
 	
 	import utilidades.Util;
+	
+	public var map:Dictionary = new Dictionary();
 	
 	
 	public var logou:Boolean;	
@@ -18,18 +23,22 @@
 	}	
 	
 	private function itemClickInfo(event:MenuEvent):void {
-		switch (event.index){
-         case 0:
-         	this.frenteLoja();
-         	break;
-          case 2:
-         	this.orcamentoWindow();
-         	break;
-          case 3:
-         	this.gerUnidade();
-         	break;	
-  		}
+		switch(event.label){
+			case "Frente de Caixa":
+				this.frenteLoja();
+				break;
+			case "Orçamento":
+				this.orcamentoWindow();
+				break;
+			case "Gerenciamento de Unidades":
+				this.gerUnidade();
+				break;
+			default:
+				Alert.show("Não implementado!","Alerta "+event.item.@id,4,this);
+				break;
+		}
     }
+    
 	
 	public function frenteLoja():void{
 		this.logou = false;	
@@ -56,14 +65,10 @@
 		newWindow.nativeWindow.y = 0;
 		newWindow.activate();
 		
-		//Util.abrePopUp(this,FrenteLoja,true);	
 	}
 	
-	public function gerUnidade():void{
-		
+	public function gerUnidade():void{		
 		Util.abrePopUp(this,UnidadeCRUD,true);
-		
-		//Util.abrePopUp(this,FrenteLoja,true);	
 	}
 	
 	
