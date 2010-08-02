@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:DateField xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="{this.init()}" yearNavigationEnabled="true">
+	
+	<mx:Script>
+		<![CDATA[
+			
+			
+			
+			public function init():void{
+				this.dayNames=['Dom', 'Seg', 'Ter', 
+                    'Qua', 'Qui', 'Sex', 'Sab'];
+                this.monthNames = ['Janeiro', 'Fevereiro', 'Março', 
+                    'Abril', 'Maio', 'Junho', 'Julho','Agosto', 'Setembro', 'Outubro', 
+                    'Novembro', 'Dezembro'];  
+                this.formatString = "DD/MM/YY";    
+                 
+			}
+		]]>
+	</mx:Script>
+	
+	
+	
+</mx:DateField>
