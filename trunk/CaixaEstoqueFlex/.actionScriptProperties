@@ -10,7 +10,6 @@
 </compiler>
 <applications>
 <application path="main.mxml"/>
-<application path="neri_crud_amfphp_dto.mxml"/>
 </applications>
 <modules/>
 <buildCSSFiles/>

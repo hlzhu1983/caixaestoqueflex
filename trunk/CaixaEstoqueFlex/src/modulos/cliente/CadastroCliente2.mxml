@@ -5,7 +5,7 @@
 	 title="Gerenciador Clientes" 
 	 showCloseButton="true"
 	 close="{this.fechar()}"
-	 xmlns:botoes="utilidades.botoes.*" width="890" height="100%" xmlns:utilidades="utilidades.*">
+	 xmlns:botoes="utilidades.botoes.*" width="100%" height="100%" xmlns:utilidades="utilidades.*">
 	
 		<mx:Script>
 		<![CDATA[
@@ -241,13 +241,75 @@
 	<botoes:ADDButton id="add"  x="10" y="77" click="{this.addItem()}"/>
 	<botoes:CleanButton  x="106" y="77" click="{this.limparCampos()}"/>
 	
-	<mx:ComboBox x="561" y="123" width="112" id="sexo" selectedIndex="0" editable="false">
+	<mx:FormItem label="Código:" x="10" y="105">
+		<mx:Label id="ti_codigo" width="177"/>
+	</mx:FormItem>
+	
+	<mx:FormItem label="Nome:" x="282" y="105">
+		<ns1:TextoInput id="ti_nome" width="399" requerido="true"/>
+	</mx:FormItem>
+	
+	<mx:FormItem x="10" y="137" label="Fone:">
+		<ns1:InteiroInput id="ti_fone" width="201"/>
+	</mx:FormItem>
+	
+	<mx:FormItem x="284" y="137" label="Contato: ">
+		<ns1:TextoInput id="ti_contato" />
+	</mx:FormItem>
+	
+	<mx:ComboBox x="520" y="137" width="112" id="sexo" selectedIndex="0" editable="false">
 		<mx:ArrayCollection>
          <mx:Object label="Masculino" data="M"/>
          <mx:Object label="Feminino" data="F"/>
       </mx:ArrayCollection>
 	</mx:ComboBox>
-	<mx:DataGrid id="grid_itens" x="10" y="400" width="847" dataProvider="{this.itensArray}" change="{this.itemSelecionado(event)}">
+	
+	<mx:FormItem x="10" y="167" label="Email:">
+		<ns1:TextoInput x="24" y="186" id="ti_email"  width="257"/>
+	</mx:FormItem>
+	
+	<mx:FormItem label="URL:" x="338" y="167">
+		<ns1:TextoInput x="325" y="212" id="ti_url" width="240"/>
+	</mx:FormItem>
+
+		
+	
+		
+	<mx:FormItem x="10" y="197" label="CPF/CNPJ:">
+		<ns1:InteiroInput id="ti_cpf_cnpj"  width="185"/>
+	</mx:FormItem>
+	
+	<mx:FormItem x="284" y="197" label="Insc. Estadual:">
+		<ns1:InteiroInput id="ti_inscEstadual" width="201"/>
+	</mx:FormItem>
+	
+	
+	<mx:FormItem x="10" y="227" label="Endereço: ">
+		<ns1:TextoInput id="ti_endereco" width="308"/>
+	</mx:FormItem>
+	
+	<mx:FormItem x="419" y="227" label="CEP:">
+		<ns1:InteiroInput id="ti_cep"/>
+	</mx:FormItem>
+	
+	<mx:FormItem label="Cidade:" x="10" y="257">
+		<ns1:TextoInput id="ti_cidade" />
+	</mx:FormItem>
+	
+	
+	
+	<mx:FormItem x="249" y="257" label="Bairro:">
+		<ns1:TextoInput id="ti_bairro" />
+	</mx:FormItem>
+	
+	
+	<mx:ComboBox x="480" y="258" id="estado" selectedIndex="0" editable="false" dataProvider="{this.estados}">
+		
+	</mx:ComboBox>
+	
+	
+	<mx:RichTextEditor title="Observações" id="obs"  x="648" y="137" width="327" height="173"/>
+	<mx:DataGrid id="grid_itens" x="10" y="345" width="965" dataProvider="{this.itensArray}" change="{this.itemSelecionado(event)}">
 		<mx:columns>
 			<mx:DataGridColumn headerText="Código: " dataField="codigo"/>
 			<mx:DataGridColumn headerText="Nome: " dataField="nome"/>
@@ -256,51 +318,18 @@
 		</mx:columns>
 	</mx:DataGrid>
 	
-	<utilidades:DateInput x="355" y="170"   showToday="true" id="dataNascimento" width="143"/>
-	<utilidades:DateInput x="508" y="75" id="dataCadastro" showToday="true"/>
-	<mx:Label x="355" y="153" text="Data Nascimento:"/>
-	<mx:Label x="410" y="77" text="Data Cadastro:"/>
+	<utilidades:DateInput x="282" y="77"   showToday="true" id="dataNascimento"/>
+	<utilidades:DateInput x="490" y="77" id="dataCadastro" showToday="true"/>
+	<mx:Label x="170" y="79" text="Data Nascimento:"/>
+	<mx:Label x="392" y="79" text="Data Cadastro:"/>
 	
-	<mx:ComboBox x="242" y="75" id="tipoUsuario" selectedIndex="0" editable="false">
+	<mx:ComboBox x="112" y="301" id="tipoUsuario" selectedIndex="0" editable="false">
 		<mx:ArrayCollection>
          <mx:Object label="Fisica" data="0"/>
          <mx:Object label="Jurídica" data="1"/>
       </mx:ArrayCollection>
 	</mx:ComboBox>
-	<mx:Label x="154" y="77" text="Tipo Usuário:"/>
-	<mx:Label x="154" y="105" text="Nome:"/>
-	<mx:Label x="10" y="202" text="Email:"/>
-	<mx:Label x="187" y="153" text="Contato:"/>
-	<mx:Label x="10" y="296" text="Observações:"/>
-	<mx:Label x="252" y="202" text="URL:"/>
-	<mx:Label x="10" y="153" text="Fone:"/>
-	<mx:Label x="204" y="249" text="Insc. Estadual:"/>
-	<mx:Label x="10" y="249" text="CPF/CNPJ:"/>
-	<mx:Label x="561" y="103" text="Sexo:" id="lb_sexo"/>
-	<ns1:TextoInput id="ti_nome" width="399" requerido="true" x="154" y="123"/>
-	<mx:Label x="10" y="107" text="Codigo:"/>
-	<mx:Label id="ti_codigo" width="136" x="10" y="125" height="20"/>
-	<ns1:InteiroInput id="ti_cpf_cnpj"  width="185" x="11" y="266"/>
-	<ns1:InteiroInput id="ti_inscEstadual" width="201" x="204" y="266"/>
-	<ns1:InteiroInput id="ti_fone" width="169" x="10" y="170"/>
-	<ns1:TextoInput id="ti_contato"  x="187" y="170"/>
-	<ns1:TextoInput x="10" y="219" id="ti_email"  width="234"/>
-	<ns1:TextoInput x="252" y="219" id="ti_url" width="240"/>
-	<mx:TextArea x="10" y="311" width="490" height="85"/>
-	<mx:Panel x="506" y="153" width="351" height="239" layout="absolute" title="Endereço">
-		<mx:ComboBox x="10" y="113" id="estado" selectedIndex="0" editable="false" dataProvider="{this.estados}">
-			
-		</mx:ComboBox>
-		<mx:Label x="10" y="97" text="UF:"/>
-		<ns1:TextoInput id="ti_endereco" width="308" x="10" y="20"/>
-		<mx:Label x="10" y="0" text="Rua/Logradouro:"/>
-		<ns1:InteiroInput id="ti_cep" x="178" y="67" width="140"/>
-		<mx:Label x="178" y="50" text="Cep:"/>
-		<mx:Label x="10" y="50" text="Bairro:"/>
-		<ns1:TextoInput id="ti_bairro"  x="10" y="67"/>
-		<ns1:TextoInput id="ti_cidade"  x="62" y="113" width="256"/>
-		<mx:Label x="62" y="97" text="Cidade:"/>
-	</mx:Panel>
+	<mx:Label x="15" y="303" text="Tipo Usuário:"/>
 			
 	
 </mx:TitleWindow>
