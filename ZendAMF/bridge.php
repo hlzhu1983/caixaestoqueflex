@@ -13,6 +13,9 @@ $server = new Zend_Amf_Server();
 
 $server->setClass('ServicosCliente');
 $server->setClass('ServicosUnidade');
+$server->setClass('ServicosFormadePgto');
+$server->setClass('ServicosGrupoProduto');
+$server->setClass('ServicosLocalProduto');
 //$server->setClassMap('UnidadeVO', 'UnidadeVO');
 $server->setClassMap('ClienteVO', 'ClienteVO');
 
