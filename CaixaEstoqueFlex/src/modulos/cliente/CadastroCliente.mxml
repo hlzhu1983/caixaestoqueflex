@@ -23,6 +23,7 @@
 			
 			[Bindable]
 			private var itensArray:ArrayCollection;
+			private var modificado:Number;
 			
 			[Bindable]
 			private var item:ClienteVO;
@@ -71,6 +72,7 @@
 				if(this.ti_nome.validador.validate().type == ValidationResultEvent.INVALID){
 					Alert.show("Campo nome obrigatorio!","Ops!");
 				}else{
+					if(this.ti_codigo.text==""){
 					u.nome = this.ti_nome.text;
 					u.bairro = this.ti_bairro.text;
 					u.cep = this.ti_cep.text;
@@ -89,7 +91,28 @@
 					u.UF = this.estado.selectedItem.data;
 					u.url = this.ti_url.text;
 					this.ro.addCliente(resultadoAddItem,u);
-				}
+					}else
+					u.nome = this.ti_nome.text;
+					u.bairro = this.ti_bairro.text;
+					u.cep = this.ti_cep.text;
+					u.cidade = this.ti_cidade.text;
+					u.contato = this.ti_contato.text;
+					u.cpf_cnpj = this.ti_cpf_cnpj.text;
+					u.dataCadastro = useDate(this.dataCadastro.selectedDate);
+					u.dataNascimento = useDate(this.dataNascimento.selectedDate);
+					u.email = this.ti_email.text;
+					u.endereco = this.ti_endereco.text;
+					u.fone = this.ti_fone.text;
+					u.insc_estadual = this.ti_inscEstadual.text;
+					u.obs = this.obs.text;
+					u.sexo = this.sexo.selectedItem.data;
+					u.tipoPessoa = this.tipoUsuario.selectedItem.data;
+					u.UF = this.estado.selectedItem.data;
+					u.url = this.ti_url.text;
+					u.codigo = Number(this.ti_codigo.text);
+					this.ro.atualizarCliente(resultadoAtualizarItem,u);
+					
+					}
 			}
 			
 			 private function useDate(date:Date):String{
@@ -102,6 +125,13 @@
 			private function resultadoAddItem(event:ResultEvent):void{
 				this.itensArray.addItem(event.result);
 				Alert.show("O item foi adicionado!","Sucesso!");
+				this.limparCampos();
+			}
+			
+			private function resultadoAtualizarItem(event:ResultEvent):void{
+			
+				this.itensArray[this.modificado] = event.result;	
+				Alert.show("O item foi Atualizado!","Sucesso!");
 				this.limparCampos();
 			}
 			
@@ -119,6 +149,7 @@
 			
 			public function itemSelecionado(event:Event):void{
 				this.item = event.currentTarget.selectedItem as ClienteVO;
+				this.modificado = this.grid_itens.selectedIndex;
 				this.ti_bairro.text = this.item.bairro;
 				this.ti_cep.text = this.item.cep;
 				this.ti_cidade.text = this.item.cidade;

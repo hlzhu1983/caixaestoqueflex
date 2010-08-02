@@ -37,6 +37,11 @@ package negocio.remote{
 			var async:AsyncToken = _remote.pesquisarCliente(texto,coluna);
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
+		public function atualizarCliente(result:Function,cliente:ClienteVO):void{
+			_remote.source = "ServicosCliente";
+			var async:AsyncToken = _remote.atualizarCliente(cliente);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
 		
 		//**********************************************************************************//
 		
