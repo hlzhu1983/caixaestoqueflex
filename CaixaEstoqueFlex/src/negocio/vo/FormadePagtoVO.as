@@ -1,8 +1,8 @@
 package negocio.vo
 {
 	[Bindable]
-	[RemoteClass(alias="FormadePgtoVO")]	
-	public class FormadePgtoVO
+	[RemoteClass(alias="FormadePagtoVO")]	
+	public class FormadePagtoVO
 	{
 		public var codigo:int;
 		public var descricao:String;

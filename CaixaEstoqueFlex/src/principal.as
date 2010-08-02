@@ -3,6 +3,9 @@
 	
 	import modulos.caixa.Caixa;
 	import modulos.cliente.CadastroCliente;
+	import modulos.formadepagto.CadastroFormadePagto;
+	import modulos.grupoproduto.CadastroGrupoProduto;
+	import modulos.localproduto.CadastroLocalProduto;
 	import modulos.orcamento.Orcamento;
 	import modulos.unidade.CadastroUnidade;
 	
@@ -37,6 +40,16 @@
 			case "Cadastro Cliente":
 				this.gerCliente();
 				break;
+			case "Cadastro Forma de Pagamento": 
+			    this.gerFormadePagto();
+			    break;
+		    case "Cadastro Grupo Produto": 
+			    this.gerGrupoProduto();
+			    break;
+			 case "Cadastro Local Produto": 
+			    this.gerLocalProduto();
+			    break;
+			    	
 			default:
 				Alert.show("Não implementado!","Alerta "+event.item.@id,4,this);
 				break;
@@ -74,6 +87,18 @@
 	public function gerUnidade():void{		
 		Util.abrePopUp(this,CadastroUnidade,true);
 	}
+	public function gerFormadePagto():void{		
+		Util.abrePopUp(this,CadastroFormadePagto,true);
+	}
+	
+	public function gerGrupoProduto():void{		
+		Util.abrePopUp(this,CadastroGrupoProduto,true);
+	}
+
+	public function gerLocalProduto():void{		
+		Util.abrePopUp(this,CadastroLocalProduto,true);
+	}
+
 	
 	public function gerCliente():void{		
 		Util.abrePopUp(this,CadastroCliente,true);

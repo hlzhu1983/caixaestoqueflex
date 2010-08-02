@@ -21,7 +21,8 @@
 		               <menuitem  label="Cadastro Empresa" />
 		               <menuitem  label="Cadastro Cliente" />
 		               <menuitem  label="Cadastro Usuário" />
-		               <menuitem  label="Cadastro Produto" />
+		               <menuitem  label="Cadastro Grupo Produto" />
+		               <menuitem  label="Cadastro Local Produto" />
 		               <menuitem  label="Cadastro Produto" />
 		               <menuitem  label="Cadastro Fornecedores"/>
 		               <menuitem  label="Cadastro Unidades"/>
