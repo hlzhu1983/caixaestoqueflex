@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" close="fechar()" creationComplete="init()" showCloseButton="true" layout="absolute" title="Gerenciamento LocalProdutos" xmlns:utilidades="utilidades.*" xmlns:botoes="utilidades.botoes.*" xmlns:inputs="utilidades.inputs.*">
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.events.ValidationResultEvent;
+			import mx.validators.ValidationResult;
+			import negocio.vo.LocalProdutoVO;
+			import mx.managers.PopUpManager;
+			import mx.events.CloseEvent;
+			import mx.controls.Alert;
+			import mx.collections.ArrayCollection;
+			import mx.rpc.events.ResultEvent;
+			import negocio.remote.Remote;
+			
+			[Bindable]
+			private var localProdutosArray:ArrayCollection;
+			
+			[Bindable]
+			private var localProduto:LocalProdutoVO;
+			
+			private var tipoPesquisa:String;
+		
+			private var ro:Remote = Remote.getInstance();
+			
+			private function init():void{
+				this.listarAllLocalProdutos();
+			}
+			
+			private function addLocalProduto():void{
+				var u:LocalProdutoVO = new LocalProdutoVO();
+				if(this.descInput.validador.validate().type == ValidationResultEvent.INVALID){
+					Alert.show("Campo descrição obrigatorio!","Ops!");
+				}else{
+					u.descricao = this.descInput.text;
+					this.ro.addLocalProduto(resultadoAddLocalProduto,u);
+				}
+				
+				
+			}
+			
+			private function resultadoAddLocalProduto(event:ResultEvent):void{
+				this.localProdutosArray.addItem(event.result);
+				Alert.show("O item foi adicionado!","Sucesso!");
+				this.limparCampos();
+			}
+			
+			private function listarAllLocalProdutos():void{
+				this.ro.listarLocalProduto(resultListarLocalProdutos);
+				
+			}
+			
+			private function resultListarLocalProdutos(event:ResultEvent):void{
+								
+				this.localProdutosArray = new ArrayCollection(event.result as Array);
+				
+			}
+			
+			public function localProdutoSelecionado(event:Event):void{
+				this.localProduto = event.currentTarget.selectedItem;
+				this.codInput.text = this.localProduto.codigo.toString();
+				this.descInput.text = this.localProduto.descricao;
+                this.remover.enabled = true;
+                						
+			}
+			
+			
+			
+			
+			private function removerLocalProduto():void{
+				this.localProduto = this.localProdutoGrid.selectedItem as LocalProdutoVO;
+				this.ro.removerLocalProduto(resultadoRemoverLocalProduto, this.localProduto);
+				
+				
+			}
+			
+			private function resultadoRemoverLocalProduto(event:ResultEvent):void{
+				if(event.result){
+					Alert.show("O item foi removido!","Sucesso");
+					this.localProdutosArray.removeItemAt(this.localProdutoGrid.selectedIndex);
+				}else{
+					Alert.show("O item não pôde ser removido!","Ops!");					
+				}
+				this.limparCampos();
+			}
+			
+			
+			private function pesquisarItem():void{
+				if(this.ti_pesquisa.text == ""){
+					this.listarAllLocalProdutos();
+				}else if(this.ti_pesquisa.validador.validate().type == ValidationResultEvent.VALID ){
+					if(this.radio_codigo.selected){
+						this.ro.pesquisarLocalProduto(resultadoPesquisaItem,this.ti_pesquisa.text,"codigo");
+					}else{
+						this.ro.pesquisarLocalProduto(resultadoPesquisaItem,this.ti_pesquisa.text,"descricao");
+					}
+					
+				}else{
+					Alert.show("erro");
+				}
+			}
+			
+			private function resultadoPesquisaItem(event:ResultEvent):void{
+				this.localProdutosArray = new ArrayCollection(event.result as Array);
+			}
+			
+			
+			
+			private function fechar():void{
+				PopUpManager.removePopUp(this);
+			}
+			
+			public function limparCampos():void{
+				this.codInput.text = "";
+				this.descInput.text = "";
+				this.ti_pesquisa.text = "";
+			}
+			
+		]]>
+	</mx:Script>
+	
+
+
+	<mx:FormItem defaultButton="{this.bt_buscar}" label="Pesquisa" x="10" y="10" >
+		<inputs:TextoInput x="10" y="10" width="225" id="ti_pesquisa"  isEnter="false"/>
+		<mx:HBox width="100%" height="100%">
+			<mx:RadioButtonGroup id="grupo_pesquisa"/>
+			<mx:RadioButton label="Código" id="radio_codigo" groupName="grupo_pesquisa"/>
+			<mx:RadioButton label="Descrição" id="radio_desc" groupName="grupo_pesquisa" selected="true"/>
+		</mx:HBox>
+			
+	</mx:FormItem>	
+	<botoes:BuscarButton id="bt_buscar" x="312" y="10" click="{this.pesquisarItem()}"/>		
+		<mx:FormItem label="Código" x="10" y="80" >		
+			<mx:Label id="codInput"/>
+		</mx:FormItem>
+		<botoes:RemoveButton id="remover" click="removerLocalProduto()"  enabled="false" x="140" y="140"/>
+		<botoes:ADDButton id="add" click="addLocalProduto()" x="92" y="140"/>
+		<botoes:CleanButton  x="188" y="140" click="{this.limparCampos()}"/>
+		<mx:FormItem label="Descrição" x="10" y="110" required="true">
+			<inputs:TextoInput id="descInput" requerido="true"/>
+		</mx:FormItem>
+		<mx:DataGrid x="0" y="169" width="388" id="localProdutoGrid" change="{localProdutoSelecionado(event)}" dataProvider="{this.localProdutosArray}">
+			<mx:columns>
+				<mx:DataGridColumn headerText="Código" dataField="codigo"/>
+				<mx:DataGridColumn headerText="Descrição" dataField="descricao"/>			
+			</mx:columns>
+		</mx:DataGrid>
+		
+	
+</mx:TitleWindow>

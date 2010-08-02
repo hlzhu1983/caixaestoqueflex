@@ -8,7 +8,9 @@ package negocio.remote{
 	import mx.rpc.remoting.mxml.RemoteObject;
 	
 	import negocio.vo.ClienteVO;
-	import negocio.vo.FormadePgtoVO;
+	import negocio.vo.FormadePagtoVO;
+	import negocio.vo.GrupoProdutoVO;
+	import negocio.vo.LocalProdutoVO;
 	import negocio.vo.UnidadeVO;
 	
 	public class Remote {
@@ -74,18 +76,18 @@ package negocio.remote{
 		
 		// Servicos FormadePagto
  		
- 		public function listarUnidade(result:Function):void{
+ 		public function listarFormadePagto(result:Function):void{
  			_remote.source = "ServicosFormadePagto";
 			var async:AsyncToken = _remote.getFormadePagtos();
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
 		
-		public function addFormadePagto(result:Function,forma:FormadePgtoVO):void{
+		public function addFormadePagto(result:Function,forma:FormadePagtoVO):void{
 			var async:AsyncToken = _remote.addFormadePagto(forma);
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
 		
-		public function removerFormadePagto(result:Function,forma:FormadePgtoVO):void{
+		public function removerFormadePagto(result:Function,forma:FormadePagtoVO):void{
 			var async:AsyncToken = _remote.removerFormadePagto(forma);
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
