@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:TextInput xmlns:mx="http://www.adobe.com/2006/mxml" 
-	enter="{enterTab()}" 
+	enter="{enterTab()}" focusIn="{this.focoIn()}"
 	xmlns:utilidades="utilidades.*" creationComplete="init()">
 
 	
@@ -17,7 +17,10 @@
 			public function init():void{	
 					
 				this.restrict = "A-Z a-z 0-9";			
-				this.maxChars = 15;
+			}
+			
+			private function focoIn():void{
+				this.setSelection(0,this.text.length);
 			}
 			
 			private function enterTab():void{

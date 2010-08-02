@@ -7,13 +7,43 @@ package negocio.remote{
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.remoting.mxml.RemoteObject;
 	
+	import negocio.vo.ClienteVO;
 	import negocio.vo.UnidadeVO;
 	
 	public class Remote {
 		
+		//Servicos Cliente
+		
+ 		public function listarCliente(result:Function):void{
+ 			_remote.source = "ServicosCliente";
+			var async:AsyncToken = _remote.getClientes();
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
+		public function addCliente(result:Function,cliente:ClienteVO):void{
+			_remote.source = "ServicosCliente";
+			var async:AsyncToken = _remote.addCliente(cliente);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
+		public function removerCliente(result:Function,cliente:ClienteVO):void{
+			_remote.source = "ServicosCliente";
+			var async:AsyncToken = _remote.removerCliente(cliente);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
+		public function pesquisarCliente(result:Function,texto:String,coluna:String):void{
+			_remote.source = "ServicosCliente";
+			var async:AsyncToken = _remote.pesquisarCliente(texto,coluna);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
+		//**********************************************************************************//
+		
+		// Servicos Unidade
  		
- 		
- 		public function listar(result:Function):void{
+ 		public function listarUnidade(result:Function):void{
+ 			_remote.source = "ServicosUnidade";
 			var async:AsyncToken = _remote.getUnidades();
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
@@ -43,8 +73,7 @@ package negocio.remote{
 			
 			_remote = new RemoteObject();
 			_remote.showBusyCursor = true;
-			_remote.destination = 'zend';
-			_remote.source = "UnidadeServicos";
+			_remote.destination = 'zend';			
 			_remote.endpoint = "http://localhost/Zendamf/bridge.php";
 			
 		}
