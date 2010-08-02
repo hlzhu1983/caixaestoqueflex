@@ -17,15 +17,15 @@
 		               <menuitem label="Imprimir Movimento Diario"/>
 		               <menuitem label="Sair"/>
 		           </menuitem>
-		           <menuitem label="Ger. Entidades">
-		               <menuitem  label="Gerenciamento de Empresa" />
-		               <menuitem  label="Gerenciamento de Cliente" />
-		               <menuitem  label="Gerenciamento de Usuário" />
-		               <menuitem  label="Gerenciamento de Produto" />
-		               <menuitem  label="Gerenciamento de Grupo de Produto" />
-		               <menuitem  label="Gerenciamento de Fornecedores"/>
-		               <menuitem  label="Gerenciamento de Unidades"/>
-		               <menuitem  label="Gerenciamento de Forma de Pagamento"/>
+		           <menuitem label="Cadastros">
+		               <menuitem  label="Cadastro Empresa" />
+		               <menuitem  label="Cadastro Cliente" />
+		               <menuitem  label="Cadastro Usuário" />
+		               <menuitem  label="Cadastro Produto" />
+		               <menuitem  label="Cadastro Produto" />
+		               <menuitem  label="Cadastro Fornecedores"/>
+		               <menuitem  label="Cadastro Unidades"/>
+		               <menuitem  label="Cadastro Forma de Pagamento"/>
 		           </menuitem>
 		           <menuitem label="Módulos">
 		                <menuitem  label="Frente de Caixa"/>		                

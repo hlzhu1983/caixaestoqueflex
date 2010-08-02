@@ -2,8 +2,9 @@
 	import flash.utils.Dictionary;
 	
 	import modulos.caixa.Caixa;
+	import modulos.cliente.CadastroCliente;
 	import modulos.orcamento.Orcamento;
-	import modulos.unidade.UnidadeCRUD;
+	import modulos.unidade.CadastroUnidade;
 	
 	import mx.controls.Alert;
 	import mx.core.Window;
@@ -30,8 +31,11 @@
 			case "Orçamento":
 				this.orcamentoWindow();
 				break;
-			case "Gerenciamento de Unidades":
+			case "Cadastro Unidades":
 				this.gerUnidade();
+				break;
+			case "Cadastro Cliente":
+				this.gerCliente();
 				break;
 			default:
 				Alert.show("Não implementado!","Alerta "+event.item.@id,4,this);
@@ -68,7 +72,11 @@
 	}
 	
 	public function gerUnidade():void{		
-		Util.abrePopUp(this,UnidadeCRUD,true);
+		Util.abrePopUp(this,CadastroUnidade,true);
+	}
+	
+	public function gerCliente():void{		
+		Util.abrePopUp(this,CadastroCliente,true);
 	}
 	
 	

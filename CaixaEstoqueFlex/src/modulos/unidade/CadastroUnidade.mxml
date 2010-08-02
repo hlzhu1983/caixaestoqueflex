@@ -46,7 +46,7 @@
 			}
 			
 			private function listarAllUnidades():void{
-				this.ro.listar(resultListarUnidades);
+				this.ro.listarUnidade(resultListarUnidades);
 				
 			}
 			
@@ -136,6 +136,7 @@
 		</mx:FormItem>
 		<botoes:RemoveButton id="remover" click="removerUnidade()"  enabled="false" x="140" y="140"/>
 		<botoes:ADDButton id="add" click="addUnidade()" x="92" y="140"/>
+		<botoes:CleanButton  x="188" y="140" click="{this.limparCampos()}"/>
 		<mx:FormItem label="Descrição" x="10" y="110" required="true">
 			<inputs:TextoInput id="descInput" requerido="true"/>
 		</mx:FormItem>
@@ -145,6 +146,6 @@
 				<mx:DataGridColumn headerText="Descrição" dataField="descricao"/>			
 			</mx:columns>
 		</mx:DataGrid>
-		<botoes:CleanButton  x="188" y="140" click="{this.limparCampos()}"/>
+		
 	
 </mx:TitleWindow>
