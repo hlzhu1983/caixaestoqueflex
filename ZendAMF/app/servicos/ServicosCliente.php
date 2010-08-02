@@ -99,9 +99,18 @@ class ServicosCliente {
 		}
 		return $retorna_dados_item;	
 	}
+
+
+public function atualizarCliente(ClienteVO $cliente) {
+	
+		$sql = "UPDATE cliente SET nome = '$cliente->nome', tipoPessoa = $cliente->tipoPessoa, sexo = $cliente->sexo, dataNascimento = '$cliente->dataNascimento',dataCadastro = '$cliente->dataCadastro',endereco='$cliente->endereco',bairro='$cliente->bairro',cidade='$cliente->cidade',UF='$cliente->UF',cep='$cliente->cep',
+		cpf_cnpj='$cliente->cpf_cnpj',insc_estadual='$cliente->insc_estadual',fone='$cliente->fone',contato='$cliente->contato',email='$cliente->email',url='$cliente->url',obs='$cliente->obs' where codigo=$cliente->codigo";
+		
+	$resultado = $this->conn->Execute($sql);
+return $cliente;	
+	
 }
-
-
+}
 //$eu = new ServicosCliente();
 //$c = new ClienteVO();
 //$c->nome = "hitalo";
