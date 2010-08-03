@@ -73,46 +73,48 @@
 					Alert.show("Campo nome obrigatorio!","Ops!");
 				}else{
 					if(this.ti_codigo.text==""){
-					u.nome = this.ti_nome.text;
-					u.bairro = this.ti_bairro.text;
-					u.cep = this.ti_cep.text;
-					u.cidade = this.ti_cidade.text;
-					u.contato = this.ti_contato.text;
-					u.cpf_cnpj = this.ti_cpf_cnpj.text;
-					u.dataCadastro = useDate(this.dataCadastro.selectedDate);
-					u.dataNascimento = useDate(this.dataNascimento.selectedDate);
-					u.email = this.ti_email.text;
-					u.endereco = this.ti_endereco.text;
-					u.fone = this.ti_fone.text;
-					u.insc_estadual = this.ti_inscEstadual.text;
-					u.obs = this.obs.text;
-					u.sexo = this.sexo.selectedItem.data;
-					u.tipoPessoa = this.tipoUsuario.selectedItem.data;
-					u.UF = this.estado.selectedItem.data;
-					u.url = this.ti_url.text;
-					this.ro.addCliente(resultadoAddItem,u);
-					}else
-					u.nome = this.ti_nome.text;
-					u.bairro = this.ti_bairro.text;
-					u.cep = this.ti_cep.text;
-					u.cidade = this.ti_cidade.text;
-					u.contato = this.ti_contato.text;
-					u.cpf_cnpj = this.ti_cpf_cnpj.text;
-					u.dataCadastro = useDate(this.dataCadastro.selectedDate);
-					u.dataNascimento = useDate(this.dataNascimento.selectedDate);
-					u.email = this.ti_email.text;
-					u.endereco = this.ti_endereco.text;
-					u.fone = this.ti_fone.text;
-					u.insc_estadual = this.ti_inscEstadual.text;
-					u.obs = this.obs.text;
-					u.sexo = this.sexo.selectedItem.data;
-					u.tipoPessoa = this.tipoUsuario.selectedItem.data;
-					u.UF = this.estado.selectedItem.data;
-					u.url = this.ti_url.text;
-					u.codigo = Number(this.ti_codigo.text);
-					this.ro.atualizarCliente(resultadoAtualizarItem,u);
-					
+						u.nome = this.ti_nome.text;
+						u.bairro = this.ti_bairro.text;
+						u.cep = this.ti_cep.text;
+						u.cidade = this.ti_cidade.text;
+						u.contato = this.ti_contato.text;
+						u.cpf_cnpj = this.ti_cpf_cnpj.text;
+						u.dataCadastro = useDate(this.dataCadastro.selectedDate);
+						u.dataNascimento = useDate(this.dataNascimento.selectedDate);
+						u.email = this.ti_email.text;
+						u.endereco = this.ti_endereco.text;
+						u.fone = this.ti_fone.text;
+						u.insc_estadual = this.ti_inscEstadual.text;
+						u.obs = this.obs.text;
+						u.sexo = this.sexo.selectedItem.data;
+						u.tipoPessoa = this.tipoUsuario.selectedItem.data;
+						u.UF = this.estado.selectedItem.data;
+						u.url = this.ti_url.text;
+						this.ro.addCliente(resultadoAddItem,u);
 					}
+					if(this.ti_codigo.text!=""){
+						u.nome = this.ti_nome.text;
+						u.bairro = this.ti_bairro.text;
+						u.cep = this.ti_cep.text;
+						u.cidade = this.ti_cidade.text;
+						u.contato = this.ti_contato.text;
+						u.cpf_cnpj = this.ti_cpf_cnpj.text;
+						u.dataCadastro = useDate(this.dataCadastro.selectedDate);
+						u.dataNascimento = useDate(this.dataNascimento.selectedDate);
+						u.email = this.ti_email.text;
+						u.endereco = this.ti_endereco.text;
+						u.fone = this.ti_fone.text;
+						u.insc_estadual = this.ti_inscEstadual.text;
+						u.obs = this.obs.text;
+						u.sexo = this.sexo.selectedItem.data;
+						u.tipoPessoa = this.tipoUsuario.selectedItem.data;
+						u.UF = this.estado.selectedItem.data;
+						u.url = this.ti_url.text;
+						u.codigo = Number(this.ti_codigo.text);
+						this.itensArray.setItemAt(u,grid_itens.selectedIndex)
+						this.ro.atualizarCliente(resultadoAtualizarItem,u);
+					}
+				}
 			}
 			
 			 private function useDate(date:Date):String{
@@ -129,7 +131,6 @@
 			}
 			
 			private function resultadoAtualizarItem(event:ResultEvent):void{
-			
 				this.itensArray[this.modificado] = event.result;	
 				Alert.show("O item foi Atualizado!","Sucesso!");
 				this.limparCampos();
@@ -241,8 +242,10 @@
 				this.tipoUsuario.selectedIndex = 0;
 				this.sexo.selectedIndex = 0;
 				this.ti_pesquisa.text = "";
-				this.dataCadastro.text = "";
-				this.dataNascimento.text = "";
+				this.dataCadastro.data = null;
+				this.dataNascimento.data = null;
+				this.obs.text = "";
+				this.grid_itens.selectedIndex = -1;
 			
 			}  
 			
