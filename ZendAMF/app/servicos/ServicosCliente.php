@@ -28,6 +28,10 @@ class ServicosCliente {
 		
 		$resultado = $this->conn->Execute($sql);
 		$item->codigo = $this->conn->insert_Id();
+		$dateC = explode("-",$item->dataCadastro);
+		$dateN = explode("-",$item->dataNascimento);
+		$item->dataCadastro = $dateC[1]."/" . $dateC[2] . "/" .$dateC[0];
+		$item->dataNascimento = $dateN[1]."/" . $dateN[2] . "/" .$dateN[0];
 		return $item;
 		
 	}
