@@ -114,6 +114,7 @@
 				this.codInput.text = "";
 				this.descInput.text = "";
 				this.ti_pesquisa.text = "";
+				this.grupoProdutoGrid.selectedIndex = -1;
 			}
 			
 		]]>

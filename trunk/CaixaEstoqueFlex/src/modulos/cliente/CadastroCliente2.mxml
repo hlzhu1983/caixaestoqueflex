@@ -209,6 +209,10 @@
 				this.tipoUsuario.selectedIndex = 0;
 				this.sexo.selectedIndex = 0;
 				this.ti_pesquisa.text = "";
+				this.obs.textArea = "";
+				this.dataCadastro.data = null;
+				this.dataNascimento.data = null;
+				this.remover.enabled = false;
 				
 			}  
 			
