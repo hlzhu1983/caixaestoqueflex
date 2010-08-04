@@ -173,6 +173,35 @@ package negocio.remote{
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
 	
+	//**********************************************************************************//
+		
+		// Servicos Usuario
+ 		
+ 		public function listarUsuario(result:Function):void{
+ 			_remote.source = "ServicosUsuario";
+			var async:AsyncToken = _remote.getUsuarios();
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
+		public function addUsuario(result:Function,usuario:UsuarioVO):void{
+			_remote.source = "ServicosUsuario";
+			var async:AsyncToken = _remote.addUsuario(usuario);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
+		public function removerUsuario(result:Function,usuario:UsuarioVO):void{
+			_remote.source = "ServicosUsuario";
+			var async:AsyncToken = _remote.removerUsuario(usuario);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
+		public function pesquisarUsuario(result:Function,texto:String,coluna:String):void{
+			_remote.source = "ServicosUsuario";
+			var async:AsyncToken = _remote.pesquisarUsuario(texto,coluna);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+				
+		
 		//--------------------setup----------------------------//
 		private var _remote:RemoteObject;
 		
