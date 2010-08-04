@@ -3,6 +3,7 @@
 include 'app/db/BaseDados.php';
 include_once 'library/Zend/Amf/Server.php';
 include_once 'app/servicos/ServicosCliente.php';
+include_once 'app/servicos/ServicosFornecedor.php';
 include 'app/servicos/ServicosUnidade.php';
 include 'app/servicos/ServicosFormadePagto.php';
 include 'app/servicos/ServicosGrupoProduto.php';
@@ -14,7 +15,7 @@ include_once 'app/vo/ClienteVO.php';
 
 $server = new Zend_Amf_Server();
 
-
+$server->setClass('ServicosFornecedor');
 $server->setClass('ServicosCliente');
 $server->setClass('ServicosUnidade');
 $server->setClass('ServicosFormadePagto');
