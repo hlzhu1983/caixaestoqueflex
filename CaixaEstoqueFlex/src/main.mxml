@@ -24,7 +24,7 @@
 		               <menuitem  label="Cadastro Grupo Produto" />
 		               <menuitem  label="Cadastro Local Produto" />
 		               <menuitem  label="Cadastro Produto" />
-		               <menuitem  label="Cadastro Fornecedores"/>
+		               <menuitem  label="Cadastro Fornecedor"/>
 		               <menuitem  label="Cadastro Unidades"/>
 		               <menuitem  label="Cadastro Forma de Pagamento"/>
 		           </menuitem>

@@ -2,18 +2,17 @@
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
 	 layout="absolute" xmlns:ns1="utilidades.inputs.*" 
 	 creationComplete="{this.listarAllItems()}"
-	 title="Gerenciador Clientes" 
+	 title="Gerenciador Fornecedores" 
 	 showCloseButton="true"
 	 close="{this.fechar()}"
-	 xmlns:botoes="utilidades.botoes.*" fontSize="12" width="890" height="100%" xmlns:utilidades="utilidades.*">
+	 xmlns:botoes="utilidades.botoes.*" fontSize="12" width="890" height="560" xmlns:utilidades="utilidades.*">
 	
 		<mx:Script>
 		<![CDATA[
 			import mx.controls.DateField;
-			import negocio.vo.ClienteVO;
+			import negocio.vo.FornecedorVO;
 			import mx.events.ValidationResultEvent;
 			import mx.validators.ValidationResult;
-			import negocio.vo.UnidadeVO;
 			import mx.managers.PopUpManager;
 			import mx.events.CloseEvent;
 			import mx.controls.Alert;
@@ -26,7 +25,7 @@
 			private var modificado:Number;
 			
 			[Bindable]
-			private var item:ClienteVO;
+			private var item:FornecedorVO;
 			
 			[Bindable]
 			private var estados:Array = new Array(
@@ -68,7 +67,7 @@
 			}
 			
 			private function addItem():void{
-				var u:ClienteVO = new ClienteVO();
+				var u:FornecedorVO = new FornecedorVO();
 				if(this.ti_nome.validador.validate().type == ValidationResultEvent.INVALID){
 					Alert.show("Campo nome obrigatorio!","Ops!");
 				}else{
@@ -79,18 +78,15 @@
 						u.cidade = this.ti_cidade.text;
 						u.contato = this.ti_contato.text;
 						u.cpf_cnpj = this.ti_cpf_cnpj.text;
-						u.dataCadastro = useDate(this.dataCadastro.selectedDate);
-						u.dataNascimento = useDate(this.dataNascimento.selectedDate);
 						u.email = this.ti_email.text;
 						u.endereco = this.ti_endereco.text;
 						u.fone = this.ti_fone.text;
 						u.insc_estadual = this.ti_inscEstadual.text;
 						u.obs = this.obs.text;
-						u.sexo = this.sexo.selectedItem.data;
-						u.tipoPessoa = this.tipoUsuario.selectedItem.data;
 						u.UF = this.estado.selectedItem.data;
 						u.url = this.ti_url.text;
-						this.ro.addCliente(resultadoAddItem,u);
+						u.avaliacao = this.avaliacao.text;
+						this.ro.addFornecedor(resultadoAddItem,u);
 					}
 					if(this.ti_codigo.text!=""){
 						u.nome = this.ti_nome.text;
@@ -99,20 +95,17 @@
 						u.cidade = this.ti_cidade.text;
 						u.contato = this.ti_contato.text;
 						u.cpf_cnpj = this.ti_cpf_cnpj.text;
-						u.dataCadastro = useDate(this.dataCadastro.selectedDate);
-						u.dataNascimento = useDate(this.dataNascimento.selectedDate);
 						u.email = this.ti_email.text;
 						u.endereco = this.ti_endereco.text;
 						u.fone = this.ti_fone.text;
 						u.insc_estadual = this.ti_inscEstadual.text;
 						u.obs = this.obs.text;
-						u.sexo = this.sexo.selectedItem.data;
-						u.tipoPessoa = this.tipoUsuario.selectedItem.data;
 						u.UF = this.estado.selectedItem.data;
 						u.url = this.ti_url.text;
 						u.codigo = Number(this.ti_codigo.text);
+						u.avaliacao = this.avaliacao.text;
 						this.itensArray.setItemAt(u,grid_itens.selectedIndex)
-						this.ro.atualizarCliente(resultadoAtualizarItem,u);
+						this.ro.atualizarFornecedor(resultadoAtualizarItem,u);
 					}
 				}
 			}
@@ -138,7 +131,7 @@
 			
 			
 			private function listarAllItems():void{
-				this.ro.listarCliente(resultListarItens);
+				this.ro.listarFornecedor(resultListarItens);
 				
 			}
 			
@@ -149,9 +142,9 @@
 			}
 			
 			public function itemSelecionado(event:Event):void{
-				this.item = event.currentTarget.selectedItem as ClienteVO;
-				this.modificado = this.grid_itens.selectedIndex;
+				this.item = event.currentTarget.selectedItem as FornecedorVO;
 				this.add.label = "Alterar";
+				this.modificado = this.grid_itens.selectedIndex;
 				this.ti_bairro.text = this.item.bairro;
 				this.ti_cep.text = this.item.cep;
 				this.ti_cidade.text = this.item.cidade;
@@ -164,12 +157,9 @@
 				this.ti_inscEstadual.text = this.item.insc_estadual;
 				this.ti_nome.text = this.item.nome;
 				this.ti_url.text = this.item.url;
-				this.tipoUsuario.selectedIndex = this.item.tipoPessoa;
-				this.sexo.selectedIndex =  this.item.sexo;
 				this.remover.enabled = true;
 				this.selecionarItem(this.item.UF);
-				this.dataCadastro.data = this.item.getDataCadastro();
-				this.dataNascimento.data = this.item.getDataNascimento();
+				this.avaliacao.text = this.item.avaliacao;
 				this.obs.text = this.item.obs;
                 						
 			} 
@@ -178,8 +168,8 @@
 			
 	
 			private function removerItem():void{
-				this.item = this.grid_itens.selectedItem as ClienteVO;
-				this.ro.removerCliente(resultadoRemoverUnidade, this.item);
+				this.item = this.grid_itens.selectedItem as FornecedorVO;
+				this.ro.removerFornecedor(resultadoRemoverUnidade, this.item);
 				
 				
 			}
@@ -202,13 +192,13 @@
 				}else if(this.ti_pesquisa.validador.validate().type == ValidationResultEvent.VALID ){
 					
 					if(this.radio_codigo.selected){
-						this.ro.pesquisarCliente(resultadoPesquisaItem,this.ti_pesquisa.text,"codigo");
+						this.ro.pesquisarFornecedor(resultadoPesquisaItem,this.ti_pesquisa.text,"codigo");
 					}else if(this.radio_nome.selected){
-						this.ro.pesquisarCliente(resultadoPesquisaItem,this.ti_pesquisa.text,"nome");
+						this.ro.pesquisarFornecedor(resultadoPesquisaItem,this.ti_pesquisa.text,"nome");
 					}else if(this.radio_cpf_cnpj.selected){
-						this.ro.pesquisarCliente(resultadoPesquisaItem,this.ti_pesquisa.text,"cpf_cnpj");
+						this.ro.pesquisarFornecedor(resultadoPesquisaItem,this.ti_pesquisa.text,"cpf_cnpj");
 					}else {
-						this.ro.pesquisarCliente(resultadoPesquisaItem,this.ti_pesquisa.text,"endereco");
+						this.ro.pesquisarFornecedor(resultadoPesquisaItem,this.ti_pesquisa.text,"endereco");
 					}
 					
 				}else{
@@ -237,18 +227,13 @@
 				this.ti_fone.text = "";
 				this.ti_inscEstadual.text = "";
 				this.ti_nome.text = "";
-				this.ti_pesquisa.text = "";
 				this.ti_url.text = "";
 				this.estado.selectedIndex = 0;
-				this.tipoUsuario.selectedIndex = 0;
-				this.sexo.selectedIndex = 0;
 				this.ti_pesquisa.text = "";
-				this.dataCadastro.data = null;
-				this.dataNascimento.data = null;
 				this.obs.text = "";
-				this.add.label = "Adicionar"
+				this.avaliacao.text = "";
 				this.grid_itens.selectedIndex = -1;
-			
+			    this.add.label = "Adicionar";
 			}  
 			
 			public function selecionarItem(label:String):void{
@@ -279,14 +264,7 @@
 	<botoes:RemoveButton id="remover"  label="Remover"  enabled="false" x="707" y="50" click="{this.removerItem()}"  width="108"/>
 	<botoes:ADDButton id="add" label="Adicionar"  x="707" y="20" click="{this.addItem()}"/>
 	<botoes:CleanButton  x="707" label="Limpar" y="80" click="{this.limparCampos()}" width="108"  textAlign="left"/>
-	
-	<mx:ComboBox x="506" y="123" width="112" id="sexo" selectedIndex="0" editable="false">
-		<mx:ArrayCollection>
-         <mx:Object label="Masculino" data="M"/>
-         <mx:Object label="Feminino" data="F"/>
-      </mx:ArrayCollection>
-	</mx:ComboBox>
-	<mx:DataGrid id="grid_itens" x="10" y="400" width="847" dataProvider="{this.itensArray}" change="{this.itemSelecionado(event)}">
+	<mx:DataGrid id="grid_itens" x="13" y="368" width="847" dataProvider="{this.itensArray}" change="{this.itemSelecionado(event)}">
 		<mx:columns>
 			<mx:DataGridColumn headerText="Código: " dataField="codigo"/>
 			<mx:DataGridColumn headerText="Nome: " dataField="nome"/>
@@ -294,39 +272,24 @@
 			<mx:DataGridColumn headerText="Contato: " dataField="contato"/>
 		</mx:columns>
 	</mx:DataGrid>
-	
-	<utilidades:DateInput x="355" y="170"   showToday="true" id="dataNascimento" width="143"/>
-	<utilidades:DateInput x="369" y="75" id="dataCadastro" showToday="true"/>
-	<mx:Label x="355" y="153" text="Data Nascimento:"/>
-	<mx:Label x="271" y="77" text="Data Cadastro:"/>
-	
-	<mx:ComboBox x="98" y="75" id="tipoUsuario" selectedIndex="0" editable="false">
-		<mx:ArrayCollection>
-         <mx:Object label="Fisica" data="0"/>
-         <mx:Object label="Jurídica" data="1"/>
-      </mx:ArrayCollection>
-	</mx:ComboBox>
-	<mx:Label x="10" y="77" text="Tipo Usuário:"/>
-	<mx:Label x="99" y="105" text="Nome:"/>
-	<mx:Label x="10" y="202" text="Email:"/>
-	<mx:Label x="187" y="153" text="Contato:"/>
-	<mx:Label x="10" y="296" text="Observações:"/>
-	<mx:Label x="252" y="202" text="URL:"/>
-	<mx:Label x="10" y="153" text="Fone:"/>
-	<mx:Label x="204" y="249" text="Insc. Estadual:"/>
-	<mx:Label x="10" y="249" text="CPF/CNPJ:"/>
-	<mx:Label x="506" y="103" text="Sexo:" id="lb_sexo"/>
-	<ns1:TextoInput id="ti_nome" width="399" requerido="true" x="99" y="123"/>
-	<mx:Label x="10" y="107" text="Codigo:"/>
-	<mx:Label id="ti_codigo" width="81" x="10" y="125" height="20" fontWeight="bold"/>
-	<ns1:InteiroInput id="ti_cpf_cnpj"  width="185" x="11" y="266"/>
-	<ns1:InteiroInput id="ti_inscEstadual" width="201" x="204" y="266"/>
-	<ns1:InteiroInput id="ti_fone" width="169" x="10" y="170"/>
-	<ns1:TextoInput id="ti_contato"  x="187" y="170"/>
-	<ns1:TextoInput x="10" y="219" id="ti_email"  width="234"/>
-	<ns1:TextoInput x="252" y="219" id="ti_url" width="240"/>
-	<mx:TextArea x="10" y="311" width="488" height="81" id="obs"/>
-	<mx:Panel x="506" y="153" width="351" height="239" layout="absolute" title="Endereço">
+	<mx:Label x="99" y="74" text="Nome:"/>
+	<mx:Label x="10" y="122" text="Email:"/>
+	<mx:Label x="500" y="122" text="Contato:"/>
+	<mx:Label x="252" y="122" text="URL:"/>
+	<mx:Label x="500" y="75" text="Fone:"/>
+	<mx:Label x="204" y="171" text="Insc. Estadual:"/>
+	<mx:Label x="10" y="171" text="CPF/CNPJ:"/>
+	<ns1:TextoInput id="ti_nome" width="393" requerido="true" x="99" y="92"/>
+	<mx:Label x="10" y="74" text="Codigo:"/>
+	<mx:Label id="ti_codigo" width="81" x="10" y="94" height="20" fontWeight="bold"/>
+	<ns1:InteiroInput id="ti_cpf_cnpj"  width="185" x="11" y="188"/>
+	<ns1:InteiroInput id="ti_inscEstadual" width="201" x="204" y="188"/>
+	<ns1:InteiroInput id="ti_fone" width="160" x="500" y="92"/>
+	<ns1:TextoInput id="ti_contato"  x="500" y="139"/>
+	<ns1:TextoInput x="10" y="139" id="ti_email"  width="234"/>
+	<ns1:TextoInput x="252" y="139" id="ti_url" width="240"/>
+	<mx:TextArea x="10" y="235" width="234" height="125" id="obs"/>
+	<mx:Panel x="500" y="171" width="351" height="189" layout="absolute" title="Endereço">
 		<mx:ComboBox x="10" y="113" id="estado" selectedIndex="0" editable="false" dataProvider="{this.estados}">
 			
 		</mx:ComboBox>
@@ -340,6 +303,9 @@
 		<ns1:TextoInput id="ti_cidade"  x="77" y="113" width="244"/>
 		<mx:Label x="77" y="97" text="Cidade:"/>
 	</mx:Panel>
+	<mx:Label x="252" y="220" text="Avaliação:"/>
+	<mx:Label x="11" y="220" text="Observações:"/>
+	<mx:TextArea x="252" y="235" width="240" height="125" id="avaliacao"/>
 			
 	
 </mx:TitleWindow>

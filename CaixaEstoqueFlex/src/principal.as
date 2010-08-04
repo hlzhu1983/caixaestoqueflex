@@ -4,6 +4,7 @@
 	import modulos.caixa.Caixa;
 	import modulos.cliente.CadastroCliente;
 	import modulos.formadepagto.CadastroFormadePagto;
+	import modulos.fornecedor.CadastroFornecedor;
 	import modulos.grupoproduto.CadastroGrupoProduto;
 	import modulos.localproduto.CadastroLocalProduto;
 	import modulos.orcamento.Orcamento;
@@ -49,6 +50,9 @@
 			 case "Cadastro Local Produto": 
 			    this.gerLocalProduto();
 			    break;
+			    	case "Cadastro Fornecedor":
+				this.gerFornecedor();
+				break;
 			    	
 			default:
 				Alert.show("Não implementado!","Alerta "+event.item.@id,4,this);
@@ -100,10 +104,12 @@
 	}
 
 	
+	public function gerFornecedor():void{		
+		Util.abrePopUp(this,CadastroFornecedor,true);
+	}
 	public function gerCliente():void{		
 		Util.abrePopUp(this,CadastroCliente,true);
 	}
-	
 	
 	
 	
