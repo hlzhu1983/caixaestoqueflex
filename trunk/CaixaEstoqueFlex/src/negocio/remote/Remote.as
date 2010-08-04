@@ -7,11 +7,7 @@ package negocio.remote{
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.remoting.mxml.RemoteObject;
 	
-	import negocio.vo.ClienteVO;
-	import negocio.vo.FormadePagtoVO;
-	import negocio.vo.GrupoProdutoVO;
-	import negocio.vo.LocalProdutoVO;
-	import negocio.vo.UnidadeVO;
+	import negocio.vo.*;
 	
 	public class Remote {
 		
@@ -148,7 +144,35 @@ package negocio.remote{
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
 			
+	//-------------------------------Servico Fornecedor		
+			public function listarFornecedor(result:Function):void{
+ 			_remote.source = "ServicosFornecedor";
+			var async:AsyncToken = _remote.getFornecedors();
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
 		
+		public function addFornecedor(result:Function,fornecedor:FornecedorVO):void{
+			_remote.source = "ServicosFornecedor";
+			var async:AsyncToken = _remote.addFornecedor(fornecedor);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
+		public function removerFornecedor(result:Function,fornecedor:FornecedorVO):void{
+			_remote.source = "ServicosFornecedor";
+			var async:AsyncToken = _remote.removerFornecedor(fornecedor);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		public function pesquisarFornecedor(result:Function,texto:String,coluna:String):void{
+			_remote.source = "ServicosFornecedor";
+			var async:AsyncToken = _remote.pesquisarFornecedor(texto,coluna);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		public function atualizarFornecedor(result:Function,fornecedor:FornecedorVO):void{
+			_remote.source = "ServicosFornecedor";
+			var async:AsyncToken = _remote.atualizarFornecedor(fornecedor);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+	
 		//--------------------setup----------------------------//
 		private var _remote:RemoteObject;
 		
