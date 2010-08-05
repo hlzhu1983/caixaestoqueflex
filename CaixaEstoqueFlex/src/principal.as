@@ -9,6 +9,7 @@
 	import modulos.localproduto.CadastroLocalProduto;
 	import modulos.orcamento.Orcamento;
 	import modulos.unidade.CadastroUnidade;
+	import modulos.usuario.CadastroUsuario;
 	
 	import mx.controls.Alert;
 	import mx.core.Window;
@@ -50,8 +51,11 @@
 			 case "Cadastro Local Produto": 
 			    this.gerLocalProduto();
 			    break;
-			    	case "Cadastro Fornecedor":
+			  case "Cadastro Fornecedor":
 				this.gerFornecedor();
+				break;
+			  case "Cadastro Usuário":
+				this.gerUsuario();
 				break;
 			    	
 			default:
@@ -109,6 +113,10 @@
 	}
 	public function gerCliente():void{		
 		Util.abrePopUp(this,CadastroCliente,true);
+	}
+	
+	public function gerUsuario():void{		
+		Util.abrePopUp(this,CadastroUsuario,true);
 	}
 	
 	

@@ -1,5 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" close="fechar()" creationComplete="init()" showCloseButton="true" layout="absolute" title="Gerenciamento Usuarios" xmlns:utilidades="utilidades.*" xmlns:botoes="utilidades.botoes.*" xmlns:inputs="utilidades.inputs.*">
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+	 close="fechar()" 
+	 creationComplete="init()"
+	  showCloseButton="true"
+	   layout="vertical" title="Gerenciamento Usuarios" xmlns:utilidades="utilidades.*" xmlns:botoes="utilidades.botoes.*" xmlns:inputs="utilidades.inputs.*">
+	<mx:states>
+		<mx:State name="st_alterarSenha">
+			<mx:AddChild relativeTo="{this.vb_senhas}" position="before">
+				<mx:VBox width="100%">
+					<mx:Label text="Senha Antiga:"/>
+					<inputs:TextoInput id="ti_senhaAntiga" requerido="true" displayAsPassword="true"/>
+				</mx:VBox>
+			</mx:AddChild>  
+			<mx:AddChild relativeTo="{this.hb_botoes}" position="right">
+				<botoes:SenhaButton id="bt_senha" click="{this.alterarSenha()}"/>					
+			</mx:AddChild>  
+			<mx:RemoveChild target="{this.lk_alterarSenha}"/>
+		</mx:State>
+	</mx:states>
 	
 	<mx:Script>
 		<![CDATA[
@@ -17,7 +35,7 @@
 			private var usuariosArray:ArrayCollection;
 			
 			[Bindable]
-			private var usuario:UsuarioVO;
+			private var usuario:UsuarioVO = new UsuarioVO();;
 			
 			private var tipoPesquisa:String;
 		
@@ -27,48 +45,74 @@
 				this.listarAllUsuarios();
 			}
 			
+			private function alterarSenha():void{
+				
+			}
+			
 			private function addUsuario():void{
-				var u:UsuarioVO = new UsuarioVO();
-				if(this.descInput.validador.validate().type == ValidationResultEvent.INVALID){
-					Alert.show("Campo descrição obrigatorio!","Ops!");
+				if(this.ti_nome.validador.validate().type == ValidationResultEvent.INVALID){
+					Alert.show("Campo nome obrigatorio!","Ops!");
 				}else{
-					u.descricao = this.descInput.text;
-					this.ro.addUsuario(resultadoAddUsuario,u);
+					
+					if(this.ti_senha.validador.validate().type == ValidationResultEvent.INVALID){
+							Alert.show("Campo senha obrigatorio!","Ops!");
+						}else{
+							if(this.ti_confSenha.validador.validate().type == ValidationResultEvent.INVALID){
+								Alert.show("Campo conf. senha obrigatorio!","Ops!");
+							}else{
+								if(this.ti_confSenha.text == this.ti_senha.text ){
+									this.usuario.nome = this.ti_nome.text;
+									this.usuario.comissao = ti_comissao.getValor();
+									this.usuario.senha = this.ti_senha.text;
+									this.usuario.permissao = this.cb_permissao.selectedIndex;
+									if(this.lb_codInput.text == ""){
+										this.ro.addUsuario(resultadoAddUsuario,this.usuario);
+									}else{
+										//this.ro.atualizarUsuario();
+									}
+										
+								}else{
+									Alert.show("Senha e Conf. Senha não são iguais!","Ops!",4,this);
+									this.ti_confSenha.text = "";
+									this.ti_senha.text = "";
+								}
+							}
+						}
 				}
-				
-				
 			}
 			
 			private function resultadoAddUsuario(event:ResultEvent):void{
 				this.usuariosArray.addItem(event.result);
 				Alert.show("O item foi adicionado!","Sucesso!");
-				this.limparCampos();
+				this.limparCampos(); 
 			}
 			
 			private function listarAllUsuarios():void{
-				this.ro.listarUsuario(resultListarUsuarios);
+				this.ro.listarUsuario(resultListarUsuarios); 
 				
 			}
 			
 			private function resultListarUsuarios(event:ResultEvent):void{
 								
-				this.usuariosArray = new ArrayCollection(event.result as Array);
+				this.usuariosArray = new ArrayCollection(event.result as Array); 
 				
 			}
 			
 			public function usuarioSelecionado(event:Event):void{
 				this.usuario = event.currentTarget.selectedItem;
-				this.codInput.text = this.usuario.codigo.toString();
-				this.descInput.text = this.usuario.descricao;
-                this.remover.enabled = true;
-                						
+				this.lb_codInput.text = this.usuario.codigo.toString();
+				this.ti_nome.text = this.usuario.nome;
+				this.cb_permissao.selectedIndex = this.usuario.permissao;
+				this.ti_comissao.setValor(this.usuario.comissao.toString());
+                this.remover.enabled = true; 
+                this.currentState = '';
 			}
 			
 			
 			
 			
 			private function removerUsuario():void{
-				this.usuario = this.usuarioGrid.selectedItem as UsuarioVO;
+				this.usuario = this.grid_usuario.selectedItem as UsuarioVO;
 				this.ro.removerUsuario(resultadoRemoverUsuario, this.usuario);
 				
 				
@@ -77,7 +121,7 @@
 			private function resultadoRemoverUsuario(event:ResultEvent):void{
 				if(event.result){
 					Alert.show("O item foi removido!","Sucesso");
-					this.usuariosArray.removeItemAt(this.usuarioGrid.selectedIndex);
+					this.usuariosArray.removeItemAt(this.grid_usuario.selectedIndex);
 				}else{
 					Alert.show("O item não pôde ser removido!","Ops!");					
 				}
@@ -111,10 +155,12 @@
 			}
 			
 			public function limparCampos():void{
-				this.codInput.text = "";
-				this.descInput.text = "";
-				this.ti_pesquisa.text = "";
-				this.usuarioGrid.selectedIndex = -1;
+				this.lb_codInput.text = "";
+				this.ti_nome.text = "";
+				this.ti_confSenha.text = "";
+				this.ti_senha.text = "";
+				this.ti_comissao.text = this.ti_comissao.valorDefault;
+				this.grid_usuario.selectedIndex = -1;
 			}
 			
 		]]>
@@ -122,31 +168,73 @@
 	
 
 
-	<mx:FormItem defaultButton="{this.bt_buscar}" label="Pesquisa" x="10" y="10" >
-		<inputs:TextoInput x="10" y="10" width="225" id="ti_pesquisa"  isEnter="false"/>
-		<mx:HBox width="100%" height="100%">
+	
+	<mx:FormItem defaultButton="{this.bt_buscar}" label="Pesquisa" width="100%" height="30%" >
+		<mx:HBox width="100%" height="50%">
+			<inputs:TextoInput width="225" id="ti_pesquisa"  isEnter="false"/>
+			<botoes:BuscarButton id="bt_buscar" click="{this.pesquisarItem()}"/>	
+		</mx:HBox>		
+		<mx:HBox width="100%" height="50%" >
 			<mx:RadioButtonGroup id="grupo_pesquisa"/>
 			<mx:RadioButton label="Código" id="radio_codigo" groupName="grupo_pesquisa"/>
 			<mx:RadioButton label="Descrição" id="radio_desc" groupName="grupo_pesquisa" selected="true"/>
-		</mx:HBox>
-			
+		</mx:HBox>				
 	</mx:FormItem>	
-	<botoes:BuscarButton id="bt_buscar" x="312" y="10" click="{this.pesquisarItem()}"/>		
-		<mx:FormItem label="Código" x="10" y="80" >		
-			<mx:Label id="codInput"/>
-		</mx:FormItem>
-		<botoes:RemoveButton id="remover" click="removerUsuario()"  enabled="false" x="140" y="140"/>
-		<botoes:ADDButton id="add" click="addUsuario()" x="92" y="140"/>
-		<botoes:CleanButton  x="188" y="140" click="{this.limparCampos()}"/>
-		<mx:FormItem label="Descrição" x="10" y="110" required="true">
-			<inputs:TextoInput id="descInput" requerido="true"/>
-		</mx:FormItem>
-		<mx:DataGrid x="0" y="169" width="388" id="usuarioGrid" change="{usuarioSelecionado(event)}" dataProvider="{this.usuariosArray}">
+	
+	<mx:VBox id="body" width="100%" height="70%">
+		
+		<mx:HBox id="hb_botoes" width="100%" horizontalAlign="right">
+			<mx:LinkButton label="Alterar Senha?" id="lk_alterarSenha" click="this.currentState = 'st_alterarSenha'"/>
+			<botoes:RemoveButton id="remover" click="removerUsuario()"  enabled="false"/>
+			<botoes:ADDButton id="add" click="addUsuario()"/>
+			<botoes:CleanButton  id="bt_clean" click="{this.limparCampos()}"/>
+		</mx:HBox>
+		
+		<mx:HBox width="100%">
+			<mx:Label text="Código: "/>
+			<mx:Label id="lb_codInput"/>
+		</mx:HBox>
+		
+		<mx:HBox width="100%">
+			<mx:VBox>
+				<mx:Label text="Nome: "/>
+				<inputs:TextoInput id="ti_nome" width="250" requerido="true"/>
+			</mx:VBox>
+			<mx:VBox>
+				<mx:Label text="Tipo Usuario: "/>
+				<mx:ComboBox id="cb_permissao">
+					<mx:ArrayCollection>
+						<mx:Object label = "Administrador" data="0"/>
+						<mx:Object label = "Vendedor" data="1"/>
+					</mx:ArrayCollection>
+				</mx:ComboBox>
+			</mx:VBox>
+		</mx:HBox>
+		
+		
+		<mx:VBox id="vb_senhas">
+			<mx:HBox width="100%">
+			<mx:VBox>
+				<mx:Label text="Senha: "/>
+				<inputs:TextoInput id="ti_senha" requerido="true" displayAsPassword="true"/>
+			</mx:VBox>
+			<mx:VBox>
+				<mx:Label text="Conf. Senha: "/>
+				<inputs:TextoInput id="ti_confSenha" requerido="true" displayAsPassword="true"/>
+			</mx:VBox>
+			<mx:VBox>
+				<mx:Label text="Comissão: "/>
+				<inputs:NumberInput id="ti_comissao" valorDefault="0,00"/>
+			</mx:VBox>
+		</mx:HBox>
+		</mx:VBox>
+		
+		
+		<mx:DataGrid width="100%" id="grid_usuario" change="{usuarioSelecionado(event)}" dataProvider="{this.usuariosArray}">
 			<mx:columns>
 				<mx:DataGridColumn headerText="Código" dataField="codigo"/>
-				<mx:DataGridColumn headerText="Nome" dataField="descricao"/>			
+				<mx:DataGridColumn headerText="Nome" dataField="nome"/>			
 			</mx:columns>
 		</mx:DataGrid>
-		
-	
+	</mx:VBox>	
 </mx:TitleWindow>
