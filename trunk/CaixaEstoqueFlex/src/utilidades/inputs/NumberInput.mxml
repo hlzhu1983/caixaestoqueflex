@@ -101,8 +101,6 @@
 				
 			}
 			
-			
-			
 			private function recebeuFoco():void{
 				if(!this.foiEditado){
 					this.text = "0,00";
@@ -123,7 +121,7 @@
 			
 			public function setValor(valor:String):void{
 				var array_aux:Array = valor.split(".",2);
-				if(array_aux.length == 0){
+				if(array_aux.length < 2){
 					this.text = this.valorDefault;
 					this.lengthText = 0;
 					this.foiEditado = false;
