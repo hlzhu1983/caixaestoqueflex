@@ -136,7 +136,7 @@
 					if(this.radio_codigo.selected){
 						this.ro.pesquisarUsuario(resultadoPesquisaItem,this.ti_pesquisa.text,"codigo");
 					}else{
-						this.ro.pesquisarUsuario(resultadoPesquisaItem,this.ti_pesquisa.text,"descricao");
+						this.ro.pesquisarUsuario(resultadoPesquisaItem,this.ti_pesquisa.text,"nome");
 					}
 					
 				}else{
@@ -177,7 +177,7 @@
 		<mx:HBox width="100%" height="50%" >
 			<mx:RadioButtonGroup id="grupo_pesquisa"/>
 			<mx:RadioButton label="Código" id="radio_codigo" groupName="grupo_pesquisa"/>
-			<mx:RadioButton label="Descrição" id="radio_desc" groupName="grupo_pesquisa" selected="true"/>
+			<mx:RadioButton label="Nome" id="radio_desc" groupName="grupo_pesquisa" selected="true"/>
 		</mx:HBox>				
 	</mx:FormItem>	
 	
