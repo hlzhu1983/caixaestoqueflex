@@ -14,7 +14,7 @@
 			
 			public var valorDefault:String = "1,00";
 			
-			private var numeros:int = 0;
+			private var lengthText:int = 0;
 			
 			private function init():void{
 				
@@ -78,23 +78,23 @@
 					str = this.text;					
 					str = str.charAt(str.length-2)
 						+ "," + str.charAt(str.length-1)+aux;
-					if(numeros > 2){
+					if(lengthText > 2){
 						this.text = this.text.charAt(0) +
 						 this.text.substring(1,this.text.length-3) + str;	
 					}else{
 						this.text = str;	
 					}
-					this.numeros++;
+					this.lengthText++;
 				}
 				if(backSpace){
 					str = this.text;					
 					str = "," + str.charAt(this.length-4) +	 str.charAt(str.length-2);
-					if(numeros < 4){
+					if(lengthText < 4){
 						this.text = "0" + str;	
 					}else{
 						this.text = this.text.substring(0,this.text.length-4)+ str;	
 					}
-					if(--this.numeros < 1){
+					if(--this.lengthText < 1){
 						this.foiEditado = false;
 					}
 				}
@@ -118,9 +118,33 @@
 			public function reset():void{
 				this.text = this.valorDefault;
 				this.foiEditado = false;
-				this.numeros = 0;
+				this.lengthText = 0;
 			}
 			
+			public function setValor(valor:String):void{
+				var array_aux:Array = valor.split(".",2);
+				if(array_aux.length == 0){
+					this.text = this.valorDefault;
+					this.lengthText = 0;
+					this.foiEditado = false;
+				}else{ 
+					this.lengthText += array_aux[0].toString().length + array_aux[1].toString().length;
+					if(array_aux[0].toString().length<2){
+						this.text = array_aux[0].toString()+","+array_aux[1].toString()+"0";
+					}else{
+						this.text = array_aux[0].toString()+","+array_aux[1].toString();
+					}
+					this.foiEditado = true;
+				}
+			}
+			
+			public function getValor():Number{
+				var array_aux:Array = this.text.split(",",2);
+				if(array_aux.length==0){
+					return 0
+				}				
+				return Number(array_aux[0].toString()+"."+array_aux[1].toString());
+			}
 			
 		]]>
 	</mx:Script>
