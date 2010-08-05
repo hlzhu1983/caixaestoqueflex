@@ -1,0 +1,1 @@
+insert into usuario (nome,comissao,senha,permissao) values ('HITALO AAAA',{(float)1237.65},'HITALO',0)insert into usuario (nome,comissao,senha,permissao) values ('autoTesteTestado',{(float)10.98},'senha',1)
