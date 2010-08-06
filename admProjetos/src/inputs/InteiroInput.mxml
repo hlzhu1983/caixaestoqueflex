@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TextInput xmlns:mx="http://www.adobe.com/2006/mxml"
+	creationComplete="init()" textAlign="right" enter="{enterTab()}" >
+	
+
+	<mx:Script>
+		<![CDATA[
+			import mx.validators.Validator;
+			import mx.events.FocusRequestDirection;
+			
+			public var isEnter:Boolean = true;
+			[Bindable]
+			public var requerido:Boolean = false;
+			
+			public function init():void{	
+					
+				this.restrict = "0-9";			
+				this.maxChars = 8;
+			}			
+			
+			
+			private function enterTab():void{
+				if(this.isEnter){
+					this.focusManager.moveFocus(FocusRequestDirection.FORWARD);
+				}
+			}
+			
+		]]>
+	</mx:Script>
+	
+	<mx:Validator id="validador" required="{this.requerido}" 
+		source="{this}" property="text" requiredFieldError="Campo requerido!" />
+	
+	
+</mx:TextInput>

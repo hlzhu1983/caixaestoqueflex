@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
+	layout="absolute" xmlns:inputs="inputs.*" xmlns:botoes="botoes.*" 
+	creatingContentPane="{this.listarAllProjetos()}"
+	showCloseButton="true"   width="718" height="360" close="{this.fechar()}" title="Gerenciador Projeto">
+		<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import servicos.vo.ProjetoVO;
+			import mx.managers.PopUpManager;
+			import servicos.remote.Remote;
+			import mx.events.ValidationResultEvent;
+			import mx.controls.Alert;
+			import mx.rpc.events.ResultEvent;
+			
+			
+			[Bindable]
+			private var array_projeto:ArrayCollection;
+			
+			[Bindable]
+			private var projeto:ProjetoVO = new ProjetoVO();
+			
+			private var tipoPesquisa:String;
+		
+			private var ro:Remote = Remote.getInstance();
+			
+			private function init():void{
+				this.listarAllProjetos();
+			}
+			
+			private function alterarSenha():void{
+				
+			}
+			
+	 		private function addUsuario():void{
+				if(this.ti_nome.validador.validate().type == ValidationResultEvent.INVALID){
+					Alert.show("Campo nome obrigatorio!","Ops!",4,this);
+				}else{
+					this.projeto = new ProjetoVO();
+					this.projeto.nome = this.ti_nome.text;
+					this.projeto.obs = this.ta_obs.text;
+					this.projeto.descricao = this.ta_obs.text;
+					if(this.df_dataCriacao.selectedDate != null){
+						this.projeto.dataCriacao = this.df_dataCriacao.selectedDate.toDateString();
+					}
+					if(this.df_datafinal.selectedDate != null){
+						this.projeto.dataFinal = this.df_datafinal.selectedDate.toDateString();
+					}
+					if(this.lb_codInput.text ==""){
+						this.ro.addProjeto(this.resultadoAddItem,this.projeto);
+					}else{
+						this.projeto.codigo = Number(this.lb_codInput.text);
+						this.ro.atualizarProjeto(this.resultadoAtualizarItem,this.projeto);
+					}
+					
+				} 
+			}
+			
+			private function resultadoAddItem(event:ResultEvent):void{
+				this.array_projeto.addItem(event.result);
+				Alert.show("O item foi adicionado!","Sucesso!",4,this);
+				this.limparCampos(); 
+			}
+			
+			private function resultadoAtualizarItem(event:ResultEvent):void{
+				this.array_projeto.setItemAt(event.result,this.grid_projeto.selectedIndex);
+				Alert.show("O item foi adicionado!","Sucesso!",4,this);
+				this.limparCampos(); 
+			}
+			
+			private function listarAllProjetos():void{
+				this.ro.listarProjeto(resultListarUsuarios); 
+				
+			}
+			
+			private function resultListarUsuarios(event:ResultEvent):void{
+				this.array_projeto = new ArrayCollection(event.result as Array);  
+			}
+			
+			public function usuarioSelecionado(event:Event):void{
+				this.projeto = event.currentTarget.selectedItem;
+				this.lb_codInput.text = this.projeto.codigo.toString();
+				this.ti_nome.text = this.projeto.nome;
+				this.ta_desc.text = this.projeto.descricao;
+                this.ta_obs.text = this.projeto.obs;
+                if(this.projeto.dataCriacao != null){
+                	this.df_dataCriacao.selectedDate = new Date(Date.parse(this.projeto.dataCriacao));
+                }
+                if(this.projeto.dataFinal != null){
+                	this.df_datafinal.selectedDate = new Date(Date.parse(this.projeto.dataFinal));
+                }
+                this.remover.enabled = true; 
+			}
+			
+			
+			
+			
+			private function removerUsuario():void{
+				this.projeto = this.grid_projeto.selectedItem as ProjetoVO;
+				this.ro.removerProjeto(resultadoRemoverUsuario, this.projeto);
+			}
+			
+			private function resultadoRemoverUsuario(event:ResultEvent):void{
+				if(event.result){
+					Alert.show("O item foi removido!","Sucesso");
+					this.array_projeto.removeItemAt(this.grid_projeto.selectedIndex);
+				}else{
+					Alert.show("O item não pôde ser removido!","Ops!");					
+				} 
+				this.limparCampos();
+			}
+			
+			
+			private function pesquisarItem():void{
+				if(this.ti_pesquisa.text == ""){
+					this.listarAllProjetos();
+				}else if(this.ti_pesquisa.validador.validate().type == ValidationResultEvent.VALID ){
+					if(this.radio_codigo.selected){
+						this.ro.pesquisarProjeto(resultadoPesquisaItem,this.ti_pesquisa.text,"codigo");
+					}else{
+						this.ro.pesquisarProjeto(resultadoPesquisaItem,this.ti_pesquisa.text,"nome");
+					}
+					
+				}else{
+					Alert.show("erro","Ops!",4,this);
+				}
+			}
+			
+			private function resultadoPesquisaItem(event:ResultEvent):void{
+				this.array_projeto = new ArrayCollection(event.result as Array);
+			}
+			
+			
+			
+			private function fechar():void{
+				PopUpManager.removePopUp(this);
+			}
+			
+			public function limparCampos():void{
+				this.lb_codInput.text = "";
+				this.ti_nome.text = "";
+				this.ti_pesquisa.text = "";
+				this.ta_desc.text = "";
+				this.ta_obs.text = "";
+				this.df_dataCriacao.selectedDate = null
+				this.df_datafinal.selectedDate = null;
+				this.grid_projeto.selectedIndex = -1; 
+			} 
+			
+		]]>
+	</mx:Script>
+	
+		<mx:FormItem defaultButton="{this.bt_buscar}" label="Pesquisa" x="0" y="10">
+			<mx:HBox width="100%" height="50%">
+				<inputs:TextoInput width="225" id="ti_pesquisa"  isEnter="false"/>
+				<botoes:BuscarButton id="bt_buscar" click="{this.pesquisarItem()}"/>	
+			</mx:HBox>		
+			<mx:HBox width="100%" height="50%" >
+				<mx:RadioButtonGroup id="grupo_pesquisa"/>
+				<mx:RadioButton label="Código" id="radio_codigo" groupName="grupo_pesquisa"/>
+				<mx:RadioButton label="Nome" id="radio_desc" groupName="grupo_pesquisa" selected="true"/>
+			</mx:HBox>				
+		</mx:FormItem>	
+		
+			
+		<botoes:RemoveButton id="remover" click="removerUsuario()"  enabled="false" x="183" y="62"/>
+		<botoes:CleanButton  id="bt_clean" click="{this.limparCampos()}" x="135" y="62"/>
+		<botoes:ADDButton id="add" click="{this.addUsuario()}" x="87" y="62"/>
+	
+		<mx:Label text="Código: " x="10" y="109"/>
+		<mx:Label id="lb_codInput" x="71" y="109"/>
+			
+		<mx:Label text="Nome: " x="10" y="135" width="53"/>
+		<inputs:TextoInput id="ti_nome" width="250" requerido="true" x="10" y="150"/>
+		<mx:Label text="Descrição: " x="10" y="180"/>
+		<mx:TextArea id="ta_desc" x="10" y="197" height="86"/>
+		<mx:Label text="Observação: " x="178" y="180"/>
+		<mx:TextArea id="ta_obs" x="178" y="197" height="86" width="164"/>
+		
+		
+		<mx:Label text="Data Criação: " x="123" y="92"/>
+		<mx:DateField id="df_dataCriacao" x="123" y="107"/>
+		<mx:Label text="Data Final: " x="233" y="92"/>
+		<mx:DateField id="df_datafinal" x="233" y="107"/>
+		<mx:Panel x="350" y="20" width="338" height="263" layout="absolute" title="Lista de Projetos">
+				<mx:DataGrid width="100%" id="grid_projeto" change="{usuarioSelecionado(event)}" dataProvider="{this.array_projeto}" x="0" y="0" height="100%">
+					<mx:columns>
+						<mx:DataGridColumn headerText="Código" dataField="codigo"/>
+						<mx:DataGridColumn headerText="Nome" dataField="nome"/>	
+						<mx:DataGridColumn headerText="Data Criação" dataField="dataCriacao"/>			
+					</mx:columns>
+				</mx:DataGrid>
+		</mx:Panel>
+</mx:TitleWindow>
