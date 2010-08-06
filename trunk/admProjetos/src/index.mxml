@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" backgroundGradientAlphas="[1.0, 1.0]" backgroundGradientColors="[#000000, #009DFF]" xmlns:modulos="modulos.*">
+
+
+	<mx:Script>
+		<![CDATA[
+			import mx.containers.TitleWindow;
+			import mx.controls.Alert;
+			import modulos.ProjetoTitleWindow;
+			import mx.containers.Panel;
+			import mx.managers.PopUpManager;
+			import mx.states.State;
+			
+			public function gerProjeto():void{
+				this.body.removeAllChildren();
+				var tWindow:TitleWindow = TitleWindow(PopUpManager.createPopUp(this,ProjetoTitleWindow,true));
+				PopUpManager.centerPopUp(tWindow);
+			}
+			
+			
+		]]>
+	</mx:Script>
+	
+	
+		
+	<mx:ApplicationControlBar x="0" y="0" dock="true" height="140" fillAlphas="[1.0, 1.0]" fillColors="[#000000, #000000]" themeColor="#020202" color="#FFFFFF">
+		<mx:Spacer width="10%"/>
+		<mx:Image source="icons/Control Panel.png"/>
+		<mx:Spacer width="10%"/>
+		<mx:LinkButton label="Projeto" id="lk_projeto" click="{this.gerProjeto()}"/>
+		<mx:LinkButton label="Tarefas" id="lk_tarefa"/>
+		<mx:LinkButton label="Desnvolvedor" id="lk_desnvolvedor"/>
+	</mx:ApplicationControlBar>
+	
+	<mx:VBox id="body" width="100%" height="100%" horizontalAlign="center" paddingTop="40">
+		
+		
+		
+		
+	</mx:VBox>
+	
+	
+</mx:Application>
