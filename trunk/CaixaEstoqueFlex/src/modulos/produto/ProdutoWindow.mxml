@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Window xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" borderThickness="1" width="1024" height="600">
+	<mx:Panel x="0" y="10" width="562" height="200" layout="absolute" title="Informações Basicas">
+	</mx:Panel>
+	<mx:Panel x="594" y="10" width="250" height="200" layout="absolute" title="Imagem">
+	</mx:Panel>
+	<mx:Panel x="0" y="218" width="250" height="200" layout="absolute" title="Informações de Localização">
+	</mx:Panel>
+	
+</mx:Window>

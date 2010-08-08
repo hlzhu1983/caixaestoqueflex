@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: localhost
--- Tempo de Geração: Ago 02, 2010 as 01:13 
+-- Tempo de Geração: Ago 08, 2010 as 03:36 
 -- Versão do Servidor: 5.1.41
 -- Versão do PHP: 5.3.1
 
@@ -45,17 +45,12 @@ CREATE TABLE IF NOT EXISTS `cliente` (
   `obs` text,
   `dataCadastro` date NOT NULL,
   PRIMARY KEY (`codigo`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=44 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --
 -- Extraindo dados da tabela `cliente`
 --
 
-INSERT INTO `cliente` (`codigo`, `nome`, `tipoPessoa`, `sexo`, `dataNascimento`, `endereco`, `bairro`, `cidade`, `UF`, `cep`, `cpf_cnpj`, `insc_estadual`, `fone`, `contato`, `email`, `url`, `obs`, `dataCadastro`) VALUES
-(40, 'Hitalo Oliveira da silva', 0, 0, '1989-05-05', 'Av tempo feliz 47', 'Sancho', 'Recife', 'PE', '50920700', '11111', '11111111', '87403495', 'Hitalo Oliveira', 'hitalo', '', 'O cara mais lindo do mundo', '2010-08-01'),
-(41, 'anderson xrilo', 0, 0, '1988-04-02', '', '', '', 'PE', '', '', '', '', '', '', '', '', '2010-08-01'),
-(42, 'vvvv', 0, 0, '2010-08-04', '', '', '', 'PE', '', '', '', '', '', '', '', '', '2010-08-01'),
-(43, 'vvvvvvvvvv', 0, 0, '2010-08-19', '', '', '', 'PE', '', '', '', '', '', '', '', '', '2010-08-11');
 
 -- --------------------------------------------------------
 
@@ -97,15 +92,12 @@ CREATE TABLE IF NOT EXISTS `fornecedor` (
   `obs` text,
   `avaliacao` text,
   PRIMARY KEY (`codigo`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --
 -- Extraindo dados da tabela `fornecedor`
 --
 
-INSERT INTO `fornecedor` (`codigo`, `nome`, `endereco`, `bairro`, `cidade`, `UF`, `cep`, `cpf_cnpj`, `insc_estadual`, `fone`, `contato`, `email`, `url`, `obs`, `avaliacao`) VALUES
-(1, '', '', '', '', '', '', '', '', '', '', '', '', '', ''),
-(5, '', '', '', '', '', '', '', '', '', '', '', '', '', '');
 
 -- --------------------------------------------------------
 
@@ -117,33 +109,73 @@ CREATE TABLE IF NOT EXISTS `grupoproduto` (
   `codigo` int(11) NOT NULL AUTO_INCREMENT,
   `descricao` varchar(100) NOT NULL,
   PRIMARY KEY (`codigo`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --
 -- Extraindo dados da tabela `grupoproduto`
 --
 
-INSERT INTO `grupoproduto` (`codigo`, `descricao`) VALUES
-(2, 'bebidas');
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `localporduto`
+-- Estrutura da tabela `itensprevenda`
 --
 
-CREATE TABLE IF NOT EXISTS `localporduto` (
+CREATE TABLE IF NOT EXISTS `itensprevenda` (
+  `codPrevenda` int(11) NOT NULL,
+  `codProduto` int(11) NOT NULL,
+  `quantidade` decimal(10,2) NOT NULL,
+  `valor` decimal(10,2) NOT NULL,
+  PRIMARY KEY (`codPrevenda`,`codProduto`),
+  KEY `codProduto` (`codProduto`),
+  KEY `codProduto_2` (`codProduto`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Extraindo dados da tabela `itensprevenda`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `localproduto`
+--
+
+CREATE TABLE IF NOT EXISTS `localproduto` (
   `codigo` int(11) NOT NULL AUTO_INCREMENT,
   `descricao` varchar(100) NOT NULL,
   PRIMARY KEY (`codigo`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --
--- Extraindo dados da tabela `localporduto`
+-- Extraindo dados da tabela `localproduto`
 --
 
-INSERT INTO `localporduto` (`codigo`, `descricao`) VALUES
-(1, 'hitalo');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `prevenda`
+--
+
+CREATE TABLE IF NOT EXISTS `prevenda` (
+  `codigo` int(11) NOT NULL AUTO_INCREMENT,
+  `codCliente` int(11) NOT NULL,
+  `codUsuario` int(11) NOT NULL,
+  `dataAbertura` datetime NOT NULL,
+  `status` int(11) NOT NULL DEFAULT '0',
+  `obs` text NOT NULL,
+  PRIMARY KEY (`codigo`),
+  KEY `codCliente` (`codCliente`),
+  KEY `codUsuario_2` (`codUsuario`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `prevenda`
+--
+
 
 -- --------------------------------------------------------
 
@@ -164,27 +196,18 @@ CREATE TABLE IF NOT EXISTS `produto` (
   `codFornecedor` int(11) NOT NULL,
   `precoCompra` decimal(10,2) DEFAULT NULL,
   `precoVenda` decimal(10,2) NOT NULL,
+  `foto` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`codigo`),
   KEY `codGrupo` (`codGrupo`),
   KEY `codLocal` (`codLocal`),
   KEY `codUnidade` (`codUnidade`),
   KEY `codFornecedor` (`codFornecedor`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=21 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --
 -- Extraindo dados da tabela `produto`
 --
 
-INSERT INTO `produto` (`codigo`, `codBarra`, `codGrupo`, `descricao`, `referencia`, `codLocal`, `codUnidade`, `qtdPorUnidade`, `qtdEmEstoque`, `codFornecedor`, `precoCompra`, `precoVenda`) VALUES
-(12, '', 2, '', '', 1, 1, 1, 1, 1, '1.00', '1.00'),
-(13, '', 2, '', '', 1, 1, 1, 1, 1, '1.00', '1.00'),
-(14, 'aAA', 2, 'asdÃ§kj', 'sdfg', 1, 1, 10, 1, 1, '1.00', '1.00'),
-(15, '', 2, '', '', 1, 1, 1, 1, 1, '1.00', '1.00'),
-(16, '', 2, '', '', 1, 1, 1, 1, 1, '1.00', '1.00'),
-(17, '', 2, '', '', 1, 1, 1, 1, 1, '1.00', '1.00'),
-(18, '', 2, '', '', 1, 1, 1, 1, 1, '1.00', '1.00'),
-(19, '', 2, '', '', 1, 1, 1, 1, 1, '1.00', '1.00'),
-(20, '', 2, '', '', 1, 1, 1, 1, 1, '1.00', '1.00');
 
 -- --------------------------------------------------------
 
@@ -196,15 +219,12 @@ CREATE TABLE IF NOT EXISTS `unidade` (
   `codigo` int(11) NOT NULL AUTO_INCREMENT,
   `descricao` varchar(20) NOT NULL,
   PRIMARY KEY (`codigo`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --
 -- Extraindo dados da tabela `unidade`
 --
 
-INSERT INTO `unidade` (`codigo`, `descricao`) VALUES
-(1, 'M'),
-(9, 'Kg');
 
 -- --------------------------------------------------------
 
@@ -214,10 +234,10 @@ INSERT INTO `unidade` (`codigo`, `descricao`) VALUES
 
 CREATE TABLE IF NOT EXISTS `usuario` (
   `codigo` int(11) NOT NULL AUTO_INCREMENT,
-  `num_caixa` int(11) DEFAULT NULL,
   `comissao` decimal(10,3) DEFAULT NULL,
   `senha` varchar(30) NOT NULL,
   `permissao` int(11) NOT NULL,
+  `nome` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`codigo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
@@ -231,11 +251,30 @@ CREATE TABLE IF NOT EXISTS `usuario` (
 --
 
 --
+-- Restrições para a tabela `itensprevenda`
+--
+ALTER TABLE `itensprevenda`
+  ADD CONSTRAINT `itensprevenda_ibfk_1` FOREIGN KEY (`codPrevenda`) REFERENCES `prevenda` (`codigo`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `itensprevenda_ibfk_2` FOREIGN KEY (`codProduto`) REFERENCES `produto` (`codigo`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `itensprevenda_ibfk_3` FOREIGN KEY (`codPrevenda`) REFERENCES `prevenda` (`codigo`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `itensprevenda_ibfk_4` FOREIGN KEY (`codProduto`) REFERENCES `produto` (`codigo`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Restrições para a tabela `prevenda`
+--
+ALTER TABLE `prevenda`
+  ADD CONSTRAINT `prevenda_ibfk_1` FOREIGN KEY (`codCliente`) REFERENCES `cliente` (`codigo`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `prevenda_ibfk_2` FOREIGN KEY (`codCliente`) REFERENCES `cliente` (`codigo`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `prevenda_ibfk_3` FOREIGN KEY (`codCliente`) REFERENCES `cliente` (`codigo`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `prevenda_ibfk_4` FOREIGN KEY (`codCliente`) REFERENCES `cliente` (`codigo`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `prevenda_ibfk_5` FOREIGN KEY (`codUsuario`) REFERENCES `usuario` (`codigo`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Restrições para a tabela `produto`
 --
 ALTER TABLE `produto`
   ADD CONSTRAINT `produto_ibfk_1` FOREIGN KEY (`codGrupo`) REFERENCES `grupoproduto` (`codigo`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `produto_ibfk_2` FOREIGN KEY (`codLocal`) REFERENCES `localporduto` (`codigo`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `produto_ibfk_2` FOREIGN KEY (`codLocal`) REFERENCES `localproduto` (`codigo`) ON UPDATE CASCADE,
   ADD CONSTRAINT `produto_ibfk_3` FOREIGN KEY (`codUnidade`) REFERENCES `unidade` (`codigo`) ON UPDATE CASCADE,
   ADD CONSTRAINT `produto_ibfk_4` FOREIGN KEY (`codFornecedor`) REFERENCES `fornecedor` (`codigo`) ON UPDATE CASCADE;
 
