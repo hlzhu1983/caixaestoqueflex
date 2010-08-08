@@ -8,6 +8,7 @@
 	import modulos.grupoproduto.CadastroGrupoProduto;
 	import modulos.localproduto.CadastroLocalProduto;
 	import modulos.orcamento.Orcamento;
+	import modulos.prevenda.PreVendaWindow;
 	import modulos.unidade.CadastroUnidade;
 	import modulos.usuario.CadastroUsuario;
 	
@@ -35,6 +36,9 @@
 				break;
 			case "Orçamento":
 				this.orcamentoWindow();
+				break;
+			case "Pré-Venda":
+				this.preVendaWindow();
 				break;
 			case "Cadastro Unidades":
 				this.gerUnidade();
@@ -81,6 +85,20 @@
 	public function orcamentoWindow():void{
 		this.logou = false;	
 		var newWindow:Window = new Orcamento();
+		
+		newWindow.maximizable=false;
+		newWindow.minimizable = false;
+		newWindow.resizable = false;
+		newWindow.open(false);
+		newWindow.nativeWindow.x = 0;
+		newWindow.nativeWindow.y = 0;
+		newWindow.activate();
+		
+	}
+	
+	public function preVendaWindow():void{
+		this.logou = false;	
+		var newWindow:Window = new PreVendaWindow();
 		
 		newWindow.maximizable=false;
 		newWindow.minimizable = false;
