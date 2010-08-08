@@ -12,19 +12,19 @@ class ServicosLocalProduto {
 		$this->conn = $db->conn;
 	}
 	
-	public function addLocalProduto(LocalProdutoVO $localporduto){
+	public function addLocalProduto(LocalProdutoVO $localproduto){
 		
-		$sql = "insert into localporduto (descricao) values ('{$localporduto->descricao}')";
+		$sql = "insert into localproduto (descricao) values ('{$localproduto->descricao}')";
 		
 		$resultado = $this->conn->Execute($sql);
-		$localporduto->codigo = $this->conn->insert_Id();
-		return $localporduto;
+		$localproduto->codigo = $this->conn->insert_Id();
+		return $localproduto;
 		
 	}
 	
-	public function removerLocalProduto(LocalProdutoVO $localporduto){
+	public function removerLocalProduto(LocalProdutoVO $localproduto){
 		
-		$sql = "delete from localporduto  where codigo = {$localporduto->codigo}";
+		$sql = "delete from localproduto  where codigo = {$localproduto->codigo}";
 		$resultado = $this->conn->Execute($sql);
 		if($this->conn->Affected_Rows()==0){
 			return false;
@@ -33,36 +33,36 @@ class ServicosLocalProduto {
 	}
 	
 	public function pesquisarLocalProduto($texto,$coluna){
-		$sql = "select * from localporduto where $coluna like '%$texto%'";
+		$sql = "select * from localproduto where $coluna like '%$texto%'";
 		$resultado = $this->conn->Execute($sql);
 		while($registro = $resultado->FetchNextObject()){			
-			$dados_localporduto = new LocalProdutoVO();
-			$dados_localporduto->codigo = $registro->CODIGO;
-			$dados_localporduto->descricao = $registro->DESCRICAO;
-			$retorna_dados_localporduto [] = $dados_localporduto;
+			$dados_localproduto = new LocalProdutoVO();
+			$dados_localproduto->codigo = $registro->CODIGO;
+			$dados_localproduto->descricao = $registro->DESCRICAO;
+			$retorna_dados_localproduto [] = $dados_localproduto;
 		}
-		return $retorna_dados_localporduto;
+		return $retorna_dados_localproduto;
 	}
 	
 	public function getLocalProdutos(){
-		$sql = "select * from localporduto";
+		$sql = "select * from localproduto";
 		
 		$resultado = $this->conn->Execute($sql);
 		
 		while($registro = $resultado->FetchNextObject()){			
-			$dados_localporduto = new LocalProdutoVO();
-			$dados_localporduto->codigo = $registro->CODIGO;
-			$dados_localporduto->descricao = $registro->DESCRICAO;
-			$retorna_dados_localporduto [] = $dados_localporduto;
+			$dados_localproduto = new LocalProdutoVO();
+			$dados_localproduto->codigo = $registro->CODIGO;
+			$dados_localproduto->descricao = $registro->DESCRICAO;
+			$retorna_dados_localproduto [] = $dados_localproduto;
 		}
-		return $retorna_dados_localporduto;	
+		return $retorna_dados_localproduto;	
 	}
 }
 
 
 //$eu = new ServicosLocalProduto();
-//$localporduto = new LocalProdutoVO();
-//$localporduto->codigo = 2;
-//echo $eu->removerLocalProduto($localporduto);
+//$localproduto = new LocalProdutoVO();
+//$localproduto->codigo = 2;
+//echo $eu->removerLocalProduto($localproduto);
 
 ?>
