@@ -29,10 +29,10 @@
 		               <menuitem  label="Cadastro Forma de Pagamento"/>
 		           </menuitem>
 		           <menuitem label="Módulos">
+		           	 	<menuitem  label="Pré-Venda"/>
 		                <menuitem  label="Frente de Caixa"/>		                
-		                <menuitem  label="Pedido de Compra" />
+		                <menuitem  label="Pedido de Compra"/>
 		                <menuitem  label="Orçamento"/>
-		                <menuitem  label="Venda"/>
 		                <menuitem  label="Transferência entre Filiais"/>
 		                <menuitem  label="Devolução"/>		                
 		           </menuitem>
