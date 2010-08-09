@@ -5,7 +5,8 @@
 	 title="Gerenciador Clientes" 
 	 showCloseButton="true"
 	 close="{this.fechar()}"
-	 xmlns:botoes="utilidades.botoes.*" fontSize="12" width="890" height="100%" xmlns:utilidades="utilidades.*">
+	 xmlns:botoes="utilidades.botoes.*" 
+	 fontSize="12" width="890" height="100%" xmlns:utilidades="utilidades.*" borderStyle="inset">
 	
 		<mx:Script>
 		<![CDATA[
@@ -151,7 +152,6 @@
 			public function itemSelecionado(event:Event):void{
 				this.item = event.currentTarget.selectedItem as ClienteVO;
 				this.modificado = this.grid_itens.selectedIndex;
-				this.add.label = "Alterar";
 				this.ti_bairro.text = this.item.bairro;
 				this.ti_cep.text = this.item.cep;
 				this.ti_cidade.text = this.item.cidade;
@@ -246,7 +246,6 @@
 				this.dataCadastro.data = null;
 				this.dataNascimento.data = null;
 				this.obs.text = "";
-				this.add.label = "Adicionar"
 				this.grid_itens.selectedIndex = -1;
 			
 			}  
@@ -277,7 +276,7 @@
 	</mx:FormItem>	
 	<botoes:BuscarButton id="bt_buscar" x="312" y="10" click="{this.pesquisarItem()}"/>		
 	<botoes:RemoveButton id="remover"  label="Remover"  enabled="false" x="707" y="50" click="{this.removerItem()}"  width="108"/>
-	<botoes:ADDButton id="add" label="Adicionar"  x="707" y="20" click="{this.addItem()}"/>
+	<botoes:ADDButton id="add" x="707" y="20" click="{this.addItem()}"/>
 	<botoes:CleanButton  x="707" label="Limpar" y="80" click="{this.limparCampos()}" width="108"  textAlign="left"/>
 	
 	<mx:ComboBox x="506" y="123" width="112" id="sexo" selectedIndex="0" editable="false">
