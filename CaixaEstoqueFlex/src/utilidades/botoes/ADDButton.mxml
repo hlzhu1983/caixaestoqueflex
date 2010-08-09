@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Button xmlns:mx="http://www.adobe.com/2006/mxml" icon="@Embed(source='../../icons/AddRecord.png')" 
-	toolTip="Clique para adicionar o item!">
+	toolTip="Clique para adicionar o item!" mouseOver="{this.zoom.play()}" >
+	
+	<mx:Parallel id="efeitos" target="{this}">
+		<mx:Glow id="glowImage" duration="200"
+	        alphaFrom="1.0" alphaTo="0.3" 
+	        blurXFrom="0.0" blurXTo="10000.0" 
+	        blurYFrom="0.0" blurYTo="10000.0" 
+	        color="0x000000"  />
+	<mx:Zoom id="zoom" zoomHeightFrom="1" zoomWidthFrom="1" zoomHeightTo="1.5" zoomWidthTo="1.5"/>
+	</mx:Parallel>
 	
 </mx:Button>
