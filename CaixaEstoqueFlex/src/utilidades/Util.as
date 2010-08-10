@@ -9,9 +9,10 @@ package utilidades
 	{
 		
 		
-		public static function abrePopUp(proprietario:DisplayObject,classe:Class,model:Boolean):void{
+		public static function abrePopUp(proprietario:DisplayObject,classe:Class,model:Boolean):TitleWindow{
 			var tWindow:TitleWindow = TitleWindow(PopUpManager.createPopUp(proprietario,classe,true));
 			PopUpManager.centerPopUp(tWindow);
+			return tWindow;
 		}
 
 	}

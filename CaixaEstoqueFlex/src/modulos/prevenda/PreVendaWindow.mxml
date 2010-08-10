@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Window xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
+<mx:Window  xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
 	width="1024" height="700" title="Pré-Venda"
-	xmlns:utilidades="utilidades.*" closing="onCloseCommand(event)"
-	keyDown="funcionalidades(event)" xmlns:inputs="utilidades.inputs.*" alpha="1.0" xmlns:botoes="utilidades.botoes.*">
+	xmlns:utilidades="utilidades.*" close="{this.onCloseCommand(event)}"
+	keyDown="funcionalidades(event)"  backgroundAlpha="0" xmlns:inputs="utilidades.inputs.*" 
+	xmlns:botoes="utilidades.botoes.*" xmlns:local="*">
 	
 	<mx:Script>
 		<![CDATA[
@@ -74,19 +75,19 @@
 			}
 			
 			public function orcamento():void{
-				this.close();
+				//this.close();
 			}
 		]]>
 	</mx:Script>
 	
-	<mx:VBox id="body" width="100%" height="100%">
+	<mx:VBox id="body" width="100%" height="100%" >
 		<mx:ApplicationControlBar dock="true" width="100%" height="45">
 			<mx:Label text="Pedido: " fontSize="30" />
 			<mx:Label id="numPedido" text="0001" fontSize="30" />
 			<mx:Spacer width="50%"/>
 			<utilidades:RelogioDigital/>	
 		</mx:ApplicationControlBar>
-		<mx:HBox width="100%" height="80%">
+		<mx:HBox width="100%" height="80%" >
 			<mx:DataGrid id="produtos"  width="70%"  height="100%" rowCount="10" dataProvider="{produtoLista}">
 				<mx:columns>
 					<mx:DataGridColumn headerText="Cod Produto" dataField="codProduto"/>
@@ -115,19 +116,19 @@
 				<inputs:InteiroInput id="codProduto" requerido="true"  x="23" y="140" fontSize="20" width="209"/>
 				<botoes:BuscarButton  x="240" y="151"/>
 				<mx:Label text="Quantidade" x="23" y="228" fontSize="20"/>
-				<inputs:NumberInput id="quantProduto" width="144" x="23" y="267" fontSize="20"/>
+				<inputs:NumberInput id="quantProduto" width="144" x="23" y="257" fontSize="20"/>
 				<mx:Text x="23" y="183" text="Descrição Produto" width="251" height="47" fontWeight="bold" id="tx_descricaoProduto" enabled="false" color="#000000"/>
 				
 			</mx:Panel>
 		</mx:HBox>
 		
 		<mx:Panel width="100%" height="20%" title="Fechamento" layout="absolute" >
-				<mx:Label x="27" y="10" text="Desconto:" color="#000000" fontSize="12"/>
+				<mx:Label x="27" y="10" text="Desconto:" fontSize="18" fontWeight="bold"/>
 				<inputs:NumberInput valorDefault="0,00"  x="27" y="38" fontSize="12"/>
 				<mx:Button id="bt_cancelarPreVenda" label="Cancelar Pré-Venda" toolTip="Clique para cancelar orçamento"  x="474" y="40"/>
-				<mx:Button id="bt_gerarPreVenda" label="Gerar Pré-Venda" toolTip="Clique para gerar orçamento" click="{orcamento()}"  x="268" y="40"/>
-				
+				<mx:Button id="bt_gerarPreVenda" label="Gerar Pré-Venda" toolTip="Clique para gerar orçamento" click="{orcamento()}"  x="235" y="40"/>
 		</mx:Panel>
+		
 		
 	</mx:VBox>
 </mx:Window>

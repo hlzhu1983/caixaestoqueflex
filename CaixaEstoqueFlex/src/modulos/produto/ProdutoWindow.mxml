@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Window xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" borderThickness="1" width="596" height="504" fontSize="12" xmlns:ns1="utilidades.botoes.*" xmlns:ns2="utilidades.inputs.*">
+	
+	<mx:Script>
+		<![CDATA[
+			import events.AutenticacaoUsuarioEvent;
+			
+		]]>
+	</mx:Script>
+	
+	
 	<mx:DataGrid x="189" y="276" width="387" height="172">
 		<mx:columns>
 			<mx:DataGridColumn headerText="Código" dataField="col1"/>
@@ -36,7 +45,7 @@
 	<mx:Label x="372" y="214" text="Preco de Venda:"/>
 	<ns2:NumberInput x="489" y="212" width="60"/>
 	<ns1:CleanButton x="257" y="244" label="Limpar"/>
-	<ns1:ADDButton x="10" y="244" label="Adicionar"/>
+	<ns1:ADDButton x="10" y="244" label="Adicionar" click="{this.dispatchEvent(new AutenticacaoUsuarioEvent(null,AutenticacaoUsuarioEvent.SUCESSO))}"/>
 	<ns1:RemoveButton x="136" y="244" label="Remover"/>
 	<mx:TextInput x="10" y="456" width="171" backgroundColor="#AAB5F6"/>
 	<ns1:BuscarButton x="189" y="456" height="23"/>
