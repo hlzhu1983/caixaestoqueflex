@@ -1,15 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" close="applicationExit()" 
 	title="Autenticação de Usuário" creationComplete="{PopUpManager.centerPopUp(this)}"
-	 horizontalCenter="0" verticalCenter="0" width="306" height="270" fontSize="12" backgroundAlpha="1.0" alpha="1.0" backgroundColor="#FFFFFF">
+	 horizontalCenter="0" verticalCenter="0" width="306" height="270" fontSize="12" backgroundAlpha="1.0" alpha="1.0" backgroundColor="#FFFFFF" xmlns:inputs="utilidades.inputs.*">
+	 
+	 <mx:Metadata>
+	 	
+	 	[Event (name="sucessoEvent",type="events.AutenticacaoUsuarioEvent")]
+	 </mx:Metadata>
+	 
 	<mx:Script>
 		<![CDATA[
+			import events.AutenticacaoUsuarioEvent;
+			import mx.containers.Form;
+			import negocio.vo.UsuarioVO;
+			import mx.rpc.events.ResultEvent;
+			import negocio.remote.Remote;
+			import mx.controls.Alert;
+			import mx.events.ValidationResultEvent;
+			import mx.validators.ValidationResult;
 			import mx.managers.PopUpManager;
 			
+			[Bindable]
+			public var usuario:UsuarioVO;
+			
+			private var ro:Remote = Remote.getInstance();
 			
 			public function autenticar():void{
-				PopUpManager.removePopUp(this);
-			}			
+				if(this.txt_login.validador.validate().type == ValidationResultEvent.VALID){
+					if(this.txt_senha.validador.validate().type == ValidationResultEvent.VALID){
+						ro.pesquisarUsuario(resultPesquisarUsuario,this.txt_login.text,"codigo");
+					}
+				}
+			}	
+			
+			private function resultPesquisarUsuario(event:ResultEvent):void{
+				
+				var array:Array = event.result as Array;
+				
+				
+				for(var  i:int=0; i < array.length;i++){
+					if(array[i].codigo == Number(this.txt_login.text)){
+						this.usuario = array[i];
+					}
+				}
+				if(this.usuario!=null){
+					if(this.usuario.senha == this.txt_senha.text){
+						Alert.show("Autenticação Realizada com sucesso!","Sucesso");
+						this.dispatchEvent(new AutenticacaoUsuarioEvent(this.usuario,AutenticacaoUsuarioEvent.SUCESSO));
+						PopUpManager.removePopUp(this);
+					}
+				}else{
+					Alert.show("Autenticação não foi realizada!","Ops!");
+				}
+					
+			}		
 			public function applicationExit():void {				
     			var exitingEvent:Event = new Event(Event.EXITING, false, true);
     			NativeApplication.nativeApplication.dispatchEvent(exitingEvent);
@@ -27,8 +71,8 @@
 			<mx:Label x="35" y="86" text="Usuário:" width="67" fontSize="12" fontWeight="bold"/>
 			<mx:Label x="35" y="114" text="Senha:" fontWeight="bold"/>
 			<mx:Button x="181" y="160" label="Autenticar" click="{autenticar()}" />
-			<mx:TextInput x="110" y="84" id="txt_login" width="127"/>
-			<mx:TextInput x="110" y="112" id="txt_senha" width="127"/>
+			<inputs:TextoInput x="110" y="84" id="txt_login" width="127" requerido="true"/>
+			<inputs:TextoInput x="110" y="112" id="txt_senha" width="127" requerido="true" displayAsPassword="true"/>
 			<mx:TextArea x="4.5" y="10" editable="false" width="270.5" borderStyle="none" backgroundAlpha="0.0">
 				<mx:text>Para ter acesso ao sistema é preciso ser autenticado.</mx:text>
 			</mx:TextArea>		

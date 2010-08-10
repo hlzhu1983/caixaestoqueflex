@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:WindowedApplication width="1024" height="700" creationComplete="init()"
 	 xmlns:mx="http://www.adobe.com/2006/mxml"  
-	layout="absolute" borderThickness="0" cornerRadius="0" backgroundGradientAlphas="[1.0, 1.0]"
-	 backgroundGradientColors="[#FFFFFF, #000000]" dropShadowEnabled="false" 
-	 xmlns:local="*" verticalAlign="top" horizontalAlign="center">
-	 
+	layout="absolute" borderThickness="0" cornerRadius="0"
+	 xmlns:local="*" verticalAlign="top" horizontalAlign="center" >
+	
+	 	
 	 <mx:Script source="principal.as"/>
-		
-	<mx:ApplicationControlBar  x="0" dock="true" y="0" width="1024" fillAlphas="[0.01, 0.73]" height="46" cornerRadius="0" color="#FFFFFF" fillColors="[#000000, #000000]">
-		<mx:Label id="nomeUsuario" text="Usuário Visitante" fontWeight="bold" fontSize="12"/>		
-		<mx:MenuBar width="100%" labelField="@label" id="menuBar" height="28" cornerRadius="8" color="#000000" fontSize="12">
-		   <mx:XMLList>
-		           <menuitem label="Arquivo">
+	 
+	 
+	  <mx:XML xmlns="" format="e4x" id="xml">
+	  	<root>
+		           <menuitem label="Arquivo" >
 		               <menuitem label="Alterar Senha do Usuário"/>
 		               <menuitem label="Fazer Backup"/>
 		               <menuitem label="Imprimir Movimento Diario"/>
@@ -48,10 +47,22 @@
 		               <menuitem label="Tópicos de Ajuda" />
 		               <menuitem label="Versão" />
 		            </menuitem>
-		       </mx:XMLList>
-		</mx:MenuBar>
-	</mx:ApplicationControlBar>	
-	<mx:VBox id="body" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
+		     </root>       
+		  </mx:XML>
 		
+	<mx:ApplicationControlBar  x="0" dock="true" y="0" width="1024" fillAlphas="[0.42, 1.0]" height="46" cornerRadius="0" color="#FFFFFF" fillColors="[#000000, #000000]">
+		<mx:Label id="nomeUsuario" text="{this.usuario.nome}" fontWeight="bold" fontSize="12"/>		
+		<mx:ButtonBar>
+			 <mx:dataProvider>
+            <mx:String>Flash</mx:String>
+            <mx:String>Director</mx:String>
+            <mx:String>Dreamweaver</mx:String>
+            <mx:String>ColdFusion</mx:String>
+        </mx:dataProvider>
+		</mx:ButtonBar>
+		<mx:MenuBar width="100%" labelField="@label" dataProvider="{this.xml.menuitem}" id="menuBar" height="28" cornerRadius="8"  fontSize="12" fillAlphas="[0.0, 0.49, 0.0, 0.56]" fillColors="[#000000, #000000]"/>
+	</mx:ApplicationControlBar>	
+	<mx:VBox id="body" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle" >
+		<mx:Image width="100%" height="100%" source="icons/plano-de-fundo.jpg" scaleContent="false"/>
 	</mx:VBox>
 </mx:WindowedApplication>

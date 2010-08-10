@@ -1,5 +1,5 @@
 
-	import flash.utils.Dictionary;
+	import events.AutenticacaoUsuarioEvent;
 	
 	import modulos.caixa.Caixa;
 	import modulos.cliente.CadastroCliente;
@@ -14,21 +14,32 @@
 	import modulos.usuario.CadastroUsuario;
 	
 	import mx.controls.Alert;
+	import mx.core.Application;
 	import mx.core.Window;
 	import mx.events.MenuEvent;
 	
+	import negocio.vo.UsuarioVO;
+	
 	import utilidades.Util;
 	
-	public var map:Dictionary = new Dictionary();
+	[Bindable]
+	public var usuario:UsuarioVO;
 	
+	public var logou:Boolean;
 	
-	public var logou:Boolean;	
 	
 	public function init():void{
 		this.logou = false;	
+		Application.application.systemManager.addEventListener(AutenticacaoUsuarioEvent.SUCESSO,usuarioAutenticado);
 		Util.abrePopUp(this,ComponenteAutenticacao,true);
 		menuBar.addEventListener(MenuEvent.ITEM_CLICK,itemClickInfo);
 	}	
+	
+	public function usuarioAutenticado(event:AutenticacaoUsuarioEvent):void{
+		this.usuario = event.usuario;
+		this.logou = true;
+	}
+	
 	
 	private function itemClickInfo(event:MenuEvent):void {
 		switch(event.label){
@@ -76,7 +87,6 @@
 	public function frenteLoja():void{
 		this.logou = false;	
 		var newWindow:Window = new Caixa();
-		
 		newWindow.maximizable=false;
 		newWindow.minimizable = false;
 		newWindow.resizable = false;		
@@ -103,11 +113,6 @@
 	public function preVendaWindow():void{
 		this.logou = false;	
 		var newWindow:Window = new PreVendaWindow();
-		
-		newWindow.maximizable=false;
-		newWindow.minimizable = false;
-		newWindow.resizable = false;
-		newWindow.open(false);
 		newWindow.nativeWindow.x = 0;
 		newWindow.nativeWindow.y = 0;
 		newWindow.activate();
