@@ -14,7 +14,6 @@
 			import negocio.vo.ClienteVO;
 			import mx.events.ValidationResultEvent;
 			import mx.validators.ValidationResult;
-			import negocio.vo.UnidadeVO;
 			import mx.managers.PopUpManager;
 			import mx.events.CloseEvent;
 			import mx.controls.Alert;
@@ -23,6 +22,7 @@
 			import negocio.remote.Remote;
 			
 			[Bindable]
+			
 			private var itensArray:ArrayCollection;
 			private var modificado:Number;
 			
