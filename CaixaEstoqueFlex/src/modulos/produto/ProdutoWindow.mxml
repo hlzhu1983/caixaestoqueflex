@@ -1,10 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Window xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" borderThickness="1" width="1024" height="600">
-	<mx:Panel x="0" y="10" width="562" height="200" layout="absolute" title="Informações Basicas">
-	</mx:Panel>
-	<mx:Panel x="594" y="10" width="250" height="200" layout="absolute" title="Imagem">
-	</mx:Panel>
-	<mx:Panel x="0" y="218" width="250" height="200" layout="absolute" title="Informações de Localização">
-	</mx:Panel>
-	
+<mx:Window xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" borderThickness="1" width="596" height="504" fontSize="12" xmlns:ns1="utilidades.botoes.*" xmlns:ns2="utilidades.inputs.*">
+	<mx:DataGrid x="189" y="276" width="387" height="172">
+		<mx:columns>
+			<mx:DataGridColumn headerText="Código" dataField="col1"/>
+			<mx:DataGridColumn headerText="Descrição" dataField="col2"/>
+			<mx:DataGridColumn headerText="Referência" dataField="col3"/>
+		</mx:columns>
+	</mx:DataGrid>
+	<mx:Label x="10" y="10" text="Código:"/>
+	<mx:TextInput x="99" y="8" width="94" backgroundColor="#AAB5F6"/>
+	<mx:Label x="10" y="214" text="Qtd. Estoque:"/>
+	<mx:Label x="178" y="214" text="Preco de Compra:"/>
+	<ns1:BuscarButton x="201" y="8" height="23"/>
+	<mx:Label x="10" y="168" text="Fornecedor:"/>
+	<mx:TextInput x="99" y="166" width="94"/>
+	<ns1:BuscarButton x="201" y="167" height="21"/>
+	<mx:Image x="10" y="276" id="img_produto" width="171" height="172" source="icons/branco.png"/>
+	<mx:Label x="10" y="42" text="Cód. Barra:"/>
+	<mx:TextInput x="99" y="40" width="166"/>
+	<mx:Label x="407" y="138" text="Itens por UN:"/>
+	<mx:Label x="10" y="75" text="Grupo:"/>
+	<mx:Label x="273" y="75" text="Referência:"/>
+	<mx:Label x="10" y="105" text="Descrição:"/>
+	<mx:TextInput x="99" y="103" width="450"/>
+	<mx:TextInput x="249" y="166" width="300" backgroundColor="#AAB5F6"/>
+	<mx:TextInput x="357" y="73" width="192"/>
+	<mx:ComboBox x="99" y="72" width="166"></mx:ComboBox>
+	<mx:ComboBox x="99" y="135" width="166"></mx:ComboBox>
+	<mx:ComboBox x="335" y="135" width="64"></mx:ComboBox>
+	<mx:Label x="273" y="138" text="Unidade:"/>
+	<mx:Label x="10" y="138" text="Local:"/>
+	<ns2:NumberInput x="505" y="136" width="44"/>
+	<ns2:InteiroInput x="110" y="212" width="49"/>
+	<ns2:NumberInput x="304" y="212" width="60"/>
+	<mx:Label x="372" y="214" text="Preco de Venda:"/>
+	<ns2:NumberInput x="489" y="212" width="60"/>
+	<ns1:CleanButton x="257" y="244" label="Limpar"/>
+	<ns1:ADDButton x="10" y="244" label="Adicionar"/>
+	<ns1:RemoveButton x="136" y="244" label="Remover"/>
+	<mx:TextInput x="10" y="456" width="171" backgroundColor="#AAB5F6"/>
+	<ns1:BuscarButton x="189" y="456" height="23"/>
 </mx:Window>
