@@ -9,6 +9,7 @@
 	import modulos.localproduto.CadastroLocalProduto;
 	import modulos.orcamento.Orcamento;
 	import modulos.prevenda.PreVendaWindow;
+	import modulos.produto.ProdutoWindow;
 	import modulos.unidade.CadastroUnidade;
 	import modulos.usuario.CadastroUsuario;
 	
@@ -45,6 +46,9 @@
 				break;
 			case "Cadastro Cliente":
 				this.gerCliente();
+				break;
+			case "Cadastro Produto":
+				this.gerProduto();
 				break;
 			case "Cadastro Forma de Pagamento": 
 			    this.gerFormadePagto();
@@ -133,6 +137,19 @@
 		Util.abrePopUp(this,CadastroCliente,true);
 	}
 	
+	public function gerProduto():void{
+		
+		var newWindow:Window = new ProdutoWindow();
+		
+		newWindow.maximizable=false;
+		newWindow.minimizable = false;
+		newWindow.resizable = false;		
+		newWindow.open(false);
+		newWindow.nativeWindow.x = 0;
+		newWindow.nativeWindow.y = 0;
+		newWindow.activate();
+		}
+		
 	public function gerUsuario():void{		
 		Util.abrePopUp(this,CadastroUsuario,true);
 	}

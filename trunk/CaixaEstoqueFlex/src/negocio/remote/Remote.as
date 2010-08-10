@@ -201,7 +201,36 @@ package negocio.remote{
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
 				
+		//Servicos Produto
 		
+ 		public function listarProduto(result:Function):void{
+ 			_remote.source = "ServicosProduto";
+			var async:AsyncToken = _remote.getProdutos();
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
+		public function addProduto(result:Function,produto:ProdutoVO):void{
+			_remote.source = "ServicosProduto";
+			var async:AsyncToken = _remote.addProduto(produto);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
+		public function removerProduto(result:Function,produto:ProdutoVO):void{
+			_remote.source = "ServicosProduto";
+			var async:AsyncToken = _remote.removerProduto(produto);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
+		public function pesquisarProduto(result:Function,texto:String,coluna:String):void{
+			_remote.source = "ServicosProduto";
+			var async:AsyncToken = _remote.pesquisarProduto(texto,coluna);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		public function atualizarProduto(result:Function,produto:ProdutoVO):void{
+			_remote.source = "ServicosProduto";
+			var async:AsyncToken = _remote.atualizarProduto(produto);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
 		//--------------------setup----------------------------//
 		private var _remote:RemoteObject;
 		
