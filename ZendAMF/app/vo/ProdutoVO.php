@@ -1,9 +1,7 @@
 <?php
 
-
-	class ProdutoVO	{
-		
-		public $codigo;
+class ProdutoVO {
+public $codigo;
 		public $codBarra;
 		public $codGrupo;
 		public $descricao;
@@ -16,6 +14,6 @@
 		public $precoCompra;
 		public $precoVenda;
 		public $foto;
+}
 
-	}
 ?>
