@@ -7,7 +7,7 @@ class UsuarioVO {
 	public $comissao;
 	public $senha;
 	public $permissao;
-	
+	public $login;
 }
 
 ?>
