@@ -11,8 +11,8 @@ package negocio.vo
 		public var referencia:String;
 		public var codLocal:int;
 		public var codUnidade:int;
-		public var qtdPorUnidade:Number;
-		public var qtdEmEstoque:Number;
+		public var qtdPorUnidade:int;
+		public var qtdEmEstoque:int;
 		public var codFornecedor:int;
 		public var precoCompra:Number;
 		public var precoVenda:Number;
