@@ -27,31 +27,38 @@
 			
 			public function autenticar():void{
 				if(this.txt_login.validador.validate().type == ValidationResultEvent.VALID){
-					if(this.txt_senha.validador.validate().type == ValidationResultEvent.VALID){
-						ro.pesquisarUsuario(resultPesquisarUsuario,this.txt_login.text,"codigo");
+					if(this.validador.validate().type == ValidationResultEvent.VALID){
+						usuario = new UsuarioVO();
+						usuario.codigo = 0;
+						usuario.comissao = 0;
+						usuario.nome = "";
+						usuario.login = this.txt_login.text;
+						usuario.senha = this.txt_senha.text
+						ro.logar(resultPesquisarUsuario,usuario);
 					}
 				}
 			}	
 			
 			private function resultPesquisarUsuario(event:ResultEvent):void{
 				
-				var array:Array = event.result as Array;
+			this.usuario = event.result as UsuarioVO;
 				
 				
-				for(var  i:int=0; i < array.length;i++){
-					if(array[i].codigo == Number(this.txt_login.text)){
-						this.usuario = array[i];
-					}
-				}
-				if(this.usuario!=null){
-					if(this.usuario.senha == this.txt_senha.text){
+			//	for(var  i:int=0; i < array.length;i++){
+				//	if(array[i].codigo == Number(this.txt_login.text)){
+				//		this.usuario = array[i];
+				//	}
+				//}
+				
+				//if(this.usuario!=null){
+				//	if(this.usuario.senha == this.txt_senha.text){
 						Alert.show("Autenticação Realizada com sucesso!","Sucesso");
 						this.dispatchEvent(new AutenticacaoUsuarioEvent(this.usuario,AutenticacaoUsuarioEvent.SUCESSO));
 						PopUpManager.removePopUp(this);
-					}
-				}else{
-					Alert.show("Autenticação não foi realizada!","Ops!");
-				}
+			//		}
+			//	}else{
+			//		Alert.show("Autenticação não foi realizada!","Ops!");
+			//	}
 					
 			}		
 			public function applicationExit():void {				
@@ -72,9 +79,10 @@
 			<mx:Label x="35" y="114" text="Senha:" fontWeight="bold"/>
 			<mx:Button x="181" y="160" label="Autenticar" click="{autenticar()}" />
 			<inputs:TextoInput x="110" y="84" id="txt_login" width="127" requerido="true"/>
-			<inputs:TextoInput x="110" y="112" id="txt_senha" width="127" requerido="true" displayAsPassword="true"/>
+			<mx:TextInput x="110" y="112" id="txt_senha" width="127" displayAsPassword="true"/>
 			<mx:TextArea x="4.5" y="10" editable="false" width="270.5" borderStyle="none" backgroundAlpha="0.0">
 				<mx:text>Para ter acesso ao sistema é preciso ser autenticado.</mx:text>
 			</mx:TextArea>		
 	</mx:Canvas>
+		<mx:Validator id="validador" required="{true}" source="{this.txt_senha}" property="text" requiredFieldError="Campo requerido!"/>
 </mx:TitleWindow>

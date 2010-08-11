@@ -9,5 +9,6 @@ package negocio.vo
 		public var comissao:Number;
 		public var senha:String;
 		public var permissao:int;
+		public var login:String;
 	}
 }
