@@ -3,6 +3,8 @@
 	
 	<mx:Script>
 		<![CDATA[
+			import flash.sampler.NewObjectSample;
+			import mx.events.ValidationResultEvent;
 			import mx.controls.Alert;
 			import mx.collections.ArrayCollection;
 			import mx.rpc.events.ResultEvent;
@@ -54,7 +56,7 @@
 						if(this.cb_local.selectedIndex!=-1){
 						if(this.cb_unidade.selectedIndex!=-1){
 						u.codBarra = this.ti_codBarra.text;
-						u.codFornecedor = Number(this.ti_codFornecedor.text);
+						u.codFornecedor = Number(this.ti_codFornecedor.text);	
 						u.codGrupo = this.itensGrupo[this.cb_grupo.selectedIndex].codigo;
 						u.codLocal = this.itensLocal[this.cb_local.selectedIndex].codigo;
 						u.codUnidade = this.itensUnidade[this.cb_unidade.selectedIndex].codigo;
@@ -64,6 +66,7 @@
 						u.qtdEmEstoque = Number(this.ti_qtdEstoque.text);
 						u.qtdPorUnidade = Number(this.ti_qtdUnidade.text);
 						u.referencia = this.ti_referencia.text;
+						u.foto = "";
 						
 						}else{
 						Alert.show("O campo Unidade é requerido");
@@ -122,7 +125,25 @@
 			}
 			
 			
+			private function removerItem():void{
+				this.item = this.grid_itens.selectedItem as ProdutoVO;
+				this.ro.removerProduto(resultadoRemover, this.item);
+				
+				
+			}
+			private function resultadoRemover(event:ResultEvent):void{
+				if(event.result){
+					Alert.show("O item foi removido!","Sucesso");
+					this.itensArray.removeItemAt(this.grid_itens.selectedIndex);
+				}else{
+					Alert.show("O item não pôde ser removido!","Ops!");					
+				}
+				this.limpar();
+			}
+			
+			
 			private function limpar():void{
+				this.bt_remover.enabled = false;
 			this.ti_codigo.text = "";
 			this.cb_grupo.selectedIndex = -1;
 			this.cb_unidade.selectedIndex = -1;
@@ -139,6 +160,8 @@
 			this.ti_foto.text  ="";
 			this.img_produto.source = "icons/branco.png";
 			this.ti_pesquisar.text = "";
+			this.grid_itens.selectedIndex = -1;
+			this.add.label = "Adicionar"
 			}
 			
 			public function selecionarGrupo(label:int):void{
@@ -179,16 +202,58 @@
 				this.ti_codFornecedor.text = this.item.codFornecedor.toString();
 				this.ti_codigo.text = this.item.codigo.toString();
 				this.ti_descricao.text = this.item.descricao;
-				this.ti_pCompra.text = this.item.precoCompra.toString();
-				this.ti_pVenda.text = this.item.precoVenda.toString();
+				this.ti_pCompra.setValor(this.item.precoCompra.toString());
+				this.ti_pVenda.setValor(this.item.precoVenda.toString());
 				this.ti_qtdEstoque.text = this.item.qtdEmEstoque.toString();
 				this.ti_qtdUnidade.text = this.item.qtdPorUnidade.toString();
 				this.ti_referencia.text = this.item.referencia;
 				this.selecionarGrupo(this.item.codGrupo);
 				this.selecionarLocal(this.item.codLocal);
 				this.selecionarUnidade(this.item.codUnidade);
+				this.add.label = "Atualizar";
+				this.bt_remover.enabled = true;
                 						
 			} 
+			private function pesquisarItem():void{
+				if(this.ti_pesquisar.text == ""){
+					this.listarALLItens();
+				}else if(this.ti_pesquisar.validador.validate().type == ValidationResultEvent.VALID ){
+					
+					if(this.rd_codigo.selected){
+						this.ro.pesquisarProduto(resultadoPesquisaItem,this.ti_pesquisar.text,"codigo");
+					}else if(this.rd_descricao.selected){
+						this.ro.pesquisarProduto(resultadoPesquisaItem,this.ti_pesquisar.text,"descricao");
+					}else {
+						this.ro.pesquisarProduto(resultadoPesquisaItem,this.ti_pesquisar.text,"referencia");
+					}
+					
+				}else{
+					Alert.show("erro");
+				}
+			}
+			private function resultadoPesquisaItem(event:ResultEvent):void{
+				this.itensArray = new ArrayCollection(event.result as Array);
+			}
+			
+			private function procurarFornecedor():void{
+			 if(this.ti_codFornecedor.text!=""){
+			
+		 
+			 this.ro.pesquisarFornecedor(pegouF,this.ti_codFornecedor.text,"codigo")
+			 }else{
+			 Alert.show("O campo Codigo Fornecedor é requerido");
+			 }
+			
+			}
+			private function pegouF(event:ResultEvent):void{
+			var array:ArrayCollection;
+			
+			array = new ArrayCollection(event.result as Array);
+			 if(array.length>0){
+			if(array[0].codigo==Number(this.ti_codFornecedor.text)){
+			this.ti_nomeFornecedor.text =array[0].nome;
+			}}
+			}
 		]]>
 	</mx:Script>
 	
@@ -203,10 +268,10 @@
 	<mx:TextInput x="99" y="8" width="94" backgroundColor="#AAB5F6" id="ti_codigo" editable="false"/>
 	<mx:Label x="10" y="214" text="Qtd. Estoque:"/>
 	<mx:Label x="178" y="214" text="Preco de Compra:"/>
-	<ns1:BuscarButton x="509" y="8" height="23"/>
+	<ns1:BuscarButton x="509" y="8" click="{this.pesquisarItem()}" height="23"/>
 	<mx:Label x="10" y="168" text="Fornecedor:"/>
 	<ns2:InteiroInput x="99" y="166" width="94" id="ti_codFornecedor"/>
-	<ns1:BuscarButton x="201" y="167" height="21"/>
+	<ns1:BuscarButton x="201" y="167" click="{this.procurarFornecedor()}" height="21"/>
 	<mx:Image x="10" y="276" id="img_produto" width="171" height="172" source="icons/branco.png"/>
 	<mx:Label x="10" y="42" text="Cód. Barra:"/>
 	<mx:TextInput x="99" y="40" maxChars="20" width="166" id="ti_codBarra"/>
@@ -231,12 +296,12 @@
 	<mx:Label x="372" y="214" text="Preco de Venda:"/>
 	<ns2:NumberInput x="489" y="212" width="60" id="ti_pVenda"/>
 	<ns1:CleanButton x="257" y="244" click="{this.limpar()}" label="Limpar"/>
-	<ns1:ADDButton x="10" y="244" click="{this.adicionar()}" label="Adicionar"/>
-	<ns1:RemoveButton x="136" y="244" label="Remover"/>
+	<ns1:ADDButton id="add" x="10" y="244" click="{this.adicionar()}" label="Adicionar"/>
+	<ns1:RemoveButton id ="bt_remover"  x="136" y="244" click="{this.removerItem()}" label="Remover" enabled="false"/>
 	<mx:TextInput x="10" y="456" width="171" backgroundColor="#AAB5F6" id="ti_foto"/>
 	<ns1:BuscarButton x="189" y="456" height="23"/>
-	<mx:TextInput x="289" y="8" width="206" id="ti_pesquisar"/>
-	<mx:RadioButton x="363" y="38" label="descricao"/>
-	<mx:RadioButton x="289" y="38" label="código"/>
-	<mx:RadioButton x="461" y="38" label="referência"/>
+	<ns2:TextoInput x="289" y="8" width="206" id="ti_pesquisar"/>
+	<mx:RadioButton x="363" y="38" label="descricao" id="rd_descricao"/>
+	<mx:RadioButton x="289" y="38" label="código" id="rd_codigo"/>
+	<mx:RadioButton x="461" y="38" label="referência" id="rd_referencia"/>
 </mx:Window>
