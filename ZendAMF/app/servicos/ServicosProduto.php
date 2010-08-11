@@ -16,8 +16,7 @@ class ServicosProduto {
 		
 		$sql = "insert into produto (codBarra,codGrupo
 		 ,descricao ,referencia ,codLocal ,codUnidade
-		 ,qtdPorProduto ,qtdEmEstoque ,codFornecedor ,precoCompra ,precoVenda,foto) values ('{$item->nome}'		 
-		 ,'{$item->codBarra}' ,{$item->codGrupo} ,'{$item->descricao}'
+		 ,qtdPorUnidade ,qtdEmEstoque ,codFornecedor ,precoCompra ,precoVenda,foto) values ('{$item->codBarra}' ,{$item->codGrupo} ,'{$item->descricao}'
 		 ,'{$item->referencia}' ,{$item->codLocal}
 		 ,{$item->codUnidade} ,{$item->qtdPorUnidade}
 		 ,{$item->qtdEmEstoque} ,{$item->codFornecedor}
@@ -91,7 +90,7 @@ class ServicosProduto {
 
 	public function atualizarProduto(ProdutoVO $produto) {
 		
-		$sql = "UPDATE produto SET codBarra = '$produto->codBarra', codGrupo = $produto->codGrupo, descricao = '$produto->descricao', referencia = '$produto->referencia',codLocal = $produto->codLocal,codUnidade=$produto->codUnidade,qtdPorUnidade=$produto->bairro,qtdEmEstoque=$produto->qtdEmEstoque,codFornecedor=$produto->codFornecedor,precoCompra=$produto->precoCompra,
+		$sql = "UPDATE produto SET codBarra = '$produto->codBarra', codGrupo = $produto->codGrupo, descricao = '$produto->descricao', referencia = '$produto->referencia',codLocal = $produto->codLocal,codUnidade=$produto->codUnidade,qtdPorUnidade=$produto->qtdPorUnidade,qtdEmEstoque=$produto->qtdEmEstoque,codFornecedor=$produto->codFornecedor,precoCompra=$produto->precoCompra,
 		precoVenda=$produto->precoVenda,foto='$produto->foto' where codigo=$produto->codigo";
 			
 		$resultado = $this->conn->Execute($sql);
@@ -101,6 +100,25 @@ class ServicosProduto {
 }
 //$eu = new ServicosProduto();
 //$c = new ProdutoVO();
+//$c = $eu->pesquisarProduto(1,"codigo");
+//echo $c[0]->codigo;
+//$c[0]->descricao = "anderson murilo";
+//$eu->atualizarProduto($c[0]);
+
+//$c->codBarra = "sdf";
+//$c->codFornecedor = 1;
+//$c->codGrupo = 1;
+//$c->codLocal =1;
+//$c->codUnidade = 1;
+//$c->descricao = "asdfasdfasdfasdfasdfdafasdfasdfsadf";
+//$c->referencia = "asdfkjsaflkasjdfçslkdfjsalçfkj";
+//$c->foto = "sdf";
+//$c->precoCompra = 1.0;
+//$c->precoVenda = 1.0;
+//$c->qtdEmEstoque=1;
+//$c->qtdPorUnidade = 1;
+//$eu->addProduto($c);
+//echo $c->codigo;
 //$c->codigo = 47;
 //$c->dataCadastro = "2010-09-31";
 //$eu->getProdutos();
