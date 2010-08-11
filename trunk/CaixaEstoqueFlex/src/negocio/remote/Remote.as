@@ -189,6 +189,11 @@ package negocio.remote{
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
 		
+		public function logar(result:Function,usuario:UsuarioVO):void{
+			_remote.source = "ServicosUsuario";
+			var async:AsyncToken = _remote.logar(usuario);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
 		public function removerUsuario(result:Function,usuario:UsuarioVO):void{
 			_remote.source = "ServicosUsuario";
 			var async:AsyncToken = _remote.removerUsuario(usuario);
@@ -244,7 +249,7 @@ package negocio.remote{
 		}
 		
 		private function defaultFaultHandler(e:FaultEvent):void{
-			Alert.show(e.toString()+ "","Erro");
+			Alert.show(e.toString()	+ "","Erro");
 		}
 		
 		private static var _instance:Remote;
