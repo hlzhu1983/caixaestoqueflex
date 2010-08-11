@@ -69,8 +69,8 @@
 			}
 			
 			private function addItem():void{
-				var u:ClienteVO = new ClienteVO();
-				if(this.ti_nome.validador.validate().type == ValidationResultEvent.INVALID){
+					var u:ClienteVO = new ClienteVO();
+					if(this.ti_nome.validador.validate().type == ValidationResultEvent.INVALID){
 					Alert.show("Campo nome obrigatorio!","Ops!");
 				}else{
 					if(this.ti_codigo.text==""){

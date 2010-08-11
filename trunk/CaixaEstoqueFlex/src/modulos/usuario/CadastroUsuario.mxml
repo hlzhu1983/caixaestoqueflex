@@ -3,7 +3,7 @@
 	 close="fechar()" 
 	 creationComplete="init()"
 	  showCloseButton="true"
-	   layout="vertical" title="Gerenciamento Usuarios" xmlns:utilidades="utilidades.*" xmlns:botoes="utilidades.botoes.*" xmlns:inputs="utilidades.inputs.*">
+	   layout="vertical" title="Gerenciamento Usuarios" xmlns:utilidades="utilidades.*" xmlns:botoes="utilidades.botoes.*" xmlns:inputs="utilidades.inputs.*" width="538" height="396">
 	<mx:states>
 		<mx:State name="st_alterarSenha">
 			<mx:AddChild relativeTo="{this.vb_senhas}" position="before">
