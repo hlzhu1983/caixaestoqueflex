@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Window  xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
 	width="1024" height="700" title="Pré-Venda"
-	xmlns:utilidades="utilidades.*" closing="{this.onCloseCommand(event)}"
+	xmlns:utilidades="utilidades.*" fontSize="12" closing="{this.onCloseCommand(event)}"
 	keyDown="keyEvento(event)"  backgroundAlpha="1.0" xmlns:inputs="utilidades.inputs.*" 
 	xmlns:botoes="utilidades.botoes.*" xmlns:local="*" creationComplete="init()" alpha="1.0">
 	
@@ -142,7 +142,7 @@
 			<mx:Label x="10" y="10" text="Desconto:" fontSize="18" fontWeight="bold"/>
 			<inputs:NumberInput valorDefault="0,00"  x="16" y="44" fontSize="12"/>
 			<mx:Button id="bt_cancelarPreVenda" label="Cancelar Pré-Venda" toolTip="Clique para cancelar orçamento"  x="407" y="46"/>
-			<mx:Button id="bt_gerarPreVenda" label="Gerar Pré-Venda" toolTip="Clique para gerar orçamento" click="{orcamento()}"  x="277" y="46"/>
+			<mx:Button id="bt_gerarPreVenda" label="Gerar Pré-Venda" toolTip="Clique para gerar orçamento" click="{orcamento()}"  x="246" y="46"/>
 		</mx:Panel>
 	</mx:VBox>
 </mx:Window>
