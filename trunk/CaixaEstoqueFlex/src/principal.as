@@ -13,10 +13,14 @@
 	import modulos.unidade.CadastroUnidade;
 	import modulos.usuario.CadastroUsuario;
 	
+	import mx.collections.ArrayCollection;
 	import mx.controls.Alert;
 	import mx.core.Application;
 	import mx.core.Window;
-	import mx.events.MenuEvent;
+	import mx.effects.Glow;
+	import mx.effects.Move;
+	import mx.events.ItemClickEvent;
+	import mx.events.ListEvent;
 	
 	import negocio.vo.UsuarioVO;
 	
@@ -25,14 +29,33 @@
 	[Bindable]
 	public var usuario:UsuarioVO;
 	
+	[Bindable]
+	public var itensLista:ArrayCollection;
+	
+	public var currentMenu:int;
+	
 	public var logou:Boolean;
+	
+	private var listArray:Array=[
+         [{label: "Alterar Senha do Usuario"},{label: "Sair"}],
+         [{label: "Cadastro Empresa"},{label: "Cadastro Cliente", funcao: gerCliente},
+         {label: "Cadastro Usuário", funcao: gerUsuario },{label: "Cadastro Grupo Produto", funcao: gerGrupoProduto },
+         {label: "Cadastro Local Produto", funcao: gerLocalProduto},{label: "Cadastro Produto", funcao: gerProduto },
+         {label: "Cadastro Fornecedor", funcao: gerFornecedor}, {label: "Cadastro Unidades", funcao: gerUnidade},
+         {label: "Cadastro Forma de Pagamento", funcao: gerFormadePagto }],
+         [{label: "Pré-Venda", funcao: preVendaWindow},{label: "Frente de Caixa", funcao: frenteLoja},
+         {label: "Pedido de Compra"},{label: "Orçamento", funcao: orcamentoWindow},
+         {label: "Transferência entre Filiais"},{label: "Devolução"}],
+         [{label: "Ainda Falta Fazer"}],
+         [{label: "Calculadora"},{label: "Cálculo de Dias"}],
+         [{label: "Ajuda"},{label: "Sobre o Sistema"},{label: "Tópicos de Ajuda"},
+         {label: "Versão"}]];
 	
 	
 	public function init():void{
 		this.logou = false;	
 		Application.application.systemManager.addEventListener(AutenticacaoUsuarioEvent.SUCESSO,usuarioAutenticado);
-		Util.abrePopUp(this,ComponenteAutenticacao,true);
-		menuBar.addEventListener(MenuEvent.ITEM_CLICK,itemClickInfo);
+		/* Util.abrePopUp(this,ComponenteAutenticacao,true);*/
 	}	
 	
 	public function usuarioAutenticado(event:AutenticacaoUsuarioEvent):void{
@@ -40,49 +63,40 @@
 		this.logou = true;
 	}
 	
-	
-	private function itemClickInfo(event:MenuEvent):void {
-		switch(event.label){
-			case "Frente de Caixa":
-				this.frenteLoja();
-				break;
-			case "Orçamento":
-				this.orcamentoWindow();
-				break;
-			case "Pré-Venda":
-				this.preVendaWindow();
-				break;
-			case "Cadastro Unidades":
-				this.gerUnidade();
-				break;
-			case "Cadastro Cliente":
-				this.gerCliente();
-				break;
-			case "Cadastro Produto":
-				this.gerProduto();
-				break;
-			case "Cadastro Forma de Pagamento": 
-			    this.gerFormadePagto();
-			    break;
-		    case "Cadastro Grupo Produto": 
-			    this.gerGrupoProduto();
-			    break;
-			 case "Cadastro Local Produto": 
-			    this.gerLocalProduto();
-			    break;
-			  case "Cadastro Fornecedor":
-				this.gerFornecedor();
-				break;
-			  case "Cadastro Usuário":
-				this.gerUsuario();
-				break;
-			    	
-			default:
-				Alert.show("Não implementado!","Alerta "+event.item.@id,4,this);
-				break;
+	private function itemClickTile(event:ListEvent):void {
+		this.tl_itens.visible = false;
+		try{
+			this.listArray[this.currentMenu][(event.rowIndex * 4) + event.columnIndex].funcao();
+		}catch(e:Error){
+			Alert.show("Não Implementado","Ops!");
 		}
+	}
+	
+	private function itemClickInfo(event:ItemClickEvent):void {
+		this.tl_itens.visible = true;
+		this.menuEfeito();
+		this.currentMenu = event.index;
+		this.tl_itens.dataProvider = new ArrayCollection(this.listArray[event.index]);
     }
     
+    public function menuEfeito():void{
+    	var m:Move = new Move(this.tl_itens);
+    	m.xFrom = 0;
+    	m.yFrom = 0;
+    	m.xBy = 300;
+    	m.play();
+    	
+    	var g:Glow = new Glow(this.tl_itens);
+    	g.duration = 1000; 
+	    g.alphaFrom=1.0; 
+	    g.alphaTo=0.3; 
+	    g.blurXFrom=0.0; 
+	    g.blurXTo=1000.0; 
+	    g.blurYFrom=0.0; 
+	    g.blurYTo=1000.0; 
+	    g.color=0x009dff;
+	    g.play();
+    }
 	
 	public function frenteLoja():void{
 		this.logou = false;	
@@ -113,10 +127,13 @@
 	public function preVendaWindow():void{
 		this.logou = false;	
 		var newWindow:Window = new PreVendaWindow();
+		newWindow.maximizable=false;
+		newWindow.minimizable = false;
+		newWindow.resizable = false;
+		newWindow.open(false);
 		newWindow.nativeWindow.x = 0;
 		newWindow.nativeWindow.y = 0;
 		newWindow.activate();
-		
 	}
 	
 	public function gerUnidade():void{		

@@ -214,6 +214,12 @@ package negocio.remote{
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
 		
+		public function getProduto(result:Function,texto:String,coluna:String):void{
+ 			_remote.source = "ServicosProduto";
+			var async:AsyncToken = _remote.getProduto(texto,coluna);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
 		public function addProduto(result:Function,produto:ProdutoVO):void{
 			_remote.source = "ServicosProduto";
 			var async:AsyncToken = _remote.addProduto(produto);

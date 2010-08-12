@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
+	layout="absolute" title="Preview Produto" xmlns:inputs="utilidades.inputs.*" 
+	alpha="1.0" backgroundAlpha="0.6" 
+	width="100%" height="302" creationComplete="init()">
+
+	<mx:Metadata>
+		[Event(name="adicaoSucessoEvent","events.ItemPreVendaEvent")]
+		[Event(name="adicaoFalhouEvent","events.ItemPreVendaEvent")]
+	</mx:Metadata>
+	
+	
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.core.Application;
+			import negocio.vo.ItemPreVendaVO;
+			import events.ItemPreVendaEvent;
+			import mx.managers.PopUpManager;
+			import mx.controls.Alert;
+			import negocio.vo.ProdutoVO;
+			
+			[Bindable]
+			public var valor:String;
+			
+			[Bindable]
+			public var produto:ProdutoVO;
+			
+			public function init():void{
+				this.bt_ok.setFocus();
+				this.bt_ok.drawFocus(true);
+			}
+			
+			public function setProduto(prod:ProdutoVO):void{
+				this.produto = prod;
+				this.valor = String(this.produto.precoVenda * this.quantProduto.getValor());
+			}
+			
+			public function valorTotal():void{
+				this.valor = Number(this.produto.precoVenda * this.quantProduto.getValor()).toFixed(2);
+			}
+			
+			public function inserirInsercaoProduto():void{
+					var itemPrevenda:ItemPreVendaVO = new ItemPreVendaVO();
+					itemPrevenda.codigo = this.produto.codigo;
+					itemPrevenda.descricao = this.produto.descricao;
+					itemPrevenda.quantidade = this.quantProduto.getValor();
+					itemPrevenda.valor = Number(this.valor);
+					Application.application.dispatchEvent(new ItemPreVendaEvent(itemPrevenda,ItemPreVendaEvent.ADICIONADOSUCEESSO));
+					PopUpManager.removePopUp(this);
+			}
+			
+			public function cancelarInsercaoProduto():void{
+				this.dispatchEvent(new ItemPreVendaEvent(null,ItemPreVendaEvent.ADICIONADOFALHOU));
+				PopUpManager.removePopUp(this);
+			}
+			
+		]]>
+	</mx:Script>
+	
+	<mx:Label x="19" y="26" text="Código"/>
+	<mx:Label x="19" y="52" id="lb_codProduto" text="{this.produto.codigo}"/>
+	<mx:Label x="81" y="26" text="Descrição"/>
+	<mx:Label x="81" y="52" id="lb_descricaoProduto" text="{this.produto.descricao}"/>
+	<mx:Label x="289" y="26" text="Quant. Estoque"/>
+	<mx:Label x="289" y="52" id="lb_quantEstoque" text="{this.produto.qtdEmEstoque}"/>
+	<mx:FormItem direction="horizontal" horizontalAlign="center" width="100%" x="10" y="212">
+           <mx:Button x="80" y="218" label="Adicionar Produto" id="bt_ok" click="{inserirInsercaoProduto()}"/>
+			<mx:Button x="217" y="218" label="Cancelar" id="bt_cancelar" click="{cancelarInsercaoProduto()}" />
+        </mx:FormItem>
+	<mx:FormItem defaultButton="{this.bt_ok}" id="fi_quant" label="Quantidade:" fontSize="16" x="10" y="130" width="282" required="true">
+		<inputs:NumberInput id="quantProduto" width="144" x="158" y="108"  change="{this.valorTotal()}"/>
+	</mx:FormItem>
+	<mx:Label x="17" y="173" text="Valor Total:" fontWeight="bold" color="#000000" fontSize="20"/>
+	<mx:Label x="161" y="173" id="lb_valoTotal" fontWeight="bold" color="#000000" fontSize="20" text="{this.valor}"/>
+	<mx:Label x="19" y="95" text="Valor Unitário:"/>
+	<mx:Label x="118" y="95" id="lb_valorProduto" text="{this.produto.precoVenda}"/>
+</mx:TitleWindow>
