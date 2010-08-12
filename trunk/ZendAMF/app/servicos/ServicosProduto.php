@@ -62,11 +62,33 @@ class ServicosProduto {
 		return $retorna_dados_item;
 	}
 	
+	public function getProduto($texto,$coluna){
+		$sql = "select * from produto where $coluna = '$texto'";
+		$resultado = $this->conn->Execute($sql);
+		while($registro = $resultado->FetchNextObject()){			
+			$dados_item = new ProdutoVO();
+			$dados_item->codigo = $registro->CODIGO;
+			$dados_item->codBarra = $registro->CODBARRA;
+			$dados_item->codGrupo = $registro->CODGRUPO;
+			$dados_item->descricao = $registro->DESCRICAO;
+			$dados_item->referencia = $registro->REFERENCIA;
+			$dados_item->codLocal = $registro->CODLOCAL;
+			$dados_item->codUnidade = $registro->CODUNIDADE;
+			$dados_item->qtdPorUnidade = $registro->QTDPORUNIDADE;
+			$dados_item->qtdEmEstoque = $registro->QTDEMESTOQUE;
+			$dados_item->codFornecedor = $registro->CODFORNECEDOR;
+			$dados_item->precoCompra = $registro->PRECOCOMPRA;
+			$dados_item->precoVenda = $registro->PRECOVENDA;
+			$dados_item->foto = $registro->FOTO;
+		}
+		return $dados_item;
+	}
+	
 	public function getProdutos(){
 		$sql = "select * from produto";
 		
 		$resultado = $this->conn->Execute($sql);
-		
+		$dados_item = null;
 		while($registro = $resultado->FetchNextObject()){			
 			$dados_item = new ProdutoVO();
 			$dados_item->codigo = $registro->CODIGO;
@@ -103,7 +125,7 @@ class ServicosProduto {
 //$c = $eu->pesquisarProduto(1,"codigo");
 //echo $c[0]->codigo;
 //$c[0]->descricao = "anderson murilo";
-//$eu->atualizarProduto($c[0]);
+//$eu->getProduto("1","codigo");
 
 //$c->codBarra = "sdf";
 //$c->codFornecedor = 1;
