@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="400" height="300">
+
+	<mx:Script>
+		<![CDATA[
+			
+			
+			[Bindable]
+			public var source:String = "DeleteRecord.png";
+			
+			public var load:Boolean = false;
+			
+			public var arquivo:FileReference;
+			
+			public function browser():void{
+				arquivo = new FileReference();
+				arquivo.addEventListener(Event.SELECT, fileRef_select);
+				arquivo.addEventListener(Event.COMPLETE, completo);
+				var tipo_arquivos:FileFilter = new FileFilter("Arquivos do tipo Imagens","*.jpg; *.gif;*.png");
+				var array_tipos_arquivos:Array = new Array(tipo_arquivos);
+				arquivo.browse(array_tipos_arquivos);
+				
+			}
+			
+			 private function fileRef_select(evt:Event):void {
+			 		this.arquivo.load();
+			 		this.load = true;
+            }
+            
+            private function completo(evt:Event):void{
+	            	var s:FileReference = new FileReference();
+	            	s.addEventListener(Event.COMPLETE, completoSalvar);
+	            	s.save(evt.currentTarget.data,evt.currentTarget.name);
+            }
+			
+			private function completoSalvar(evt:Event):void{
+	          	this.source = evt.currentTarget.name;
+            }
+			
+			
+			
+		]]>
+	</mx:Script>
+	<mx:Image width="160" height="95" source="{this.source.toString()}" />
+	<mx:TextInput x="87" y="190"/>
+	<mx:Button label="Button" click="{this.browser()}"/>
+	
+</mx:TitleWindow>

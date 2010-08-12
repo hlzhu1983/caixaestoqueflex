@@ -8,7 +8,7 @@
 	<mx:ApplicationControlBar  x="0" dock="true" y="0" width="1024" horizontalAlign="center" fillAlphas="[0.42, 1.0]" 
 		height="46" color="#FFFFFF" fillColors="[#000000, #000000]">
 		<mx:Label id="nomeUsuario" text="{this.usuario.nome}" fontWeight="bold" fontSize="12"/>
-		<mx:ButtonBar id="btBar" itemClick="{itemClickInfo(event)}" alpha="1.0" >
+		<mx:ButtonBar id="btBar" itemClick="{itemClickInfo(event)}" alpha="0.62"  fontWeight="normal" horizontalGap="3">
 			<mx:dataProvider>
 	           <mx:Object label="Arquivo"/>
 	           <mx:Object label="Cadastros"/>

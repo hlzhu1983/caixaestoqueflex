@@ -6,7 +6,7 @@
 	 showCloseButton="true"
 	 close="{this.fechar()}"
 	 xmlns:botoes="utilidades.botoes.*" 
-	 fontSize="12" width="890" height="100%" xmlns:utilidades="utilidades.*" borderStyle="inset">
+	 fontSize="12" width="890" height="100%" xmlns:utilidades="utilidades.*">
 	
 		<mx:Script>
 		<![CDATA[

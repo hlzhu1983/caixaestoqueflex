@@ -37,7 +37,7 @@
 	public var logou:Boolean;
 	
 	private var listArray:Array=[
-         [{label: "Alterar Senha do Usuario"},{label: "Sair"}],
+         [{label: "Alterar Senha do Usuario", funcao: testImage},{label: "Sair"}],
          [{label: "Cadastro Empresa"},{label: "Cadastro Cliente", funcao: gerCliente},
          {label: "Cadastro Usuário", funcao: gerUsuario },{label: "Cadastro Grupo Produto", funcao: gerGrupoProduto },
          {label: "Cadastro Local Produto", funcao: gerLocalProduto},{label: "Cadastro Produto", funcao: gerProduto },
@@ -175,6 +175,11 @@
 	public function gerUsuario():void{		
 		Util.abrePopUp(this,CadastroUsuario,true);
 	}
+	
+	public function testImage():void{		
+		Util.abrePopUp(this,TesteImage,true);
+	}
+
 	
 	
 	
