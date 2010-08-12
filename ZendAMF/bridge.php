@@ -11,7 +11,7 @@ include 'app/servicos/ServicosGrupoProduto.php';
 include 'app/servicos/ServicosLocalProduto.php';
 include 'app/servicos/ServicosUsuario.php';
 include_once 'app/vo/ClienteVO.php';
-
+require_once 'Zend/Amf/Server/Exception.php';
 
 
 
