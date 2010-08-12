@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Window  xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
 	width="1024" height="700" title="Pré-Venda"
-	xmlns:utilidades="utilidades.*" close="{this.onCloseCommand(event)}"
-	keyDown="funcionalidades(event)"  backgroundAlpha="0" xmlns:inputs="utilidades.inputs.*" 
-	xmlns:botoes="utilidades.botoes.*" xmlns:local="*">
+	xmlns:utilidades="utilidades.*" closing="{this.onCloseCommand(event)}"
+	keyDown="keyEvento(event)"  backgroundAlpha="1.0" xmlns:inputs="utilidades.inputs.*" 
+	xmlns:botoes="utilidades.botoes.*" xmlns:local="*" creationComplete="init()" alpha="1.0">
 	
 	<mx:Script>
 		<![CDATA[
+			import mx.rpc.events.ResultEvent;
+			import events.ItemPreVendaEvent;
+			import mx.core.Application;
+			import negocio.vo.ProdutoVO;
+			import utilidades.Util;
+			import negocio.remote.Remote;
 			import negocio.vo.PreVendaVO;
 			import mx.events.ValidationResultEvent;
 			import mx.controls.Alert;
@@ -21,8 +27,23 @@
 			
 			[Bindable]
 			public var preVenda:PreVendaVO = new PreVendaVO()
+			
+			public var ro:Remote = Remote.getInstance();
+			
+			
+			private function init():void{
+				Application.application.systemManager.addEventListener(ItemPreVendaEvent.ADICIONADOSUCEESSO,addItemProduto);
+				this.focusManager.setFocus(this.codProduto);
+			}
+			
+			public function addItemProduto(event:ItemPreVendaEvent):void{
+				this.produtoLista.addItem(event.itemPreVenda);
+				this.valorTotal.text = Number(event.itemPreVenda.valor + Number(this.valorTotal.text)).toFixed(2);
+				this.isProduto = true;
+				this.focusManager.setFocus(this.codProduto);
+			}
 						
-        	private function funcionalidades(event:KeyboardEvent):void{
+        	private function keyEvento(event:KeyboardEvent):void{
         		switch(event.keyCode){
         			case 123: 
 						this.stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
@@ -34,7 +55,7 @@
 	        						Alert.show("Deseja realmente deletar o item?",
 	        							"Alerta",Alert.OK | Alert.CANCEL,this,removeItemArrayCollection,null,Alert.OK);
 	        					}else{
-	        						Alert.show("Não há item selecionado!"+"","",4,this);
+	        						Alert.show("Não há item selecionado!","Ops!",4,this);
 	        					}							
 	        				}
         				}
@@ -44,6 +65,7 @@
         	
         	public function removeItemArrayCollection(event:CloseEvent):void{
         		if(event.detail == Alert.OK){
+        			this.valorTotal.text = Number(Number(this.valorTotal.text) - this.produtoLista.getItemAt(this.produtos.selectedIndex).valor).toFixed(2);
         			this.produtoLista.removeItemAt(this.produtos.selectedIndex);
 					if(this.produtoLista.length == 0){
 							this.isProduto = false;
@@ -55,23 +77,32 @@
 			public function onCloseCommand(event:Event):void{
 				if(isProduto){
 					event.preventDefault();
-					Alert.show("A janela não pode ser fechada","Alerta",4,this);
+					Alert.show("A janela não pode ser fechada. Ainda há produtos!","Alerta",4,this);
 				}				
    			}	
 			
 			
-			public function inserirProduto():void{
-				if(codProduto.validador.validate().type == ValidationResultEvent.INVALID){
-					focusManager.setFocus(codProduto);
-					Alert.show("Código Incorreto","Erro",4,this);
-					return;
+			public function previewProduto():void{
+				
+				if(this.codProduto.validador.validate().type == ValidationResultEvent.INVALID){
+					this.codProduto.setFocus();
+				}else{
+					this.ro.getProduto(result_previewProduto,this.codProduto.text,"codigo");
 				}
-              	this.produtoLista.addItem({codProduto:this.codProduto.text,quantidade:this.quantProduto.text});
-				this.codProduto.text = "";
-				this.quantProduto.text = "";
-				focusManager.setFocus(codProduto);
-				this.isProduto = true;
-                
+			}
+			
+			public function result_previewProduto(e:ResultEvent):void{
+				if(e.result == null){
+					Alert.show("Produto não exite","Ops",4,this,focusTextCodProduto);
+				}else{
+					var pvProduto:PreviewProdutoTitleWindow = PreviewProdutoTitleWindow(Util.abrePopUp(this,PreviewProdutoTitleWindow,true));
+					pvProduto.setProduto(e.result as ProdutoVO);
+					this.codProduto.text = "";
+				}
+			}
+			
+			public function focusTextCodProduto(e:Event):void{
+				this.codProduto.setFocus();
 			}
 			
 			public function orcamento():void{
@@ -87,48 +118,31 @@
 			<mx:Spacer width="50%"/>
 			<utilidades:RelogioDigital/>	
 		</mx:ApplicationControlBar>
-		<mx:HBox width="100%" height="80%" >
-			<mx:DataGrid id="produtos"  width="70%"  height="100%" rowCount="10" dataProvider="{produtoLista}">
+		<mx:VBox height="80%" width="100%">
+			<mx:HBox width="100%" height="20%" horizontalAlign="center">
+				<mx:Panel title="Entrada de Produtos" layout="absolute" height="104" width="481">
+					<mx:Label text="Código Produto" x="18" y="17" fontSize="20"/>
+					<inputs:InteiroInput  id="codProduto" requerido="true"  enter="{this.previewProduto()}" x="184" y="15" fontSize="20" width="209"/>
+					<botoes:BuscarButton  x="405" y="21"/>
+				</mx:Panel>
+				<mx:Panel title="Valor Total" horizontalAlign="right" height="30%" width="395">
+					<mx:Label id="valorTotal" text="00.00" fontSize="50"  x="23" y="26"/>
+				</mx:Panel>
+			</mx:HBox>
+			<mx:DataGrid id="produtos"  width="100%"  height="80%" rowCount="10" dataProvider="{produtoLista}">
 				<mx:columns>
-					<mx:DataGridColumn headerText="Cod Produto" dataField="codProduto"/>
+					<mx:DataGridColumn headerText="Cod. Produto" dataField="codigo"/>
+					<mx:DataGridColumn headerText="Descrição" dataField="descricao"/>
 					<mx:DataGridColumn headerText="Quantidade" dataField="quantidade"/>					
 					<mx:DataGridColumn headerText="Valor" dataField="valor"/>
-					<mx:DataGridColumn headerText="Remover">
-						<mx:itemRenderer>
-							<mx:Component>
-								<mx:HBox>
-									<mx:Script>
-										<![CDATA[
-											
-										]]>
-									</mx:Script>
-									<mx:Button label="remover item" />
-								</mx:HBox>
-							</mx:Component>
-						</mx:itemRenderer>
-					</mx:DataGridColumn>
 				</mx:columns>
 			</mx:DataGrid>
-			<mx:Panel title="Entrada de Produtos" layout="absolute"  width="30%" height="70%">
-				<mx:Label text="Valor Total:" fontSize="20" fontWeight="bold"  x="10" y="0"/>
-				<mx:Label id="valorTotal" text="00,00" fontSize="60"  x="23" y="26"/>
-				<mx:Label text="Código Produto" x="23" y="101" fontSize="20"/>
-				<inputs:InteiroInput id="codProduto" requerido="true"  x="23" y="140" fontSize="20" width="209"/>
-				<botoes:BuscarButton  x="240" y="151"/>
-				<mx:Label text="Quantidade" x="23" y="228" fontSize="20"/>
-				<inputs:NumberInput id="quantProduto" width="144" x="23" y="257" fontSize="20"/>
-				<mx:Text x="23" y="183" text="Descrição Produto" width="251" height="47" fontWeight="bold" id="tx_descricaoProduto" enabled="false" color="#000000"/>
-				
-			</mx:Panel>
-		</mx:HBox>
-		
-		<mx:Panel width="100%" height="20%" title="Fechamento" layout="absolute" >
-				<mx:Label x="27" y="10" text="Desconto:" fontSize="18" fontWeight="bold"/>
-				<inputs:NumberInput valorDefault="0,00"  x="27" y="38" fontSize="12"/>
-				<mx:Button id="bt_cancelarPreVenda" label="Cancelar Pré-Venda" toolTip="Clique para cancelar orçamento"  x="474" y="40"/>
-				<mx:Button id="bt_gerarPreVenda" label="Gerar Pré-Venda" toolTip="Clique para gerar orçamento" click="{orcamento()}"  x="235" y="40"/>
+		</mx:VBox>	
+		<mx:Panel width="100%" title="Fechamento" layout="absolute"  height="20%">
+			<mx:Label x="10" y="10" text="Desconto:" fontSize="18" fontWeight="bold"/>
+			<inputs:NumberInput valorDefault="0,00"  x="16" y="44" fontSize="12"/>
+			<mx:Button id="bt_cancelarPreVenda" label="Cancelar Pré-Venda" toolTip="Clique para cancelar orçamento"  x="407" y="46"/>
+			<mx:Button id="bt_gerarPreVenda" label="Gerar Pré-Venda" toolTip="Clique para gerar orçamento" click="{orcamento()}"  x="277" y="46"/>
 		</mx:Panel>
-		
-		
 	</mx:VBox>
 </mx:Window>

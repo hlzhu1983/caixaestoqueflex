@@ -2,15 +2,18 @@
 <mx:TextInput xmlns:mx="http://www.adobe.com/2006/mxml"
 	creationComplete="init()" keyDown="{escrever(event)}" textAlign="right" focusIn="{recebeuFoco()}"
 	focusOut="{perdeuFoco()}"
-	enter="{this.focusManager.moveFocus(FocusRequestDirection.FORWARD)}">
+	enter="{this.enterTab()}">
 	
 	<mx:Script>
 		<![CDATA[
+			import mx.controls.Alert;
 			import mx.events.FocusRequestDirection;
 			import mx.validators.NumberValidator;
 			
 			[Bindable]
 			private var foiEditado:Boolean = false;
+			
+			private var isEnter:Boolean = false;
 			
 			public var valorDefault:String = "1,00";
 			
@@ -30,7 +33,9 @@
 				switch(event.charCode){
 					case Keyboard.NUMBER_0:
 						aux = "0"
-						numero = true;
+						if(lengthText!=0){
+							numero = true;
+						}
 						break;
 					case Keyboard.NUMBER_1:
 						aux = "1"
@@ -73,8 +78,8 @@
 						break;	
 				}
 				var str:String;
-				this.foiEditado = true;
-				if(numero && this.maxChars>this.text.length){					
+				if(numero && this.maxChars>this.text.length){
+					this.foiEditado = true;
 					str = this.text;					
 					str = str.charAt(str.length-2)
 						+ "," + str.charAt(str.length-1)+aux;
@@ -85,6 +90,7 @@
 						this.text = str;	
 					}
 					this.lengthText++;
+					this.dispatchEvent(new Event(Event.CHANGE,true));
 				}
 				if(backSpace){
 					str = this.text;					
@@ -97,20 +103,30 @@
 					if(--this.lengthText < 1){
 						this.foiEditado = false;
 					}
+					this.dispatchEvent(new Event(Event.CHANGE,true));
 				}
 				
+			}
+			
+			private function enterTab():void{
+				if(this.isEnter){
+					this.focusManager.moveFocus(FocusRequestDirection.FORWARD);
+				}
 			}
 			
 			private function recebeuFoco():void{
 				if(!this.foiEditado){
 					this.text = "0,00";
 				}
+				this.drawFocus(true);
 			}
 			
 			private function perdeuFoco():void{
 				if(!this.foiEditado){
 					this.text = this.valorDefault;
+					this.dispatchEvent(new Event(Event.CHANGE,true));
 				}
+				this.drawFocus(false);
 			}
 			
 			public function reset():void{
