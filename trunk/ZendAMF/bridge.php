@@ -26,9 +26,8 @@ $server->setClass('ServicosFormadePagto');
 $server->setClass('ServicosGrupoProduto');
 $server->setClass('ServicosLocalProduto');
 $server->setClass('ServicosUsuario');
-//$server->setClassMap('UnidadeVO', 'UnidadeVO');
+$server->setClassMap('UnidadeVO', 'UnidadeVO');
 $server->setClassMap('ClienteVO', 'ClienteVO');
-
 echo $server->handle();
 
 //$s = new Servicos();

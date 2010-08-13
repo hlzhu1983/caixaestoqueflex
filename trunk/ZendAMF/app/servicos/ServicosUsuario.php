@@ -27,7 +27,7 @@ class ServicosUsuario {
 		$resultado = $this->conn->Execute($sql);
 		 if($resultado->_numOfRows<0){
 		 	
-		 throw new Exception("Login ou Usuário invalido");
+		 throw new Zend_Exception('Login ou Usuário invalido',1);
 		 	
 		 }
 		 $dados_usuario = NULL;
