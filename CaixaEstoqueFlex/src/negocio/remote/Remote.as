@@ -208,6 +208,12 @@ package negocio.remote{
 				
 		//Servicos Produto
 		
+		public function filtroProduto(result:Function,sql:Array):void{
+ 			_remote.source = "ServicosProduto";
+			var async:AsyncToken = _remote.filtroProduto(sql);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
  		public function listarProduto(result:Function):void{
  			_remote.source = "ServicosProduto";
 			var async:AsyncToken = _remote.getProdutos();

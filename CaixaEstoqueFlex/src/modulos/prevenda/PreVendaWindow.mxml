@@ -7,6 +7,7 @@
 	
 	<mx:Script>
 		<![CDATA[
+			import modulos.produto.BuscaProduto;
 			import mx.rpc.events.ResultEvent;
 			import events.ItemPreVendaEvent;
 			import mx.core.Application;
@@ -105,6 +106,11 @@
 				this.codProduto.setFocus();
 			}
 			
+			public function pesquisarProduto():void{
+				
+				Util.abrePopUp(this,BuscaProduto,true);
+			}
+			
 			public function orcamento():void{
 				//this.close();
 			}
@@ -123,7 +129,7 @@
 				<mx:Panel title="Entrada de Produtos" layout="absolute" height="104" width="481">
 					<mx:Label text="Código Produto" x="18" y="17" fontSize="20"/>
 					<inputs:InteiroInput  id="codProduto" requerido="true"  enter="{this.previewProduto()}" x="184" y="15" fontSize="20" width="209"/>
-					<botoes:BuscarButton  x="405" y="21"/>
+					<botoes:BuscarButton  x="405" y="21" click="{this.pesquisarProduto()}"/>
 				</mx:Panel>
 				<mx:Panel title="Valor Total" horizontalAlign="right" height="30%" width="395">
 					<mx:Label id="valorTotal" text="00.00" fontSize="50"  x="23" y="26"/>
