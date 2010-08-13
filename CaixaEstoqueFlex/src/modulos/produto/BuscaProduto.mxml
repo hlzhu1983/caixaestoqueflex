@@ -2,7 +2,7 @@
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
 	 layout="absolute" xmlns:inputs="utilidades.inputs.*"
 	  height="522" title="Produto Pesquisa" width="722" 
-	  creatingContentPane="{this.listarALLItens()}">
+	  creatingContentPane="{this.listarALLItens()}" borderColor="#009DFF">
 
 	<mx:Script>
 		<![CDATA[
