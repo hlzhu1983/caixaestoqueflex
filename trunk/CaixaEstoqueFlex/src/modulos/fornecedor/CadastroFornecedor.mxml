@@ -5,7 +5,7 @@
 	 title="Gerenciador Fornecedores" 
 	 showCloseButton="true"
 	 close="{this.fechar()}"
-	 xmlns:botoes="utilidades.botoes.*" fontSize="12" width="890" height="560" xmlns:utilidades="utilidades.*">
+	 xmlns:botoes="utilidades.botoes.*" fontSize="12" width="890" height="560" xmlns:utilidades="utilidades.*" borderColor="#009DFF">
 	
 		<mx:Script>
 		<![CDATA[

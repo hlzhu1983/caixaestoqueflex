@@ -38,14 +38,14 @@
 	
 	private var listArray:Array=[
          [{label: "Alterar Senha do Usuario", funcao: testImage},{label: "Sair"}],
-         [{label: "Cadastro Empresa"},{label: "Cadastro Cliente", funcao: gerCliente},
-         {label: "Cadastro Usuário", funcao: gerUsuario },{label: "Cadastro Grupo Produto", funcao: gerGrupoProduto },
-         {label: "Cadastro Local Produto", funcao: gerLocalProduto},{label: "Cadastro Produto", funcao: gerProduto },
-         {label: "Cadastro Fornecedor", funcao: gerFornecedor}, {label: "Cadastro Unidades", funcao: gerUnidade},
-         {label: "Cadastro Forma de Pagamento", funcao: gerFormadePagto }],
+         [{label: "Cad. Empresa"},{label: "Cad. Cliente", funcao: gerCliente},
+         {label: "Cad. Usuário", funcao: gerUsuario },{label: "Cad. Gpo Produto", funcao: gerGrupoProduto },
+         {label: "Cad. Loc. Produto", funcao: gerLocalProduto},{label: "Cad. Produto", funcao: gerProduto },
+         {label: "Cad. Fornecedor", funcao: gerFornecedor}, {label: "Cad. Unidades", funcao: gerUnidade},
+         {label: "Cad. Forma Pagamento", funcao: gerFormadePagto }],
          [{label: "Pré-Venda", funcao: preVendaWindow},{label: "Frente de Caixa", funcao: frenteLoja},
          {label: "Pedido de Compra"},{label: "Orçamento", funcao: orcamentoWindow},
-         {label: "Transferência entre Filiais"},{label: "Devolução"}],
+         {label: "Transf Filiais"},{label: "Devolução"}],
          [{label: "Ainda Falta Fazer"}],
          [{label: "Calculadora"},{label: "Cálculo de Dias"}],
          [{label: "Ajuda"},{label: "Sobre o Sistema"},{label: "Tópicos de Ajuda"},
@@ -83,7 +83,7 @@
     	var m:Move = new Move(this.tl_itens);
     	m.xFrom = 0;
     	m.yFrom = 0;
-    	m.xBy = 300;
+    	m.xBy = Application.application.width/4;
     	m.play();
     	
     	var g:Glow = new Glow(this.tl_itens);
@@ -162,13 +162,10 @@
 	public function gerProduto():void{
 		
 		var newWindow:Window = new ProdutoWindow();
-		
 		newWindow.maximizable=false;
 		newWindow.minimizable = false;
 		newWindow.resizable = false;		
 		newWindow.open(false);
-		newWindow.nativeWindow.x = 0;
-		newWindow.nativeWindow.y = 0;
 		newWindow.activate();
 		}
 		

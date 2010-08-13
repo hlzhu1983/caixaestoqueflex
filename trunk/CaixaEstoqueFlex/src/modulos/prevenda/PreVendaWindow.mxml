@@ -3,7 +3,7 @@
 	width="1024" height="700" title="Pré-Venda"
 	xmlns:utilidades="utilidades.*" fontSize="12" closing="{this.onCloseCommand(event)}"
 	keyDown="keyEvento(event)"  backgroundAlpha="1.0" xmlns:inputs="utilidades.inputs.*" 
-	xmlns:botoes="utilidades.botoes.*" xmlns:local="*" creationComplete="init()" alpha="1.0">
+	xmlns:botoes="utilidades.botoes.*" xmlns:local="*" creationComplete="init()" alpha="1.0" borderColor="#009DFF">
 	
 	<mx:Script>
 		<![CDATA[
@@ -118,7 +118,7 @@
 	</mx:Script>
 	
 	<mx:VBox id="body" width="100%" height="100%" >
-		<mx:ApplicationControlBar dock="true" width="100%" height="45">
+		<mx:ApplicationControlBar dock="true" width="100%" height="45" fillAlphas="[1.0, 1.0]" fillColors="[#FFFFFF, #009DFF]">
 			<mx:Label text="Pedido: " fontSize="30" />
 			<mx:Label id="numPedido" text="0001" fontSize="30" />
 			<mx:Spacer width="50%"/>
