@@ -108,6 +108,44 @@ class ServicosProduto {
 		}
 		return $retorna_dados_item;	
 	}
+	
+	public function filtroProduto($sqlArray){
+		$sql = "select * from produto where ";
+		$campos = array("descricao","referencia","precoVenda","codFornecedor","codLocal","codUnidade","codGrupo");
+		$entrou = false;
+		
+		for ($index = 0; $index < count($sqlArray); $index++) {
+			
+			if($sqlArray[$index]!= ""){
+				if($entrou){
+					$sql = $sql." and ".$sqlArray[$index]." ";
+				}else{
+					$sql = $sql.$sqlArray[$index]." ";
+					$entrou = true;
+				}
+			}
+		}
+		$resultado = $this->conn->Execute($sql);
+		$dados_item = null;
+		while($registro = $resultado->FetchNextObject()){			
+			$dados_item = new ProdutoVO();
+			$dados_item->codigo = $registro->CODIGO;
+			$dados_item->codBarra = $registro->CODBARRA;
+			$dados_item->codGrupo = $registro->CODGRUPO;
+			$dados_item->descricao = $registro->DESCRICAO;
+			$dados_item->referencia = $registro->REFERENCIA;
+			$dados_item->codLocal = $registro->CODLOCAL;
+			$dados_item->codUnidade = $registro->CODUNIDADE;
+			$dados_item->qtdPorUnidade = $registro->QTDPORUNIDADE;
+			$dados_item->qtdEmEstoque = $registro->QTDEMESTOQUE;
+			$dados_item->codFornecedor = $registro->CODFORNECEDOR;
+			$dados_item->precoCompra = $registro->PRECOCOMPRA;
+			$dados_item->precoVenda = $registro->PRECOVENDA;
+			$dados_item->foto = $registro->FOTO;
+			$retorna_dados_item [] = $dados_item;
+		}
+		return $retorna_dados_item;	
+	}
 
 
 	public function atualizarProduto(ProdutoVO $produto) {
@@ -121,11 +159,10 @@ class ServicosProduto {
 	}
 }
 //$eu = new ServicosProduto();
-//$c = new ProdutoVO();
-//$c = $eu->pesquisarProduto(1,"codigo");
-//echo $c[0]->codigo;
-//$c[0]->descricao = "anderson murilo";
-//$eu->getProduto("1","codigo");
+//
+//$a = array("","","","codFornecedor = '1' ","","codUnidade = '3'");
+//
+//$eu->filtroProduto($a);
 
 //$c->codBarra = "sdf";
 //$c->codFornecedor = 1;
