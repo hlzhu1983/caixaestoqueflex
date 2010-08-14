@@ -1,7 +1,7 @@
 <?php
 
 class ProdutoVO {
-public $codigo;
+		public $codigo;
 		public $codBarra;
 		public $codGrupo;
 		public $descricao;

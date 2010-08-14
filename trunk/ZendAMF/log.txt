@@ -1,1 +1,1 @@
-7
+select * from produto where codFornecedor = '1' 

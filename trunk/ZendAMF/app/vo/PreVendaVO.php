@@ -6,7 +6,8 @@ class PreVendaVO {
 		public $codUsuario;
 		public $status;
 		public $obs;
-		public $itenPreVenda;
+		public $itemPreVenda;
+		public $dataAbertura;
 	}
 
 
