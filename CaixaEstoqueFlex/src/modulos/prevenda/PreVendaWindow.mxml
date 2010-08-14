@@ -7,6 +7,7 @@
 	
 	<mx:Script>
 		<![CDATA[
+			import mx.managers.PopUpManager;
 			import events.ProdutoEvent;
 			import modulos.produto.BuscaProduto;
 			import mx.rpc.events.ResultEvent;
@@ -94,9 +95,9 @@
         	}
 			
 			public function onCloseCommand(event:Event):void{
-				if(isProduto && !isFecharPreVenda){
+				if(!isFecharPreVenda){
 					event.preventDefault();
-					Alert.show("A janela não pode ser fechada. Ainda há produtos!","Alerta",4,this);
+					this.cancelarPreVenda();
 				}				
    			}	
 			
@@ -129,12 +130,32 @@
 			}
 			
 			private function fecharPreVenda():void{
-				this.preVenda.itemPreVenda = this.array_itemPrevenda.toArray();
-				this.ro.fecharPreVenda(result_fecharPreVenda,this.preVenda);
+				if(this.isProduto){
+					this.preVenda.itemPreVenda = this.array_itemPrevenda.toArray();
+					this.ro.fecharPreVenda(result_fecharPreVenda,this.preVenda);
+				}else{
+					Alert.show("Não ha produtos inseridos!","Ops!",4,this);
+				}
 			}
 			
 			private function result_fecharPreVenda(e:ResultEvent):void{
-				//Alert.show("Inseriu Corretamente","Sucesso",4,this);
+				this.isFecharPreVenda = true;
+				this.close();
+			}
+			
+			private function cancelarPreVenda():void{
+				Alert.show("Deseja realemente cancelar a pré-venda?","Opa!",Alert.YES|Alert.NO,this,resposta_cancelarPreVenda);
+			}
+			
+			private function resposta_cancelarPreVenda(event:CloseEvent):void{
+				if(event.detail == Alert.YES){
+					this.ro.cancelarPreVenda(result_cancelarPreVenda,this.preVenda);
+					this.close();
+				}
+				
+			}
+			
+			private function result_cancelarPreVenda(e:ResultEvent):void{
 				this.isFecharPreVenda = true;
 				this.close();
 			}
@@ -172,7 +193,7 @@
 		<mx:Panel width="100%" title="Fechamento" layout="absolute"  height="20%">
 			<mx:Label x="10" y="10" text="Desconto:" fontSize="18" fontWeight="bold"/>
 			<inputs:NumberInput valorDefault="0,00"  x="16" y="44" fontSize="12"/>
-			<mx:Button id="bt_cancelarPreVenda" label="Cancelar Pré-Venda" toolTip="Clique para cancelar orçamento"  x="407" y="46"/>
+			<mx:Button id="bt_cancelarPreVenda" label="Cancelar Pré-Venda" toolTip="Clique para cancelar orçamento"  x="407" y="46"  click="{this.cancelarPreVenda()}"/>
 			<mx:Button id="bt_gerarPreVenda" label="Gerar Pré-Venda" toolTip="Clique para gerar orçamento"  click="{this.fecharPreVenda()}" x="246" y="46"/>
 		</mx:Panel>
 	</mx:VBox>
