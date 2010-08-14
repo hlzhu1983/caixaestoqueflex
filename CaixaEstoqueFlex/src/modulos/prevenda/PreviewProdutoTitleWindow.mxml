@@ -42,8 +42,7 @@
 			
 			public function inserirInsercaoProduto():void{
 					var itemPrevenda:ItemPreVendaVO = new ItemPreVendaVO();
-					itemPrevenda.codigo = this.produto.codigo;
-					itemPrevenda.descricao = this.produto.descricao;
+					itemPrevenda.codProduto = this.produto.codigo;
 					itemPrevenda.quantidade = this.quantProduto.getValor();
 					itemPrevenda.valor = Number(this.valor);
 					Application.application.dispatchEvent(new ItemPreVendaEvent(itemPrevenda,ItemPreVendaEvent.ADICIONADOSUCEESSO));

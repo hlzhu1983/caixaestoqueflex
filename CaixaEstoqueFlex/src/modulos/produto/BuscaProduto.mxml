@@ -2,10 +2,20 @@
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
 	 layout="absolute" xmlns:inputs="utilidades.inputs.*"
 	  height="522" title="Produto Pesquisa" width="722" 
-	  creatingContentPane="{this.listarALLItens()}" borderColor="#009DFF">
+	  creatingContentPane="{this.init()}" 
+	  borderColor="#009DFF" xmlns:botoes="utilidades.botoes.*">
+
+	<mx:Metadata>
+		[Event(name='produtoSelecionadoEvent',type='events.ProdutoEvent')]
+	</mx:Metadata>
 
 	<mx:Script>
 		<![CDATA[
+			import mx.core.Application;
+			import mx.events.ListEvent;
+			import mx.events.ItemClickEvent;
+			import events.ProdutoEvent;
+			import mx.managers.PopUpManager;
 			import mx.controls.Alert;
 			import negocio.vo.FornecedorVO;
 			import negocio.vo.UnidadeVO;
@@ -35,7 +45,10 @@
 			private var sql:Array;
 			
 			
-			private function listarALLItens():void{
+			private function init():void{
+				//this.ro.
+				
+				
 				this.sql = ["","","","","","",""];
 				this.ro.listarFornecedor(preencheFornecedor);
 				this.ro.listarUnidade(preencheCBUnidade);
@@ -114,6 +127,21 @@
 			 a.addItemAt(l,0);
 			 this.itensLocal = a;
 			}
+			
+			private function selecionarItem(event:ListEvent):void{
+				if(event.rowIndex == -1){
+					Alert.show("Produto não selecinado!","Ops!",4,this);
+				}else{
+					Application.application.dispatchEvent(new ProdutoEvent(event.itemRenderer.data as ProdutoVO,ProdutoEvent.PRODUTOSELECIONADO));
+					PopUpManager.removePopUp(this);	
+				}				
+				
+			}
+			
+			public function pesquisarProduto():void{
+				
+			}
+			
 		]]>
 	</mx:Script>
 
@@ -126,7 +154,7 @@
 		<mx:FormItem label="Preço: " horizontalAlign="left" x="400" y="52">
 			<inputs:NumberInput width="158" valorDefault="0,00" id="ti_precoVenda" />
 		</mx:FormItem>
-		<mx:Panel x="0" y="82" width="100%" height="174" layout="absolute" title="Filtros">
+		<mx:Panel x="0" y="82" width="100%" height="155" layout="absolute" title="Filtros">
 			<mx:Label text="Fornecedor: " y="12" x="19"/>
 			<mx:ComboBox id="cb_fornecedor"  change="{this.filtarFornecedor()}" editable="false"  dataProvider="{this.itensFornecedor}" labelField="nome" x="102" y="10"/>
 			<mx:Label text="Local:" x="468.5" y="14"/>
@@ -137,11 +165,13 @@
 			<mx:ComboBox  id="cb_unidade" editable="true" change="{this.filtarUN()}" dataProvider="{this.itensUnidade}" labelField="descricao" x="83" y="55"/>
 		</mx:Panel>
 		
-		<mx:DataGrid x="10" y="280" id="grid_produtos" dataProvider="{this.itensProduto}" width="682" height="170">
+		<mx:DataGrid x="10" y="245" id="grid_produtos" dataProvider="{this.itensProduto}"
+			 width="682" height="204" doubleClickEnabled="true" itemDoubleClick="{this.selecionarItem(event)}">
 				<mx:columns>
 					<mx:DataGridColumn headerText="Código" dataField="codigo"/>
 					<mx:DataGridColumn headerText="Descrição" dataField="descricao"/>
 					<mx:DataGridColumn headerText="Referência" dataField="referencia"/>
 				</mx:columns>
 			</mx:DataGrid>
+		<botoes:BuscarButton  x="636" y="22" click="{this.pesquisarProduto()}"/>
 </mx:TitleWindow>

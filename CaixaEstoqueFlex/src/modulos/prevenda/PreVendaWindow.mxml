@@ -7,6 +7,7 @@
 	
 	<mx:Script>
 		<![CDATA[
+			import events.ProdutoEvent;
 			import modulos.produto.BuscaProduto;
 			import mx.rpc.events.ResultEvent;
 			import events.ItemPreVendaEvent;
@@ -21,24 +22,41 @@
 			import mx.events.CloseEvent;
 			
 			[Bindable]
-			public var produtoLista:ArrayCollection = new ArrayCollection();
+			public var array_itemPrevenda:ArrayCollection = new ArrayCollection();
 			
 			[Bindable]
 			public var isProduto:Boolean = false;
 			
 			[Bindable]
-			public var preVenda:PreVendaVO = new PreVendaVO()
+			private var isFecharPreVenda:Boolean = false;
+			
+			[Bindable]
+			public var preVenda:PreVendaVO;
 			
 			public var ro:Remote = Remote.getInstance();
 			
 			
 			private function init():void{
+				this.preVenda = new PreVendaVO();
+				this.preVenda.codUsuario = 1;
+				this.ro.abrirPreVenda(result_abrirPreVenda,this.preVenda);
 				Application.application.systemManager.addEventListener(ItemPreVendaEvent.ADICIONADOSUCEESSO,addItemProduto);
+				Application.application.systemManager.addEventListener(ProdutoEvent.PRODUTOSELECIONADO,produtoSelecionado);
 				this.focusManager.setFocus(this.codProduto);
 			}
 			
+			private function result_abrirPreVenda(event:ResultEvent):void{
+				this.preVenda = event.result as PreVendaVO;
+			}
+			
+			public function produtoSelecionado(e:ProdutoEvent):void{
+				this.codProduto.text = e.produto.codigo.toString();
+				this.previewProduto();
+			}
+			
 			public function addItemProduto(event:ItemPreVendaEvent):void{
-				this.produtoLista.addItem(event.itemPreVenda);
+				event.itemPreVenda.codigoPrevenda = this.preVenda.codigo;
+				this.array_itemPrevenda.addItem(event.itemPreVenda);
 				this.valorTotal.text = Number(event.itemPreVenda.valor + Number(this.valorTotal.text)).toFixed(2);
 				this.isProduto = true;
 				this.focusManager.setFocus(this.codProduto);
@@ -66,9 +84,9 @@
         	
         	public function removeItemArrayCollection(event:CloseEvent):void{
         		if(event.detail == Alert.OK){
-        			this.valorTotal.text = Number(Number(this.valorTotal.text) - this.produtoLista.getItemAt(this.produtos.selectedIndex).valor).toFixed(2);
-        			this.produtoLista.removeItemAt(this.produtos.selectedIndex);
-					if(this.produtoLista.length == 0){
+        			this.valorTotal.text = Number(Number(this.valorTotal.text) - this.array_itemPrevenda.getItemAt(this.produtos.selectedIndex).valor).toFixed(2);
+        			this.array_itemPrevenda.removeItemAt(this.produtos.selectedIndex);
+					if(this.array_itemPrevenda.length == 0){
 							this.isProduto = false;
 						}	
         		}
@@ -76,7 +94,7 @@
         	}
 			
 			public function onCloseCommand(event:Event):void{
-				if(isProduto){
+				if(isProduto && !isFecharPreVenda){
 					event.preventDefault();
 					Alert.show("A janela não pode ser fechada. Ainda há produtos!","Alerta",4,this);
 				}				
@@ -94,7 +112,7 @@
 			
 			public function result_previewProduto(e:ResultEvent):void{
 				if(e.result == null){
-					Alert.show("Produto não exite","Ops",4,this,focusTextCodProduto);
+					Alert.show("Produto não exite","Ops!",4,this,focusTextCodProduto);
 				}else{
 					var pvProduto:PreviewProdutoTitleWindow = PreviewProdutoTitleWindow(Util.abrePopUp(this,PreviewProdutoTitleWindow,true));
 					pvProduto.setProduto(e.result as ProdutoVO);
@@ -107,20 +125,27 @@
 			}
 			
 			public function pesquisarProduto():void{
-				
 				Util.abrePopUp(this,BuscaProduto,true);
 			}
 			
-			public function orcamento():void{
-				//this.close();
+			private function fecharPreVenda():void{
+				this.preVenda.itemPreVenda = this.array_itemPrevenda.toArray();
+				this.ro.fecharPreVenda(result_fecharPreVenda,this.preVenda);
 			}
+			
+			private function result_fecharPreVenda(e:ResultEvent):void{
+				//Alert.show("Inseriu Corretamente","Sucesso",4,this);
+				this.isFecharPreVenda = true;
+				this.close();
+			}
+			
 		]]>
 	</mx:Script>
 	
 	<mx:VBox id="body" width="100%" height="100%" >
 		<mx:ApplicationControlBar dock="true" width="100%" height="45" fillAlphas="[1.0, 1.0]" fillColors="[#FFFFFF, #009DFF]">
 			<mx:Label text="Pedido: " fontSize="30" />
-			<mx:Label id="numPedido" text="0001" fontSize="30" />
+			<mx:Label id="numPedido" text="{this.preVenda.codigo}" fontSize="30" />
 			<mx:Spacer width="50%"/>
 			<utilidades:RelogioDigital/>	
 		</mx:ApplicationControlBar>
@@ -128,14 +153,14 @@
 			<mx:HBox width="100%" height="20%" horizontalAlign="center">
 				<mx:Panel title="Entrada de Produtos" layout="absolute" height="104" width="481">
 					<mx:Label text="Código Produto" x="18" y="17" fontSize="20"/>
-					<inputs:InteiroInput  id="codProduto" requerido="true"  enter="{this.previewProduto()}" x="184" y="15" fontSize="20" width="209"/>
+					<inputs:InteiroInput  id="codProduto" requerido="true"  enter="{this.previewProduto()}" isEnter="false" x="184" y="15" fontSize="20" width="209"/>
 					<botoes:BuscarButton  x="405" y="21" click="{this.pesquisarProduto()}"/>
 				</mx:Panel>
 				<mx:Panel title="Valor Total" horizontalAlign="right" height="30%" width="395">
 					<mx:Label id="valorTotal" text="00.00" fontSize="50"  x="23" y="26"/>
 				</mx:Panel>
 			</mx:HBox>
-			<mx:DataGrid id="produtos"  width="100%"  height="80%" rowCount="10" dataProvider="{produtoLista}">
+			<mx:DataGrid id="produtos"  width="100%"  height="80%" rowCount="10" dataProvider="{array_itemPrevenda}">
 				<mx:columns>
 					<mx:DataGridColumn headerText="Cod. Produto" dataField="codigo"/>
 					<mx:DataGridColumn headerText="Descrição" dataField="descricao"/>
@@ -148,7 +173,7 @@
 			<mx:Label x="10" y="10" text="Desconto:" fontSize="18" fontWeight="bold"/>
 			<inputs:NumberInput valorDefault="0,00"  x="16" y="44" fontSize="12"/>
 			<mx:Button id="bt_cancelarPreVenda" label="Cancelar Pré-Venda" toolTip="Clique para cancelar orçamento"  x="407" y="46"/>
-			<mx:Button id="bt_gerarPreVenda" label="Gerar Pré-Venda" toolTip="Clique para gerar orçamento" click="{orcamento()}"  x="246" y="46"/>
+			<mx:Button id="bt_gerarPreVenda" label="Gerar Pré-Venda" toolTip="Clique para gerar orçamento"  click="{this.fecharPreVenda()}" x="246" y="46"/>
 		</mx:Panel>
 	</mx:VBox>
 </mx:Window>

@@ -205,6 +205,8 @@ package negocio.remote{
 			var async:AsyncToken = _remote.pesquisarUsuario(texto,coluna);
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
+		
+		//**********************************************************************************//
 				
 		//Servicos Produto
 		
@@ -248,6 +250,32 @@ package negocio.remote{
 			var async:AsyncToken = _remote.atualizarProduto(produto);
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
+		
+		//**********************************************************************************//
+				
+		//Servicos Pré-venda
+		
+		public function abrirPreVenda(result:Function,preVenda:PreVendaVO):void{
+ 			_remote.source = "ServicosPreVenda";
+			var async:AsyncToken = _remote.abrirPreVenda(preVenda);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
+		
+ 		public function fecharPreVenda(result:Function,preVenda:PreVendaVO):void{
+ 			_remote.source = "ServicosPreVenda";
+			var async:AsyncToken = _remote.fecharPreVenda(preVenda);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
+		public function cancelarPreVenda(result:Function,preVenda:PreVendaVO):void{
+ 			_remote.source = "ServicosPreVenda";
+			var async:AsyncToken = _remote.cancelarPreVenda(preVenda);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
+		
+		
 		//--------------------setup----------------------------//
 		private var _remote:RemoteObject;
 		

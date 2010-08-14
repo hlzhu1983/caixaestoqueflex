@@ -22,6 +22,6 @@
 	<mx:VBox id="body" width="100%" height="100%" horizontalAlign="center" paddingTop="30" verticalAlign="top" color="#FFFFFF">
 		<mx:TileList id="tl_itens" direction="horizontal" dataProvider="{itensLista}" alpha="0.60"
 			 alternatingItemColors="[#000000, #000000]" 
-			itemClick="itemClickTile(event)" fontWeight="bold" cornerRadius="18" visible="false" columnWidth="150" borderStyle="none" borderThickness="0"/>
+			itemClick="itemClickTile(event)" fontWeight="bold" visible="false" columnWidth="150" borderStyle="none" borderThickness="0"/>
 	</mx:VBox>
 </mx:WindowedApplication>
