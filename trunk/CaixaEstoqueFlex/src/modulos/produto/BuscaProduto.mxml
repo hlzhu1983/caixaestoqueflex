@@ -3,7 +3,7 @@
 	 layout="absolute" xmlns:inputs="utilidades.inputs.*"
 	  height="522" title="Produto Pesquisa" width="722" 
 	  creatingContentPane="{this.init()}" 
-	  borderColor="#009DFF" xmlns:botoes="utilidades.botoes.*">
+	  borderColor="#009DFF" showCloseButton="true" close="{PopUpManager.removePopUp(this)}" xmlns:botoes="utilidades.botoes.*">
 
 	<mx:Metadata>
 		[Event(name='produtoSelecionadoEvent',type='events.ProdutoEvent')]
@@ -41,14 +41,10 @@
 			private var item:ProdutoVO;
 			private var ro:Remote = Remote.getInstance();
 			
-			//array("descricao","referencia","precoVenda","codFornecedor","codLocal","codUnidade","codGrupo");
 			private var sql:Array;
 			
 			
 			private function init():void{
-				//this.ro.
-				
-				
 				this.sql = ["","","","","","",""];
 				this.ro.listarFornecedor(preencheFornecedor);
 				this.ro.listarUnidade(preencheCBUnidade);
@@ -140,6 +136,28 @@
 			
 			public function pesquisarProduto():void{
 				
+				var flag:Boolean = false;
+				if(this.ti_descricao.text !=""){
+					this.sql[0] = "descricao like '%"+this.ti_descricao.text+"%'";
+					flag = true;
+				}else{
+					this.sql[0] = "";
+				}
+				if(this.ti_precoVenda.text !="0,00"){
+					this.sql[1] = "precoVenda = '"+this.ti_precoVenda.text+"'";
+					flag = true;
+				}else{
+					this.sql[1] = "";
+				}
+				if(this.ti_referencia.text !=""){
+					this.sql[2] = "referencia = '%"+this.ti_referencia.text+"%'";
+					flag = true;
+				}else{
+					this.sql[2] = "";
+				}
+				if(flag){
+					this.ro.filtroProduto(resultListaProduto,sql);
+				}
 			}
 			
 		]]>
