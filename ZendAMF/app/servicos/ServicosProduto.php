@@ -114,6 +114,7 @@ class ServicosProduto {
 		$campos = array("descricao","referencia","precoVenda","codFornecedor","codLocal","codUnidade","codGrupo");
 		$entrou = false;
 		
+		
 		for ($index = 0; $index < count($sqlArray); $index++) {
 			
 			if($sqlArray[$index]!= ""){
@@ -125,6 +126,9 @@ class ServicosProduto {
 				}
 			}
 		}
+		
+		$a = fopen("log.txt","w+");
+		fwrite($a,$sql);
 		$resultado = $this->conn->Execute($sql);
 		$dados_item = null;
 		while($registro = $resultado->FetchNextObject()){			

@@ -18,26 +18,39 @@ class ServicosPreVenda {
 	
 	
 	public function abrirPreVenda(PreVendaVO $item){
-		$sql = "insert into prevenda (codVendedor,status,dataAbertura) values ('{$item->codVendedor}'		 
-		 ,'0' ,'now()')";
+		$sql = "insert into prevenda (codUsuario,status,dataAbertura) values ('$item->codUsuario'		 
+		 ,'0' ,now())";
 		$resultado = $this->conn->Execute($sql);
 		$item->codigo = $this->conn->insert_Id();
+		$item->status = 0;
 		return $item;
 	}
 	
-	public function addItem(PreVendaVO $item){
-		$sql = "insert into projeto (nome,descricao,obs,dataCriacao,dataFinal) values ('{$item->nome}'		 
-		 ,'{$item->descricao}' ,'{$item->obs}' ,'{$item->dataCriacao}'
-		 ,'{$item->dataFinal}')";
-		$resultado = $this->conn->Execute($sql);
-		$item->codigo = $this->conn->insert_Id();
+	public function fecharPreVenda(PreVendaVO $item){
+		foreach ($item->itemPreVenda as $temp) {
+			$sql = "insert into itensprevenda (codPrevenda, codProduto, quantidade,valor) 
+			      values ('$item->codigo','$temp->codProduto','$temp->quantidade','$temp->valor')";
+			$this->conn->Execute($sql);
+		}
+		if($item->codCliente==0){
+			$sql = "UPDATE prevenda SET codUsuario = '$item->codUsuario' , status = '1', obs = '$item->obs' where codigo = $item->codigo";
+		}else{
+			$sql = "UPDATE prevenda SET codUsuario = '$item->codUsuario' , codCliente = '$item->codCliente', status = '1', obs = '$item->obs' where codigo = $item->codigo";	
+		}
+		$this->conn->Execute($sql);
 		return $item;
-		
 	}
+	
+	public function cancelarPreVenda(PreVendaVO $item){
+		$sql = "UPDATE prevenda SET codUsuario = '$item->codUsuario' , status = '2', obs = '$item->obs' where codigo = $item->codigo";
+		$this->conn->Execute($sql);
+		return $item;
+	}
+	
 	
 	public function removerItem(PreVendaVO $item){
 		
-		$sql = "delete from projeto  where codigo = {$item->codigo}";
+		$sql = "delete from prevenda  where codigo = $item->codigo";
 		$resultado = $this->conn->Execute($sql);
 		if($this->conn->Affected_Rows()==0){
 			return false;
@@ -46,16 +59,16 @@ class ServicosPreVenda {
 	}
 	
 	public function pesquisarItens($texto,$coluna){
-		$sql = "select * from projeto where $coluna like '%$texto%'";
+		$sql = "select * from prevenda where $coluna like '%$texto%'";
 		$resultado = $this->conn->Execute($sql);
 		while($registro = $resultado->FetchNextObject()){			
 			$dados_item = new PreVendaVO();
 			$dados_item->codigo = $registro->CODIGO;
-			$dados_item->nome = $registro->NOME;
-			$dados_item->descricao = $registro->DESCRICAO;
+			$dados_item->codCliente = $registro->CODCLIENTE;
+			$dados_item->codUsuario = $registro->CODUSUARIO;
 			$dados_item->obs = $registro->OBS;
-			$dados_item->dataCriacao = $registro->DATACRIACAO;
-			$dados_item->dataFinal = $registro->DATAFINAL;
+			$dados_item->status = $registro->STATUS;
+			$dados_item->dataAbertura = $registro->DATAABERTURA;
 			$retorna_dados_item [] = $dados_item;
 		}
 		return $retorna_dados_item;
@@ -67,29 +80,19 @@ class ServicosPreVenda {
 		while($registro = $resultado->FetchNextObject()){			
 			$dados_item = new PreVendaVO();
 			$dados_item->codigo = $registro->CODIGO;
-			$dados_item->nome = $registro->NOME;
-			$dados_item->descricao = $registro->DESCRICAO;
+			$dados_item->codCliente = $registro->CODCLIENTE;
+			$dados_item->codUsuario = $registro->CODUSUARIO;
 			$dados_item->obs = $registro->OBS;
-			$dados_item->dataCriacao = $registro->DATACRIACAO;
-			$dados_item->dataFinal = $registro->DATAFINAL;
+			$dados_item->status = $registro->STATUS;
+			$dados_item->dataAbertura = $registro->DATAABERTURA;
 			$retorna_dados_item [] = $dados_item;
 		}
 		return $retorna_dados_item;	
 	}
-
-
-	public function atualizarItem(PreVendaVO $item) {
-		
-		$sql = "UPDATE projeto SET nome = '$item->nome', descricao = $item->descricao, obs='$item->obs',datafriacao='$item->dataCriacao' ,datafinal='$item->dataFinal' where codigo=$item->codigo";
-		$resultado = $this->conn->Execute($sql);
-		return $item;	
-		
-	}
 }
 //$eu = new ServicosPreVenda();
-////$c = new PreVendaVo();
-////$c->nome = "Projeto Caixa Estoque Flex";
-////$c->dataCadastro = "2010-09-31";
-//$eu->getItens();
+//$c = new PreVendaVo();
+//$c->codUsuario = 0;
+//$eu->abrirPreVenda($c);
 
 ?>
