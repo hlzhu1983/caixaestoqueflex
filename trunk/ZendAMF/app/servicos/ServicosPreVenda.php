@@ -24,6 +24,11 @@ class ServicosPreVenda {
 		$this->conn->StartTrans();
 		$resultado = $this->conn->Execute($sql);
 		$item->codigo = $this->conn->insert_Id();
+		
+		if($this->conn->HasFailedTrans()){
+			throw new Exception("Erro ao abri pré-Venda",16);
+		}	
+		
 		$this->conn->CompleteTrans();
 		$item->status = 0;
 		
@@ -35,7 +40,9 @@ class ServicosPreVenda {
 			
 			
 			$sql ="select * from produto where codigo = $item->codProduto";
-			$this->conn->BeginTrans();
+			
+			$this->conn->StartTrans();
+			
 			$result = $this->conn->Execute($sql);	
 			
 			
@@ -50,27 +57,25 @@ class ServicosPreVenda {
 			}
 			
 			
-			$sql = "insert into itensprevenda (codPrevenda, codProduto, quantidade,valor) 
+			$sql1 = "insert into itensprevenda (codPrevenda, codProduto, quantidade,valor) 
 			      values ('$item->codigoPrevenda','$item->codProduto','$item->quantidade','$item->valor')";
-			$result = $this->conn->Execute($sql);
+			$this->conn->Execute($sql1);
 			
-			if(!$result){
-				throw new Exception("Item pré-venda nao inserido",10);
-			}
+					
+			$sql2 = "UPDATE produto SET qtdEmEstoqu = (qtdEmEstoqu - $item->quantidade) where codigo = $item->codProduto";
+						
+			$result = $this->conn->Execute($sq2);
 			
-			
-			$sql = "UPDATE produto SET qtdEmEstoqu = (qtdEmEstoque - $item->quantidade) where codigo = $item->codProduto";
-			$result = $this->conn->Execute($sql);
-			if (!$result) {
-				$this->conn->FailTrans();
-			}
-			
-			if(!$this->conn->HasFailedTrans()){
-				throw new Exception("Erro ao inserir item!",16);
+			$falhou = false;	
+			if($this->conn->HasFailedTrans()){
+				$falhou = true;
 			}
 			
 			$this->conn->CompleteTrans();
 			
+			if($falhou){
+				throw new Exception("Erro ao inserir item!",16);
+			}
 			
 			
 			return $item;
