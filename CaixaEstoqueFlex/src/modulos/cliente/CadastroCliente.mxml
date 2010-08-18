@@ -4,6 +4,7 @@
 	 creationComplete="{this.listarAllItems()}"
 	 title="Gerenciador Clientes" 
 	 showCloseButton="true"
+	 backgroundAlpha="0"
 	 close="{this.fechar()}"
 	 xmlns:botoes="utilidades.botoes.*" 
 	 fontSize="12" width="890" height="100%" xmlns:utilidades="utilidades.*" borderColor="#009DFF">

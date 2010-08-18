@@ -77,12 +77,12 @@
 	<mx:Canvas  height="100%" width="100%" backgroundAlpha="1.0" backgroundColor="#FFFFFF">	  
 			<mx:Label x="35" y="86" text="Usuário:" width="67" fontSize="12" fontWeight="bold"/>
 			<mx:Label x="35" y="114" text="Senha:" fontWeight="bold"/>
-			<mx:Button x="181" y="160" label="Autenticar" click="{autenticar()}" />
-			<inputs:TextoInput x="110" y="84" id="txt_login" width="127" requerido="true"/>
-			<mx:TextInput x="110" y="112" id="txt_senha" width="127" displayAsPassword="true"/>
-			<mx:TextArea x="4.5" y="10" editable="false" width="270.5" borderStyle="none" backgroundAlpha="0.0">
+			<mx:TextArea x="4.5" y="10" editable="false" focusEnabled="false" width="270.5" borderStyle="none" backgroundAlpha="0.0">
 				<mx:text>Para ter acesso ao sistema é preciso ser autenticado.</mx:text>
-			</mx:TextArea>		
+			</mx:TextArea>
+			<inputs:TextoInput x="110" y="84" id="txt_login" width="127" requerido="true" isEnter="true"/>
+			<mx:TextInput enter="{autenticar()}" x="110" y="112" id="txt_senha" width="127" displayAsPassword="true"/>
+			<mx:Button x="181" y="160" label="Autenticar" click="{autenticar()}" />		
 	</mx:Canvas>
 		<mx:Validator id="validador" required="{true}" source="{this.txt_senha}" property="text" requiredFieldError="Campo requerido!"/>
 </mx:TitleWindow>

@@ -289,7 +289,7 @@ package negocio.remote{
 		}
 		
 		private function defaultFaultHandler(e:FaultEvent):void{
-			Alert.show(e.toString()	+ "","Erro");
+			Alert.show("Erro: "+e.fault.faultCode+": "+e.fault.faultString,"Ops!");
 		}
 		
 		private static var _instance:Remote;
