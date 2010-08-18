@@ -4,6 +4,7 @@
 
 //include 'app/db/BaseDados.php';
 include 'app/vo/PreVendaVO.php';
+include 'app/vo/ItemPrevendaVO.php';
 
 class ServicosPreVenda {
 	
@@ -20,18 +21,70 @@ class ServicosPreVenda {
 	public function abrirPreVenda(PreVendaVO $item){
 		$sql = "insert into prevenda (codUsuario,status,dataAbertura) values ('$item->codUsuario'		 
 		 ,'0' ,now())";
+		$this->conn->StartTrans();
 		$resultado = $this->conn->Execute($sql);
 		$item->codigo = $this->conn->insert_Id();
+		$this->conn->CompleteTrans();
 		$item->status = 0;
+		
 		return $item;
 	}
 	
-	public function fecharPreVenda(PreVendaVO $item){
-		foreach ($item->itemPreVenda as $temp) {
+	public function addItemPreVenda(ItemPreVendaVO $item){
+			
+			
+			
+			$sql ="select * from produto where codigo = $item->codProduto";
+			$this->conn->BeginTrans();
+			$result = $this->conn->Execute($sql);	
+			
+			
+			if(!$result){
+				throw new Exception("Produto não existe",4);
+			}
+			$registro = $result->FetchNextObject();
+			
+			
+			if($registro->QTDEMESTOQUE < $item->quantidade){
+				throw new Exception("Quantidade de produtos maior que disponível!",15);
+			}
+			
+			
 			$sql = "insert into itensprevenda (codPrevenda, codProduto, quantidade,valor) 
-			      values ('$item->codigo','$temp->codProduto','$temp->quantidade','$temp->valor')";
-			$this->conn->Execute($sql);
-		}
+			      values ('$item->codigoPrevenda','$item->codProduto','$item->quantidade','$item->valor')";
+			$result = $this->conn->Execute($sql);
+			
+			if(!$result){
+				throw new Exception("Item pré-venda nao inserido",10);
+			}
+			
+			
+			$sql = "UPDATE produto SET qtdEmEstoqu = (qtdEmEstoque - $item->quantidade) where codigo = $item->codProduto";
+			$result = $this->conn->Execute($sql);
+			if (!$result) {
+				$this->conn->FailTrans();
+			}
+			
+			if(!$this->conn->HasFailedTrans()){
+				throw new Exception("Erro ao inserir item!",16);
+			}
+			
+			$this->conn->CompleteTrans();
+			
+			
+			
+			return $item;
+			
+	}
+	
+	
+//	foreach ($item->itemPreVenda as $temp) {
+//			$sql = "insert into itensprevenda (codPrevenda, codProduto, quantidade,valor) 
+//			      values ('$item->codigo','$temp->codProduto','$temp->quantidade','$temp->valor')";
+//			$this->conn->Execute($sql);
+//		}
+	
+	public function fecharPreVenda(PreVendaVO $item){
 		if($item->codCliente==0){
 			$sql = "UPDATE prevenda SET codUsuario = '$item->codUsuario' , status = '1', obs = '$item->obs' where codigo = $item->codigo";
 		}else{
@@ -91,8 +144,8 @@ class ServicosPreVenda {
 	}
 }
 //$eu = new ServicosPreVenda();
-//$c = new PreVendaVo();
-//$c->codUsuario = 0;
-//$eu->abrirPreVenda($c);
+////$c = new PreVendaVo();
+////$c->codUsuario = 0;
+//$eu->addItemPreVenda(new ItemPreVendaVO());
 
 ?>

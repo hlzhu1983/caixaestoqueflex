@@ -15,8 +15,6 @@ class BaseDados {
 		$db            = "caixaeestoque";
 		 
 	    $this->conn = NewADOConnection($tipo_banco);
-		$this->conn->dialect = 3;
-		$this->conn->debug = false; 
 		$this->conn->Connect($servidor,$usuario,$senha,$db);
 	}
 }
