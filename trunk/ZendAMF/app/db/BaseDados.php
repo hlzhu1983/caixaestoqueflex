@@ -8,7 +8,7 @@ class BaseDados {
 		
 		
 	function BaseDados() {
-		$tipo_banco    = "mysql";
+		$tipo_banco    = "mysqlt";
 		$servidor      = "localhost";
 		$usuario       = "root";
 		$senha         = "root";
