@@ -41,12 +41,16 @@
 			}
 			
 			public function inserirInsercaoProduto():void{
+				if(this.produto.qtdEmEstoque< this.quantProduto.getValor()){
+					Alert.show("Quantidade selecionada maior que contida no estoque!","Ops!",4,this);	
+				}else{
 					var itemPrevenda:ItemPreVendaVO = new ItemPreVendaVO();
 					itemPrevenda.codProduto = this.produto.codigo;
 					itemPrevenda.quantidade = this.quantProduto.getValor();
 					itemPrevenda.valor = Number(this.valor);
 					Application.application.dispatchEvent(new ItemPreVendaEvent(itemPrevenda,ItemPreVendaEvent.ADICIONADOSUCEESSO));
 					PopUpManager.removePopUp(this);
+				}
 			}
 			
 			public function cancelarInsercaoProduto():void{

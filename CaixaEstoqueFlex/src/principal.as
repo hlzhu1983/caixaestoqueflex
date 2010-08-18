@@ -55,7 +55,7 @@
 	public function init():void{
 		this.logou = false;	
 		Application.application.systemManager.addEventListener(AutenticacaoUsuarioEvent.SUCESSO,usuarioAutenticado);
-		Util.abrePopUp(this,ComponenteAutenticacao,true);
+		//Util.abrePopUp(this,ComponenteAutenticacao,true);
 	}	
 	
 	public function usuarioAutenticado(event:AutenticacaoUsuarioEvent):void{
