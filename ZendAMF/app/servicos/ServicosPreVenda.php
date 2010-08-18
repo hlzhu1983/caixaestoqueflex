@@ -57,14 +57,14 @@ class ServicosPreVenda {
 			}
 			
 			
-			$sql1 = "insert into itensprevenda (codPrevenda, codProduto, quantidade,valor) 
+			$sql = "insert into itensprevenda (codPrevenda, codProduto, quantidade,valor) 
 			      values ('$item->codigoPrevenda','$item->codProduto','$item->quantidade','$item->valor')";
-			$this->conn->Execute($sql1);
+			$this->conn->Execute($sql);
 			
 					
-			$sql2 = "UPDATE produto SET qtdEmEstoqu = (qtdEmEstoqu - $item->quantidade) where codigo = $item->codProduto";
+			$sql = "UPDATE produto SET qtdEmEstoqu = (qtdEmEstoqu - $item->quantidade) where codigo = $item->codProduto";
 						
-			$result = $this->conn->Execute($sq2);
+			$result = $this->conn->Execute($sq);
 			
 			$falhou = false;	
 			if($this->conn->HasFailedTrans()){
