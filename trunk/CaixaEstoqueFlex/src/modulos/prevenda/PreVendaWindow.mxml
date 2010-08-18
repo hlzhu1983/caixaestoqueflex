@@ -7,6 +7,7 @@
 	
 	<mx:Script>
 		<![CDATA[
+			import negocio.vo.ItemPreVendaVO;
 			import mx.managers.PopUpManager;
 			import events.ProdutoEvent;
 			import modulos.produto.BuscaProduto;
@@ -60,14 +61,20 @@
 			
 			public function addItemProduto(event:ItemPreVendaEvent):void{
 				event.itemPreVenda.codigoPrevenda = this.preVenda.codigo;
+				Alert.show("Entrou","",4,this);
+				this.ro.addItemPreVenda(result_addItemProduto,event.itemPreVenda);
+			}
+			
+			private function result_addItemProduto(event:ResultEvent):void{
+				var i:ItemPreVendaVO = event.result as ItemPreVendaVO;
 				var obj:Object = new Object();
 				obj.descricao = this.produto.descricao;
 				obj.codigo = this.produto.codigo;
-				obj.quantidade = event.itemPreVenda.quantidade;
-				obj.valor = event.itemPreVenda.valor;
-				this.array_itensPrevenda.addItem(event.itemPreVenda);
+				obj.quantidade = i.quantidade;
+				obj.valor = i.valor;
+				this.array_itensPrevenda.addItem(i);
 				this.array_objPrevenda.addItem(obj);
-				this.valorTotal.text = Number(event.itemPreVenda.valor + Number(this.valorTotal.text)).toFixed(2);
+				this.valorTotal.text = Number(i.valor + Number(this.valorTotal.text)).toFixed(2);
 				this.isProduto = true;
 				this.focusManager.setFocus(this.codProduto);
 			}
@@ -175,6 +182,17 @@
 				this.close();
 			}
 			
+			private function addDesconto():void{
+				var desc:Number = this.ti_desconto.getValor();
+				if(Number(this.valorTotal.text)<desc){
+					Alert.show("Desconto maior que o valor total.","Ops!",4,this);
+				}else{
+					
+				}
+				
+			}
+				
+			
 		]]>
 	</mx:Script>
 	
@@ -207,9 +225,15 @@
 		</mx:VBox>	
 		<mx:Panel width="100%" title="Fechamento" layout="absolute"  height="20%">
 			<mx:Label x="10" y="10" text="Desconto:" fontSize="18" fontWeight="bold"/>
-			<inputs:NumberInput valorDefault="0,00"  x="16" y="44" fontSize="12"/>
-			<mx:Button id="bt_cancelarPreVenda" label="Cancelar Pré-Venda" toolTip="Clique para cancelar orçamento"  x="407" y="46"  click="{this.cancelarPreVenda()}"/>
-			<mx:Button id="bt_gerarPreVenda" label="Gerar Pré-Venda" toolTip="Clique para gerar orçamento"  click="{this.fecharPreVenda()}" x="246" y="46"/>
+			
+			<inputs:NumberInput id="ti_desconto" valorDefault="0,00"  enter="{this.addDesconto()}" x="139" y="14" fontSize="12" width="173"/>
+			<mx:RadioButtonGroup id="rg_descGrupo"/>
+			<mx:RadioButton id="rb_descValor" group="{rg_descGrupo}" x="139" y="44" label="Valor"/>
+			<mx:RadioButton id="rb_descPercent" group="{rg_descGrupo}" x="204" label="Porcentagem" y="44"/>
+			
+			<mx:Button id="bt_cancelarPreVenda" label="Cancelar Pré-Venda" toolTip="Clique para cancelar pré-venda"  x="639" y="23"  click="{this.cancelarPreVenda()}"/>
+			
+			<mx:Button id="bt_gerarPreVenda" label="Gerar Pré-Venda" toolTip="Clique para gerar pré-venda"  click="{this.fecharPreVenda()}" x="493" y="23"/>
 		</mx:Panel>
 	</mx:VBox>
 </mx:Window>

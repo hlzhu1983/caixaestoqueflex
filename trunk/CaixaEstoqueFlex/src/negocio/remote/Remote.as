@@ -216,6 +216,7 @@ package negocio.remote{
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
 		
+		
  		public function listarProduto(result:Function):void{
  			_remote.source = "ServicosProduto";
 			var async:AsyncToken = _remote.getProdutos();
@@ -258,6 +259,12 @@ package negocio.remote{
 		public function abrirPreVenda(result:Function,preVenda:PreVendaVO):void{
  			_remote.source = "ServicosPreVenda";
 			var async:AsyncToken = _remote.abrirPreVenda(preVenda);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
+		public function addItemPreVenda(result:Function,item:ItemPreVendaVO):void{
+ 			_remote.source = "ServicosPreVenda";
+			var async:AsyncToken = _remote.addItemPreVenda(item);
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
 		
