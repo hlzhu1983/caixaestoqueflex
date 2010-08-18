@@ -55,7 +55,7 @@
 	public function init():void{
 		this.logou = false;	
 		Application.application.systemManager.addEventListener(AutenticacaoUsuarioEvent.SUCESSO,usuarioAutenticado);
-		/* Util.abrePopUp(this,ComponenteAutenticacao,true);*/
+		Util.abrePopUp(this,ComponenteAutenticacao,true);
 	}	
 	
 	public function usuarioAutenticado(event:AutenticacaoUsuarioEvent):void{
@@ -83,6 +83,7 @@
     	var m:Move = new Move(this.tl_itens);
     	m.xFrom = 0;
     	m.yFrom = 0;
+    	m.duration = 100;
     	m.xBy = Application.application.width/4;
     	m.play();
     	

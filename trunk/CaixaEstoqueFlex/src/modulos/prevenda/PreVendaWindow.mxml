@@ -23,7 +23,9 @@
 			import mx.events.CloseEvent;
 			
 			[Bindable]
-			public var array_itemPrevenda:ArrayCollection = new ArrayCollection();
+			public var array_objPrevenda:ArrayCollection = new ArrayCollection();
+			
+			private var array_itensPrevenda:ArrayCollection = new ArrayCollection();
 			
 			[Bindable]
 			public var isProduto:Boolean = false;
@@ -36,6 +38,7 @@
 			
 			public var ro:Remote = Remote.getInstance();
 			
+			public var produto:ProdutoVO;
 			
 			private function init():void{
 				this.preVenda = new PreVendaVO();
@@ -57,7 +60,13 @@
 			
 			public function addItemProduto(event:ItemPreVendaEvent):void{
 				event.itemPreVenda.codigoPrevenda = this.preVenda.codigo;
-				this.array_itemPrevenda.addItem(event.itemPreVenda);
+				var obj:Object = new Object();
+				obj.descricao = this.produto.descricao;
+				obj.codigo = this.produto.codigo;
+				obj.quantidade = event.itemPreVenda.quantidade;
+				obj.valor = event.itemPreVenda.valor;
+				this.array_itensPrevenda.addItem(event.itemPreVenda);
+				this.array_objPrevenda.addItem(obj);
 				this.valorTotal.text = Number(event.itemPreVenda.valor + Number(this.valorTotal.text)).toFixed(2);
 				this.isProduto = true;
 				this.focusManager.setFocus(this.codProduto);
@@ -85,9 +94,10 @@
         	
         	public function removeItemArrayCollection(event:CloseEvent):void{
         		if(event.detail == Alert.OK){
-        			this.valorTotal.text = Number(Number(this.valorTotal.text) - this.array_itemPrevenda.getItemAt(this.produtos.selectedIndex).valor).toFixed(2);
-        			this.array_itemPrevenda.removeItemAt(this.produtos.selectedIndex);
-					if(this.array_itemPrevenda.length == 0){
+        			this.valorTotal.text = Number(Number(this.valorTotal.text) - this.array_objPrevenda.getItemAt(this.produtos.selectedIndex).valor).toFixed(2);
+        			this.array_itensPrevenda.removeItemAt(this.produtos.selectedIndex);
+        			this.array_objPrevenda.removeItemAt(this.produtos.selectedIndex);
+					if(this.array_objPrevenda.length == 0){
 							this.isProduto = false;
 						}	
         		}
@@ -117,6 +127,7 @@
 				}else{
 					var pvProduto:PreviewProdutoTitleWindow = PreviewProdutoTitleWindow(Util.abrePopUp(this,PreviewProdutoTitleWindow,true));
 					pvProduto.setProduto(e.result as ProdutoVO);
+					this.produto = e.result as ProdutoVO;
 					this.codProduto.text = "";
 				}
 			}
@@ -131,7 +142,7 @@
 			
 			private function fecharPreVenda():void{
 				if(this.isProduto){
-					this.preVenda.itemPreVenda = this.array_itemPrevenda.toArray();
+					this.preVenda.itemPreVenda = this.array_itensPrevenda.toArray();
 					this.ro.fecharPreVenda(result_fecharPreVenda,this.preVenda);
 				}else{
 					Alert.show("Não ha produtos inseridos!","Ops!",4,this);
@@ -140,6 +151,10 @@
 			
 			private function result_fecharPreVenda(e:ResultEvent):void{
 				this.isFecharPreVenda = true;
+				Alert.show("Pré-venda gerada com sucesso","Aew!",4,this,this.fechando);
+			}
+			
+			private function fechando(event:Event):void{
 				this.close();
 			}
 			
@@ -181,7 +196,7 @@
 					<mx:Label id="valorTotal" text="00.00" fontSize="50"  x="23" y="26"/>
 				</mx:Panel>
 			</mx:HBox>
-			<mx:DataGrid id="produtos"  width="100%"  height="80%" rowCount="10" dataProvider="{array_itemPrevenda}">
+			<mx:DataGrid id="produtos"  width="100%"  height="80%" rowCount="10" dataProvider="{array_objPrevenda}">
 				<mx:columns>
 					<mx:DataGridColumn headerText="Cod. Produto" dataField="codigo"/>
 					<mx:DataGridColumn headerText="Descrição" dataField="descricao"/>
