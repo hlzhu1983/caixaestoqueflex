@@ -1,1 +1,5 @@
-select * from produto where descricao like '%H%'  and codFornecedor = '1'  and codUnidade = '3'  and codGrupo = '2' 
+Comecou!
+Comecou!
+2
+Comecou!10
+Comecou!Comecou!
