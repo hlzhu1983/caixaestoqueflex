@@ -8,14 +8,13 @@ class ServicosUsuario {
 	private $conn;
 	
 	function ServicosUsuario() {
-		$db = new BaseDados();
-		$this->conn = $db->conn;
+			$db = new BaseDados();
+			$this->conn = $db->conn;
 	}
 	
 	public function addUsuario(UsuarioVO $usuario){
 		
 		$sql = "insert into usuario (nome,comissao,senha,permissao,login) values ('{$usuario->nome}',{$usuario->comissao},'{$usuario->senha}',{$usuario->permissao},'{$usuario->login}')";
-		
 		$resultado = $this->conn->Execute($sql);
 		$usuario->codigo = $this->conn->insert_Id();
 		return $usuario;
@@ -25,10 +24,9 @@ class ServicosUsuario {
 	public function logar(UsuarioVO $usuario){
 		$sql = "select * from usuario where login = '{$usuario->login}'";
 		$resultado = $this->conn->Execute($sql);
-		 if($resultado->_numOfRows<0){
-		 	
-		 throw new Zend_Exception('Login ou Usuário invalido',1);
-		 	
+		
+		 if(!$resultado){
+			 throw new Exception(Erros::$SQL_ERRO_MENSAGEM,Erros::$SQL_ERRO_CODIGO);
 		 }
 		 $dados_usuario = NULL;
 		while($registro = $resultado->FetchNextObject()){			
@@ -39,11 +37,12 @@ class ServicosUsuario {
 			$dados_usuario->permissao = $registro->PERMISSAO;
 			$dados_usuario->senha = $registro->SENHA;
 			$dados_usuario->login = $registro->LOGIN;
-					}
+		}
 		if($dados_usuario->senha==$usuario->senha){
-		return $dados_usuario;
+			return $dados_usuario;
 		}else{
-			 throw new Exception("Login ou Usuário invalido");
+			 throw new Exception(Erros::$AUTENTICACAO_FALHOU_MENSAGEM
+			 ,Erros::$AUTENTICACAO_FALHOU_CODIGO); 
 		}
 		
 	}
@@ -100,7 +99,7 @@ class ServicosUsuario {
 //$usuario->login = "ADMIN";
 //$usuario->senha = "admi";
 //$servico = new ServicosUsuario();
-//$servico->logar($usuario);
+//$eu->logar($usuario);
 //$usuario->nome = "autoTesteTestado";
 //$usuario->comissao = 10.98;
 //$usuario->permissao = 1;

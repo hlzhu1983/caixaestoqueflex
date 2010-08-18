@@ -1,6 +1,7 @@
 <?php
 
 include 'app/db/BaseDados.php';
+include 'app/Erros.php';
 include_once 'library/Zend/Amf/Server.php';
 include 'app/servicos/ServicosCliente.php';
 include 'app/servicos/ServicosPreVenda.php';
@@ -28,6 +29,9 @@ $server->setClass('ServicosLocalProduto');
 $server->setClass('ServicosUsuario');
 $server->setClassMap('UnidadeVO', 'UnidadeVO');
 $server->setClassMap('ClienteVO', 'ClienteVO');
+
+$server->setProduction(false);
+
 echo $server->handle();
 
 //$s = new Servicos();
