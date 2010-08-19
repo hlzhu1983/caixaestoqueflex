@@ -12,6 +12,8 @@ package negocio.vo
 		public var obs:String;
 		public var itemPreVenda:Array;
 		public var dataAbertura:Date;
+		public var desconto:Number;
+		public var valorTotal:Number;
 
 	}
 }
