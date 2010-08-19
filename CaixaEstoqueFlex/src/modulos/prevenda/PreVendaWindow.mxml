@@ -7,6 +7,7 @@
 	
 	<mx:Script>
 		<![CDATA[
+			import mx.events.ItemClickEvent;
 			import negocio.vo.ItemPreVendaVO;
 			import mx.managers.PopUpManager;
 			import events.ProdutoEvent;
@@ -41,6 +42,9 @@
 			
 			public var produto:ProdutoVO;
 			
+			[Bindable]
+			public var valorTotal:Number = 0;
+					
 			private function init():void{
 				this.preVenda = new PreVendaVO();
 				this.preVenda.codUsuario = 1;
@@ -74,7 +78,7 @@
 				obj.valor = i.valor;
 				this.array_itensPrevenda.addItem(i);
 				this.array_objPrevenda.addItem(obj);
-				this.valorTotal.text = Number(i.valor + Number(this.valorTotal.text)).toFixed(2);
+				this.valorTotal += i.valor;
 				this.isProduto = true;
 				this.focusManager.setFocus(this.codProduto);
 			}
@@ -101,7 +105,7 @@
         	
         	public function removeItemArrayCollection(event:CloseEvent):void{
         		if(event.detail == Alert.OK){
-        			this.valorTotal.text = Number(Number(this.valorTotal.text) - this.array_objPrevenda.getItemAt(this.produtos.selectedIndex).valor).toFixed(2);
+        			this.valorTotal -= this.array_objPrevenda.getItemAt(this.produtos.selectedIndex).valor;
         			this.array_itensPrevenda.removeItemAt(this.produtos.selectedIndex);
         			this.array_objPrevenda.removeItemAt(this.produtos.selectedIndex);
 					if(this.array_objPrevenda.length == 0){
@@ -149,6 +153,7 @@
 			
 			private function fecharPreVenda():void{
 				if(this.isProduto){
+					this.preVenda.valorTotal = this.valorTotal;
 					this.preVenda.itemPreVenda = this.array_itensPrevenda.toArray();
 					this.ro.fecharPreVenda(result_fecharPreVenda,this.preVenda);
 				}else{
@@ -184,14 +189,34 @@
 			
 			private function addDesconto():void{
 				var desc:Number = this.ti_desconto.getValor();
-				if(Number(this.valorTotal.text)<desc){
-					Alert.show("Desconto maior que o valor total.","Ops!",4,this);
-				}else{
+				
+				if(this.rb_descPercent.selected){
+					if(desc > 100){
+						Alert.show("Desconto maior que 100%","Ops!",4,this);
+						this.focusManager.setFocus(this.ti_desconto);
+						return;
+					}
+					desc = this.valorTotal * (desc / 100);
 					
 				}
 				
-			}
+				if(this.valorTotal < desc){
+					Alert.show("Desconto maior que o valor total.","Ops!",4,this);
+				}else{
+					this.preVenda.desconto = desc;
+					this.valorTotal -= desc;
+				}
 				
+			}
+			
+			private function removerDesconto():void{
+				if(this.preVenda.desconto>0){
+					this.valorTotal += this.preVenda.desconto;
+					this.preVenda.desconto = 0;
+					this.ti_desconto.text = this.ti_desconto.valorDefault;
+				}
+				
+			}
 			
 		]]>
 	</mx:Script>
@@ -211,7 +236,7 @@
 					<botoes:BuscarButton  x="405" y="21" click="{this.pesquisarProduto()}"/>
 				</mx:Panel>
 				<mx:Panel title="Valor Total" horizontalAlign="right" height="30%" width="395">
-					<mx:Label id="valorTotal" text="00.00" fontSize="50"  x="23" y="26"/>
+					<mx:Label id="ti_valorTotal" text="{Number(this.valorTotal).toFixed(2) }" fontSize="50"  x="23" y="26"/>
 				</mx:Panel>
 			</mx:HBox>
 			<mx:DataGrid id="produtos"  width="100%"  height="80%" rowCount="10" dataProvider="{array_objPrevenda}">
@@ -230,10 +255,13 @@
 			<mx:RadioButtonGroup id="rg_descGrupo"/>
 			<mx:RadioButton id="rb_descValor" group="{rg_descGrupo}" x="139" y="44" label="Valor"/>
 			<mx:RadioButton id="rb_descPercent" group="{rg_descGrupo}" x="204" label="Porcentagem" y="44"/>
+			<mx:Button x="334" y="14" label="Add Desconto" id="bt_addDesconto" click="{this.addDesconto()}"/>
 			
 			<mx:Button id="bt_cancelarPreVenda" label="Cancelar Pré-Venda" toolTip="Clique para cancelar pré-venda"  x="639" y="23"  click="{this.cancelarPreVenda()}"/>
 			
 			<mx:Button id="bt_gerarPreVenda" label="Gerar Pré-Venda" toolTip="Clique para gerar pré-venda"  click="{this.fecharPreVenda()}" x="493" y="23"/>
+			<mx:Button x="334" y="44" label="Exc. Desconto" id="bt_removerDesconto" click="{this.removerDesconto()}"/>
+			
 		</mx:Panel>
 	</mx:VBox>
 </mx:Window>
