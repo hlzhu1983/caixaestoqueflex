@@ -8,6 +8,8 @@ class PreVendaVO {
 		public $obs;
 		public $itemPreVenda;
 		public $dataAbertura;
+		public $desconto;
+		public $valorTotal;
 	}
 
 
