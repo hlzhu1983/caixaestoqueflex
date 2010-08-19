@@ -62,9 +62,12 @@ class ServicosPreVenda {
 			$this->conn->Execute($sql);
 			
 					
-			$sql = "UPDATE produto SET qtdEmEstoqu = (qtdEmEstoqu - $item->quantidade) where codigo = $item->codProduto";
+			$sql = "UPDATE produto SET qtdEmEstoque = (qtdEmEstoque - $item->quantidade) where codigo = $item->codProduto";
 						
-			$result = $this->conn->Execute($sq);
+			$f = fopen('log.txt',"w+");
+			fwrite($f,$sql);
+			
+			$result = $this->conn->Execute($sql);
 			
 			$falhou = false;	
 			if($this->conn->HasFailedTrans()){
@@ -90,18 +93,32 @@ class ServicosPreVenda {
 //		}
 	
 	public function fecharPreVenda(PreVendaVO $item){
+		$f = fopen("log.txt","w+");
+		fwrite($f,$item->valorTotal.' dfas');
 		if($item->codCliente==0){
-			$sql = "UPDATE prevenda SET codUsuario = '$item->codUsuario' , status = '1', obs = '$item->obs' where codigo = $item->codigo";
+			$sql = "UPDATE prevenda SET codUsuario = '$item->codUsuario' , status = '1', obs = '$item->obs', desconto = '$item->desconto', valorTotal = '$item->valorTotal' where codigo = $item->codigo";
 		}else{
-			$sql = "UPDATE prevenda SET codUsuario = '$item->codUsuario' , codCliente = '$item->codCliente', status = '1', obs = '$item->obs' where codigo = $item->codigo";	
+			$sql = "UPDATE prevenda SET codUsuario = '$item->codUsuario' , codCliente = '$item->codCliente', status = '1', obs = '$item->obs', desconto = '$item->desconto', valorTotal = '$item->valorTotal' where codigo = $item->codigo";	
 		}
 		$this->conn->Execute($sql);
 		return $item;
 	}
 	
 	public function cancelarPreVenda(PreVendaVO $item){
+		$sql = "DELETE FROM itensprevenda WHERE codPrevenda = $item->codigo";
+		$this->conn->StartTrans();
+		$this->conn->Execute($sql);
 		$sql = "UPDATE prevenda SET codUsuario = '$item->codUsuario' , status = '2', obs = '$item->obs' where codigo = $item->codigo";
 		$this->conn->Execute($sql);
+		$falhou = false;
+		$falhou = false;	
+		if($this->conn->HasFailedTrans()){
+			$falhou = true;
+		}
+		$this->conn->CompleteTrans();
+		if($falhou){
+			throw new Exception("Erro ao cancelar pré-venda. Pré-venda não cancelada!",100);
+		}
 		return $item;
 	}
 	
@@ -127,6 +144,8 @@ class ServicosPreVenda {
 			$dados_item->obs = $registro->OBS;
 			$dados_item->status = $registro->STATUS;
 			$dados_item->dataAbertura = $registro->DATAABERTURA;
+			$dados_item->desconto = $registro->DESCONTO;
+			$dados_item->valorTotal = $registro->VALORTOTAL;
 			$retorna_dados_item [] = $dados_item;
 		}
 		return $retorna_dados_item;
@@ -143,6 +162,8 @@ class ServicosPreVenda {
 			$dados_item->obs = $registro->OBS;
 			$dados_item->status = $registro->STATUS;
 			$dados_item->dataAbertura = $registro->DATAABERTURA;
+			$dados_item->desconto = $registro->DESCONTO;
+			$dados_item->valorTotal = $registro->VALORTOTAL;
 			$retorna_dados_item [] = $dados_item;
 		}
 		return $retorna_dados_item;	

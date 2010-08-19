@@ -1,1 +1,1 @@
-select * from produto where codLocal = '1' 
+1 dfas
