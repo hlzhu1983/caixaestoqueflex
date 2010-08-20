@@ -6,9 +6,9 @@
 	 <mx:Script source="principal.as"/>
 		
 	<mx:ApplicationControlBar  x="0" dock="true" y="0" width="1024" horizontalAlign="center" fillAlphas="[1.0, 1.0]" 
-		height="46" color="#FFFFFF" fillColors="[#FFFFFF, #009DFF]" cornerRadius="11">
+		height="46" color="#FFFFFF" fillColors="[#FFFFFF, #D2D2D2]" cornerRadius="11">
 		<mx:Label id="nomeUsuario" text="{this.usuario.nome}" fontWeight="bold" fontSize="12" color="#000000"/>
-		<mx:ButtonBar id="btBar" itemClick="{itemClickInfo(event)}" alpha="0.62"  fontWeight="normal" horizontalGap="3" color="#000000">
+		<mx:ButtonBar id="btBar" itemClick="{itemClickInfo(event)}" alpha="1.0"  fontWeight="normal" horizontalGap="3" color="#000000">
 			<mx:dataProvider>
 	           <mx:Object label="Arquivo"/>
 	           <mx:Object label="Cadastros"/>

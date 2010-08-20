@@ -274,6 +274,11 @@ package negocio.remote{
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
 		
+		public function pesquisarPreVenda(result:Function,texto:String,coluna:String):void{
+			_remote.source = "ServicosPreVenda";
+			var async:AsyncToken = _remote.pesquisarItens(texto,coluna);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
 		
  		public function fecharPreVenda(result:Function,preVenda:PreVendaVO):void{
  			_remote.source = "ServicosPreVenda";
