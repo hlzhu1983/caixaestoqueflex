@@ -7,6 +7,8 @@
 	
 	<mx:Script>
 		<![CDATA[
+			import negocio.vo.VendaVO;
+			import modulos.prevenda.PreviewProdutoTitleWindow;
 			import mx.events.ItemClickEvent;
 			import negocio.vo.ItemPreVendaVO;
 			import mx.managers.PopUpManager;
@@ -25,18 +27,18 @@
 			import mx.events.CloseEvent;
 			
 			[Bindable]
-			public var array_objPrevenda:ArrayCollection = new ArrayCollection();
+			public var array_objVenda:ArrayCollection = new ArrayCollection();
 			
-			private var array_itensPrevenda:ArrayCollection = new ArrayCollection();
+			private var array_itensVenda:ArrayCollection = new ArrayCollection();
 			
 			[Bindable]
 			public var isProduto:Boolean = false;
 			
 			[Bindable]
-			private var isFecharPreVenda:Boolean = false;
+			private var isFecharVenda:Boolean = false;
 			
 			[Bindable]
-			public var preVenda:PreVendaVO;
+			public var venda:VendaVO;
 			
 			public var ro:Remote = Remote.getInstance();
 			
@@ -46,16 +48,16 @@
 			public var valorTotal:Number = 0;
 					
 			private function init():void{
-				this.preVenda = new PreVendaVO();
-				this.preVenda.codUsuario = 1;
-				this.ro.abrirPreVenda(result_abrirPreVenda,this.preVenda);
+				this.venda = new VendaVO();
+				this.venda.codUsuario = 1;
+				this.ro.abrirVenda(result_abrirVenda,this.venda);
 				this.addEventListener(ItemPreVendaEvent.ADICIONADOSUCEESSO,addItemProduto);
 				Application.application.systemManager.addEventListener(ProdutoEvent.PRODUTOSELECIONADO,produtoSelecionado);
 				this.focusManager.setFocus(this.codProduto);
 			}
 			
-			private function result_abrirPreVenda(event:ResultEvent):void{
-				this.preVenda = event.result as PreVendaVO;
+			private function result_abrirVenda(event:ResultEvent):void{
+				this.venda = event.result as VendaVO;
 			}
 			
 			public function produtoSelecionado(e:ProdutoEvent):void{
@@ -64,7 +66,7 @@
 			}
 			
 			public function addItemProduto(event:ItemPreVendaEvent):void{
-				event.itemPreVenda.codigoPrevenda = this.preVenda.codigo;
+				//event.itemVenda.codigoVenda = this.venda.codigo;
 				this.ro.addItemPreVenda(result_addItemProduto,event.itemPreVenda);
 			}
 			
@@ -75,8 +77,8 @@
 				obj.codigo = this.produto.codigo;
 				obj.quantidade = i.quantidade;
 				obj.valor = i.valor;
-				this.array_itensPrevenda.addItem(i);
-				this.array_objPrevenda.addItem(obj);
+				this.array_itensVenda.addItem(i);
+				this.array_objVenda.addItem(obj);
 				this.valorTotal += i.valor;
 				this.isProduto = true;
 				this.focusManager.setFocus(this.codProduto);
@@ -104,22 +106,22 @@
         	
         	public function removeItemArrayCollection(event:CloseEvent):void{
         		if(event.detail == Alert.OK){
-        			this.ro.removerItemPreVenda(result_removeItemArrayCollection,this.array_itensPrevenda.getItemAt(this.produtos.selectedIndex) as ItemPreVendaVO);
+        			this.ro.removerItemPreVenda(result_removeItemArrayCollection,this.array_itensVenda.getItemAt(this.produtos.selectedIndex) as ItemPreVendaVO);
         		}
         		
         	}
         	
         	private function result_removeItemArrayCollection(event:ResultEvent):void{
-        		this.valorTotal -= this.array_objPrevenda.getItemAt(this.produtos.selectedIndex).valor;
-        			this.array_itensPrevenda.removeItemAt(this.produtos.selectedIndex);
-        			this.array_objPrevenda.removeItemAt(this.produtos.selectedIndex);
-					if(this.array_objPrevenda.length == 0){
+        		this.valorTotal -= this.array_objVenda.getItemAt(this.produtos.selectedIndex).valor;
+        			this.array_itensVenda.removeItemAt(this.produtos.selectedIndex);
+        			this.array_objVenda.removeItemAt(this.produtos.selectedIndex);
+					if(this.array_objVenda.length == 0){
 							this.isProduto = false;
 						}	
         	}
 			
 			public function onCloseCommand(event:Event):void{
-				if(!isFecharPreVenda){
+				if(!isFecharVenda){
 					event.preventDefault();
 					this.cancelarPreVenda();
 				}				
@@ -157,17 +159,17 @@
 			
 			private function fecharPreVenda():void{
 				if(this.isProduto){
-					this.preVenda.valorTotal = this.valorTotal;
-					this.preVenda.itemPreVenda = this.array_itensPrevenda.toArray();
-					this.ro.fecharPreVenda(result_fecharPreVenda,this.preVenda);
+					this.venda.valorTotal = this.valorTotal;
+					this.venda.itemVenda = this.array_itensVenda.toArray();
+					this.ro.fecharVenda(result_fecharPreVenda,this.venda);
 				}else{
 					Alert.show("Não ha produtos inseridos!","Ops!",4,this);
 				}
 			}
 			
 			private function result_fecharPreVenda(e:ResultEvent):void{
-				this.isFecharPreVenda = true;
-				Alert.show("Pré-venda gerada com sucesso","Aew!",4,this,this.fechando);
+				this.isFecharVenda = true;
+				Alert.show("Venda gerada com sucesso","Aew!",4,this,this.fechando);
 			}
 			
 			private function fechando(event:Event):void{
@@ -175,18 +177,18 @@
 			}
 			
 			private function cancelarPreVenda():void{
-				Alert.show("Deseja realemente cancelar a pré-venda?","Opa!",Alert.YES|Alert.NO,this,resposta_cancelarPreVenda);
+				Alert.show("Deseja realemente cancelar a venda?","Opa!",Alert.YES|Alert.NO,this,resposta_cancelarPreVenda);
 			}
 			
 			private function resposta_cancelarPreVenda(event:CloseEvent):void{
 				if(event.detail == Alert.YES){
-					this.ro.cancelarPreVenda(result_cancelarPreVenda,this.preVenda);					
+					this.ro.cancelarVenda(result_cancelarPreVenda,this.venda);					
 				}
 				
 			}
 			
 			private function result_cancelarPreVenda(e:ResultEvent):void{
-				this.isFecharPreVenda = true;
+				this.isFecharVenda = true;
 				this.stage.nativeWindow.close();
 			}
 			
@@ -206,16 +208,16 @@
 				if(this.valorTotal < desc){
 					Alert.show("Desconto maior que o valor total.","Ops!",4,this);
 				}else{
-					this.preVenda.desconto = desc;
+					this.venda.desconto = desc;
 					this.valorTotal -= desc;
 				}
 				
 			}
 			
 			private function removerDesconto():void{
-				if(this.preVenda.desconto>0){
-					this.valorTotal += this.preVenda.desconto;
-					this.preVenda.desconto = 0;
+				if(this.venda.desconto>0){
+					this.valorTotal += this.venda.desconto;
+					this.venda.desconto = 0;
 					this.ti_desconto.text = this.ti_desconto.valorDefault;
 				}
 				
@@ -227,8 +229,9 @@
 	<mx:VBox id="body" width="100%" height="100%" >
 		<mx:ApplicationControlBar dock="true" width="100%" height="45" fillAlphas="[1.0, 1.0]" fillColors="[#FFFFFF, #009DFF]">
 			<mx:Label text="Pedido: " fontSize="30" />
-			<mx:Label id="numPedido" text="{this.preVenda.codigo}" fontSize="30" />
+			<mx:Label id="numPedido" text="{this.venda.codigo}" fontSize="30" />
 			<mx:Spacer width="50%"/>
+			<mx:Button id="bt_getCliente" label="Logoff"/>
 			<utilidades:RelogioDigital/>	
 		</mx:ApplicationControlBar>
 		<mx:VBox height="80%" width="100%">
@@ -242,14 +245,73 @@
 					<mx:Label id="ti_valorTotal" text="{Number(this.valorTotal).toFixed(2) }" fontSize="50"  x="23" y="26"/>
 				</mx:Panel>
 			</mx:HBox>
-			<mx:DataGrid id="produtos"  width="100%"  height="80%" rowCount="10" dataProvider="{array_objPrevenda}">
-				<mx:columns>
-					<mx:DataGridColumn headerText="Cod. Produto" dataField="codigo"/>
-					<mx:DataGridColumn headerText="Descrição" dataField="descricao"/>
-					<mx:DataGridColumn headerText="Quantidade" dataField="quantidade"/>					
-					<mx:DataGridColumn headerText="Valor" dataField="valor"/>
-				</mx:columns>
-			</mx:DataGrid>
+			<mx:Accordion width="100%" height="80%">
+				<mx:Canvas label="Itens Venda" width="100%" height="100%" id="ac_itensVenda">
+					<mx:DataGrid id="produtos"  width="100%"  height="100%" rowCount="10" dataProvider="{array_objVenda}">
+						<mx:columns>
+							<mx:DataGridColumn headerText="Cod. Produto" dataField="codigo"/>
+							<mx:DataGridColumn headerText="Descrição" dataField="descricao"/>
+							<mx:DataGridColumn headerText="Quantidade" dataField="quantidade"/>					
+							<mx:DataGridColumn headerText="Valor" dataField="valor"/>
+						</mx:columns>
+					</mx:DataGrid>
+				</mx:Canvas>
+				<mx:Canvas label="Cliente" width="100%" height="100%">
+					<mx:DataGrid x="44" y="138" id="grid_listCliente" editable="false" width="950" height="166">
+						<mx:columns>
+							<mx:DataGridColumn headerText="Column 1" dataField="col1"/>
+							<mx:DataGridColumn headerText="Column 2" dataField="col2"/>
+							<mx:DataGridColumn headerText="Column 3" dataField="col3"/>
+						</mx:columns>
+					</mx:DataGrid>
+					<mx:Panel x="44" y="10" width="444" height="120" layout="absolute" title="Pesquisa">
+						<mx:TextInput x="101" y="10" id="ti_pesquisCliente" width="247"/>
+						<mx:RadioButton x="169" y="42" label="Nome" id="rb_nome" groupName="grupo"/>
+						<mx:RadioButton x="101" y="42" label="Código" id="rb_codigo" selected="true"/>
+						<mx:RadioButton x="238" y="42" label="Telefone" id="rb_telefone" groupName="grupo"/>
+						<mx:Label x="25" y="12" text="Campo:"/>
+						<botoes:BuscarButton  x="356" y="11" click="{this.pesquisarProduto()}"/>
+					</mx:Panel>
+					<mx:Panel x="508" y="10" width="424" height="120" layout="absolute" title="Informações Cliente">
+						<mx:Label x="10" y="10" text="Código:"/>
+						<mx:Label x="84" y="10" id="lb_codigo"/>
+						<mx:Label x="129" y="10" text="Nome:"/>
+						<mx:Label x="191" y="10" id="lb_nome"/>
+						<mx:Label x="10" y="40" text="Lim. Crédito"/>
+						<mx:Label x="98" y="40" id="lb_limitCredito"/>
+					</mx:Panel>
+					<botoes:ADDButton id="bt_addCliente" toolTip="Adiciona Cliente." x="940" y="10"/>
+					<botoes:CleanButton id="bt_limparCliente" x="940" y="40" toolTip="Limpar Cliente"/>
+				</mx:Canvas>
+				<mx:Canvas label="Importar" width="100%" height="100%">
+					<mx:Panel x="44" y="10" width="445" height="120" layout="absolute" title="Pesquisa">
+						<mx:TextInput x="101" y="10" id="ti_pesquisaImport" width="247"/>
+						<mx:RadioButton x="101" y="44" label="Pré-Venda" id="rb_preVenda" groupName="grupoImportar" selected="true"/>
+						<mx:RadioButton x="238" y="42" label="Orçamento" id="rb_orcamento" groupName="grupoImportar"/>
+						<mx:Label x="25" y="12" text="Código:"/>
+						<botoes:BuscarButton  x="356" y="11" click="{this.pesquisarProduto()}"/>
+					</mx:Panel>
+					<mx:DataGrid x="44" y="138" width="938" height="174">
+						<mx:columns>
+							<mx:DataGridColumn headerText="Column 1" dataField="col1"/>
+							<mx:DataGridColumn headerText="Column 2" dataField="col2"/>
+							<mx:DataGridColumn headerText="Column 3" dataField="col3"/>
+						</mx:columns>
+					</mx:DataGrid>
+					<mx:Panel title="Imformações Importação" layout="absolute" height="120" width="425" x="497" y="10">
+						<mx:Label text="Código:" x="10" y="10"/>
+						<mx:Label x="72" y="10" id="lb_codigoImport"/>
+						<mx:Label x="137" y="10" text="Data Abertura"/>
+						<mx:Label x="239" y="10" id="lb_dataAberturaImport"/>
+						<mx:Label x="10" y="38" text="Desconto:"/>
+						<mx:Label x="87" y="38" id="lb_descontoImport"/>
+						<mx:Label x="174" y="38" text="Valor Total:"/>
+						<mx:Label x="259" y="38" id="lb_valoTotalImport"/>
+					</mx:Panel>
+					<botoes:ADDButton id="bt_addImpot" toolTip="Adiciona Importação." x="930" y="10"/>
+					<botoes:CleanButton id="bt_limparImport" x="930" y="40" toolTip="Limpa Importação."/>
+				</mx:Canvas>
+			</mx:Accordion>
 		</mx:VBox>	
 		<mx:Panel width="100%" title="Fechamento" layout="absolute"  height="20%">
 			<mx:Label x="10" y="10" text="Desconto:" fontSize="18" fontWeight="bold"/>
@@ -268,3 +330,4 @@
 		</mx:Panel>
 	</mx:VBox>
 </mx:Window>
+

@@ -4,6 +4,7 @@ package negocio.vo
 	[RemoteClass(alias="ItemPreVendaVO")]	
 	public class ItemPreVendaVO	{
 		
+		public var codigo:int;
 		public var codigoPrevenda:int;
 		public var codProduto:int;
 		public var quantidade:Number;

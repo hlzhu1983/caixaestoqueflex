@@ -1,7 +1,6 @@
 
 	import events.AutenticacaoUsuarioEvent;
 	
-	import modulos.caixa.Caixa;
 	import modulos.cliente.CadastroCliente;
 	import modulos.formadepagto.CadastroFormadePagto;
 	import modulos.fornecedor.CadastroFornecedor;
@@ -12,6 +11,7 @@
 	import modulos.produto.ProdutoWindow;
 	import modulos.unidade.CadastroUnidade;
 	import modulos.usuario.CadastroUsuario;
+	import modulos.venda.VendaWindow;
 	
 	import mx.collections.ArrayCollection;
 	import mx.controls.Alert;
@@ -43,7 +43,7 @@
          {label: "Cad. Loc. Produto", funcao: gerLocalProduto},{label: "Cad. Produto", funcao: gerProduto },
          {label: "Cad. Fornecedor", funcao: gerFornecedor}, {label: "Cad. Unidades", funcao: gerUnidade},
          {label: "Cad. Forma Pagamento", funcao: gerFormadePagto }],
-         [{label: "Pré-Venda", funcao: preVendaWindow},{label: "Frente de Caixa", funcao: frenteLoja},
+         [{label: "Pré-Venda", funcao: preVendaWindow},{label: "Janela de Venda", funcao: abreCaixaWindow},
          {label: "Pedido de Compra"},{label: "Orçamento", funcao: orcamentoWindow},
          {label: "Transf Filiais"},{label: "Devolução"}],
          [{label: "Ainda Falta Fazer"}],
@@ -99,9 +99,9 @@
 	    g.play();
     }
 	
-	public function frenteLoja():void{
+	public function abreCaixaWindow():void{
 		this.logou = false;	
-		var newWindow:Window = new Caixa();
+		var newWindow:Window = new VendaWindow();
 		newWindow.maximizable=false;
 		newWindow.minimizable = false;
 		newWindow.resizable = false;		

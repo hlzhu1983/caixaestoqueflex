@@ -268,6 +268,12 @@ package negocio.remote{
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
 		
+		public function removerItemPreVenda(result:Function,item:ItemPreVendaVO):void{
+ 			_remote.source = "ServicosPreVenda";
+			var async:AsyncToken = _remote.removerItemPreVenda(item);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
 		
  		public function fecharPreVenda(result:Function,preVenda:PreVendaVO):void{
  			_remote.source = "ServicosPreVenda";
@@ -278,6 +284,49 @@ package negocio.remote{
 		public function cancelarPreVenda(result:Function,preVenda:PreVendaVO):void{
  			_remote.source = "ServicosPreVenda";
 			var async:AsyncToken = _remote.cancelarPreVenda(preVenda);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		//**********************************************************************************//
+				
+		//Servicos Venda	
+		
+		public function abrirVenda(result:Function,venda:VendaVO):void{
+ 			_remote.source = "ServicosVenda";
+			var async:AsyncToken = _remote.abrirVenda(venda);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
+ 		public function fecharVenda(result:Function,venda:VendaVO):void{
+ 			_remote.source = "ServicosVenda";
+			var async:AsyncToken = _remote.fecharVenda(venda);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
+		public function cancelarVenda(result:Function,venda:VendaVO):void{
+ 			_remote.source = "ServicosVenda";
+			var async:AsyncToken = _remote.cancelarVenda(venda);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
+		//**********************************************************************************//
+				
+		//Servicos Orçamento
+		
+		public function abrirOrcamento(result:Function,orcamento:OrcamentoVO):void{
+ 			_remote.source = "Orcamento";
+			var async:AsyncToken = _remote.abrirOrcamento(orcamento);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
+ 		public function fecharOrcamento(result:Function,orcamento:OrcamentoVO):void{
+ 			_remote.source = "Orcamento";
+			var async:AsyncToken = _remote.fecharOrcamento(orcamento);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
+		public function cancelarOrcamento(result:Function,orcamento:OrcamentoVO):void{
+ 			_remote.source = "Orcamento";
+			var async:AsyncToken = _remote.cancelarOrcamento(orcamento);
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
 		
