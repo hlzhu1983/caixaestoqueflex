@@ -10,7 +10,7 @@ package negocio.vo
 		public var status:int;
 		public var obs:String;
 		public var itemPreVenda:Array;
-		public var dataAbertura:Date;
+		public var dataAbertura:String;
 		public var valorTotal:Number;
 
 	}

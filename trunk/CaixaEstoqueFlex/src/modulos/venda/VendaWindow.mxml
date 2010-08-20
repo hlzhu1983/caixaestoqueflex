@@ -7,6 +7,7 @@
 	
 	<mx:Script>
 		<![CDATA[
+			import mx.events.ChildExistenceChangedEvent;
 			import events.PreVendaEvent;
 			import mx.containers.TitleWindow;
 			import negocio.vo.VendaVO;
@@ -29,9 +30,7 @@
 			import mx.events.CloseEvent;
 			
 			[Bindable]
-			public var array_objVenda:ArrayCollection = new ArrayCollection();
-			
-			private var array_itensVenda:ArrayCollection = new ArrayCollection();
+			private var array_itensVenda:ArrayCollection;
 			
 			[Bindable]
 			public var isProduto:Boolean = false;
@@ -45,10 +44,7 @@
 			[Bindable]
 			public var preVenda:PreVendaVO;
 			
-			public var ro:Remote = Remote.getInstance();
-			
-			[Bindable]
-			public var valorTotal:Number = 0;
+			public var ro:Remote = Remote.getInstance();			
 			
 					
 			private function init():void{
@@ -57,7 +53,8 @@
 				if(this.preVenda == null){
 					this.getPreVenda();
 				}else {
-					this.venda.codPrevenda = this.preVenda.codigo;
+					this.venda.codPreVenda = this.preVenda.codigo;
+					this.array_itensVenda = new ArrayCollection(this.preVenda.itemPreVenda);
 					this.ro.abrirVenda(result_abrirVenda,this.venda);
 				}
 			}
@@ -68,21 +65,16 @@
 			}
 			
 			private function result_getPrevenda(event:PreVendaEvent):void{
-				
+				this.venda.codPreVenda = event.preVenda.codigo;
+				this.venda.valorTotal = event.preVenda.valorTotal;
+				this.array_itensVenda = new ArrayCollection(event.preVenda.itemPreVenda);
+				this.ro.abrirVenda(result_abrirVenda,this.venda);				
 			}
 			
 			private function result_abrirVenda(event:ResultEvent):void{
-				this.venda = event.result as VendaVO;
+				this.venda.codigo = event.result.codigo;
 			}
-			
-			
-			
-			public function addItemProduto(event:ItemPreVendaEvent):void{
-				
-			}
-			
-			
-						
+									
         	private function keyEvento(event:KeyboardEvent):void{
         		switch(event.keyCode){
         			case 123: 
@@ -91,61 +83,50 @@
         		}
         	}
         	
-        	
 			
 			public function onCloseCommand(event:Event):void{
 				if(!isFecharVenda){
 					event.preventDefault();
-					this.cancelarPreVenda();
+					this.cancelarVenda();
 				}				
    			}	
 			
-			
-			public function previewProduto():void{
-				
-				
-			}
-			
-			public function result_previewProduto(e:ResultEvent):void{
-			
-			}
-			
-			
-			
 			private function fecharVenda():void{
-				if(this.isProduto){
-					this.venda.valorTotal = this.valorTotal;
-					this.venda.itemVenda = this.array_itensVenda.toArray();
-					this.ro.fecharVenda(result_fecharPreVenda,this.venda);
+				Alert.show("Não ha produtos inseridos!","Ops!",4,this);
+				
+				if(this.isProduto){					
+					this.ro.fecharVenda(result_fecharVenda,this.venda);
 				}else{
-					Alert.show("Não ha produtos inseridos!","Ops!",4,this);
+					
 				}
 			}
 			
-			private function result_fecharPreVenda(e:ResultEvent):void{
-				this.isFecharVenda = true;
-				Alert.show("Venda gerada com sucesso","Aew!",4,this,this.fechando);
+			private function result_fecharVenda(e:ResultEvent):void{
+				var fin:FechamentoVendaTitleWindow: FechamentoVendaTitleWindow(Util.abrePopUp(this,FechamentoVendaTitleWindow,true);
+				fin.addEventListener();
+				
 			}
 			
 			private function fechando(event:Event):void{
 				this.stage.nativeWindow.close();
 			}
 			
-			private function cancelarPreVenda():void{
+			private function cancelarVenda():void{
 				Alert.show("Deseja realemente cancelar a venda?","Opa!",Alert.YES|Alert.NO,this,resposta_cancelarPreVenda);
 			}
 			
 			private function resposta_cancelarPreVenda(event:CloseEvent):void{
-				if(event.detail == Alert.YES){
-					this.result_cancelarPreVenda(null);
-					//this.ro.cancelarVenda(result_cancelarPreVenda,this.venda);					
+				if(event.detail == Alert.YES){					
+					this.ro.cancelarVenda(result_cancelarPreVenda,this.venda);					
 				}
 				
 			}
 			
-			private function result_cancelarPreVenda(e:ResultEvent):void{
-				this.isFecharVenda = true;
-				this.stage.nativeWindow.close();
+			private function result_cancelarPreVenda(e:CloseEvent):void{
+				if (e.detail == Alert.YES) {
+					this.isFecharVenda = true;
+					this.stage.nativeWindow.close();
+				}
 			}
 			
 			private function addDesconto():void{
@@ -157,24 +138,28 @@
 						this.focusManager.setFocus(this.ti_desconto);
 						return;
 					}
-					desc = this.valorTotal * (desc / 100);
+					desc = this.venda.valorTotal * (desc / 100);
 					
 				}
 				
-				if(this.valorTotal < desc){
+				if(this.venda.valorTotal < desc){
 					Alert.show("Desconto maior que o valor total.","Ops!",4,this);
 				}else{
 					this.venda.desconto = desc;
-					this.valorTotal -= desc;
+					this.venda.valorTotal -= desc;
+					this.bt_addDesconto.visible = false;
+					this.bt_removerDesconto.visible = true;
 				}
 				
 			}
 			
 			private function removerDesconto():void{
 				if(this.venda.desconto>0){
-					this.valorTotal += this.venda.desconto;
+					this.venda.valorTotal += this.venda.desconto;
 					this.venda.desconto = 0;
 					this.ti_desconto.text = this.ti_desconto.valorDefault;
+					this.bt_addDesconto.visible = true;
+					this.bt_removerDesconto.visible = false;
 				}
 				
 			}
@@ -194,54 +179,23 @@
 			<mx:HBox width="100%" height="20%" horizontalAlign="center">
 				<mx:Panel title="Dados Pré-Venda" layout="absolute" height="104" width="573">
 					<mx:Label text="Código:" x="10" y="10" />
-					<mx:Label id="lb_codigoPreVenda" x="10" y="32" />
+					<mx:Label id="lb_codigoPreVenda" x="10" y="32" text="{this.preVenda.codigo}" />
 					<mx:Label text="Data Abertura:" x="114" y="10" />
-					<mx:Label id="lb_dataAberturaPreVenda" x="114" y="32" />
-					<mx:Text id="tx_obsPreVenda" x="246" y="10" width="297" height="42"/>
+					<mx:Label id="lb_dataAberturaPreVenda" x="114" y="32" text="{this.preVenda.dataAbertura}"/>
+					<mx:Text id="tx_obsPreVenda" x="246" y="10" width="297" height="42" />
 				</mx:Panel>
 				<mx:Panel title="Valor Total" horizontalAlign="right" height="30%" width="395">
-					<mx:Label id="ti_valorTotal" text="{Number(this.valorTotal).toFixed(2) }" fontSize="50"  x="23" y="26"/>
+					<mx:Label id="ti_valorTotal" text="{Number(this.venda.valorTotal).toFixed(2) }" fontSize="50"  x="23" y="26"/>
 				</mx:Panel>
 			</mx:HBox>
-			<mx:Accordion width="100%" height="80%">
-				<mx:Canvas label="Itens Venda" width="100%" height="100%" id="ac_itensVenda">
-					<mx:DataGrid id="produtos"  width="100%"  height="100%" rowCount="10" dataProvider="{array_objVenda}">
-						<mx:columns>
-							<mx:DataGridColumn headerText="Cod. Produto" dataField="codigo"/>
-							<mx:DataGridColumn headerText="Descrição" dataField="descricao"/>
-							<mx:DataGridColumn headerText="Quantidade" dataField="quantidade"/>					
-							<mx:DataGridColumn headerText="Valor" dataField="valor"/>
-						</mx:columns>
-					</mx:DataGrid>
-				</mx:Canvas>
-				<mx:Canvas label="Cliente" width="100%" height="100%">
-					<mx:DataGrid x="44" y="138" id="grid_listCliente" editable="false" width="950" height="166">
-						<mx:columns>
-							<mx:DataGridColumn headerText="Column 1" dataField="col1"/>
-							<mx:DataGridColumn headerText="Column 2" dataField="col2"/>
-							<mx:DataGridColumn headerText="Column 3" dataField="col3"/>
-						</mx:columns>
-					</mx:DataGrid>
-					<mx:Panel x="44" y="10" width="444" height="120" layout="absolute" title="Pesquisa">
-						<mx:TextInput x="101" y="10" id="ti_pesquisCliente" width="247"/>
-						<mx:RadioButton x="169" y="42" label="Nome" id="rb_nome" groupName="grupo"/>
-						<mx:RadioButton x="101" y="42" label="Código" id="rb_codigo" selected="true"/>
-						<mx:RadioButton x="238" y="42" label="Telefone" id="rb_telefone" groupName="grupo"/>
-						<mx:Label x="25" y="12" text="Campo:"/>
-						<botoes:BuscarButton  x="356" y="11" click="{}"/>
-					</mx:Panel>
-					<mx:Panel x="508" y="10" width="424" height="120" layout="absolute" title="Informações Cliente">
-						<mx:Label x="10" y="10" text="Código:"/>
-						<mx:Label x="84" y="10" id="lb_codigo"/>
-						<mx:Label x="129" y="10" text="Nome:"/>
-						<mx:Label x="191" y="10" id="lb_nome"/>
-						<mx:Label x="10" y="40" text="Lim. Crédito"/>
-						<mx:Label x="98" y="40" id="lb_limitCredito"/>
-					</mx:Panel>
-					<botoes:ADDButton id="bt_addCliente" toolTip="Adiciona Cliente." x="940" y="10"/>
-					<botoes:CleanButton id="bt_limparCliente" x="940" y="40" toolTip="Limpar Cliente"/>
-				</mx:Canvas>				
-			</mx:Accordion>
+			<mx:DataGrid id="produtos"  width="100%"  height="100%" rowCount="10" dataProvider="{array_itensVenda}">
+				<mx:columns>
+					<mx:DataGridColumn headerText="Cod. Produto" dataField="codigo"/>
+					<mx:DataGridColumn headerText="Descrição" dataField="descricao"/>
+					<mx:DataGridColumn headerText="Quantidade" dataField="quantidade"/>					
+					<mx:DataGridColumn headerText="Valor" dataField="valor"/>
+				</mx:columns>
+			</mx:DataGrid>
 		</mx:VBox>	
 		<mx:Panel width="100%" title="Fechamento" layout="absolute"  height="20%">
 			<mx:Label x="10" y="10" text="Desconto:" fontSize="18" fontWeight="bold"/>
@@ -252,9 +206,11 @@
 			<mx:RadioButton id="rb_descPercent" group="{rg_descGrupo}" x="204" label="Porcentagem" y="44"/>
 			<mx:Button x="334" y="14" label="Add Desconto" id="bt_addDesconto" click="{this.addDesconto()}"/>
 			<mx:Button x="334" y="44" label="Exc. Desconto" id="bt_removerDesconto" click="{this.removerDesconto()}"/>
-			<mx:Button id="bt_cancelarPreVenda" label="Cancelar Pré-Venda" toolTip="Clique para cancelar pré-venda"  x="639" y="23"  click="{this.cancelarPreVenda()}"/>
 			
-			<mx:Button id="bt_gerarPreVenda" label="Gerar Pré-Venda" toolTip="Clique para gerar pré-venda"  click="{this.fecharVenda()}" x="493" y="23"/>
+			<mx:Button id="bt_gerarVenda" label="Gerar Venda" toolTip="Clique para gerar venda"  click="{this.fecharVenda()}" x="493" y="23"/>
+			<mx:Button id="bt_cancelarVenda" label="Cancelar Venda" toolTip="Clique para cancelar venda"  x="639" y="23"  click="{this.cancelarVenda()}"/>
+			
+			
 			
 			
 		</mx:Panel>

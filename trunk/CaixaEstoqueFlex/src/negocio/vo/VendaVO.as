@@ -6,13 +6,13 @@ package negocio.vo
 		
 		public var codigo:int;
 		public var codCliente:int;
-		public var codPrevenda:int;
+		public var codPreVenda:int;
 		public var codUsuario:int;
-		public var status:int;		
-		public var itemVenda:Array;
-		public var dataVenda:Date;
+		public var status:int;
+		public var dataVenda:String;
 		public var desconto:Number;
 		public var valorTotal:Number;
+		public var formasPagamento:Array;
 		public var obs:String;
 
 	}

@@ -21,7 +21,9 @@ package negocio.vo
 		public var contato:String;
 		public var email:String;
 		public var url:String;
+		public var limCredito:Number;
 		public var obs:String;
+		
 		
 		
 		public function getDataNascimento():Date{

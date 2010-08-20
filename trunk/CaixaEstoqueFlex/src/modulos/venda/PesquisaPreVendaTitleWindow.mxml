@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
 	 layout="absolute" width="882" title="Pesquisar Pre-Venda" 
-	 height="370" xmlns:botoes="utilidades.botoes.*" showCloseButton="true" close="{this.cancelarPesquisa()}">
+	 height="370" xmlns:botoes="utilidades.botoes.*" 
+	 showCloseButton="true" close="{this.cancelarPesquisa()}">
 
 	<mx:Metadata>
 		[Event(name="adicaoSucessoEvent","events.PreVendaEvent")]
@@ -10,6 +11,11 @@
 	
 	<mx:Script>
 		<![CDATA[
+			import events.PreVendaEvent;
+			import mx.managers.PopUpManager;
+			import mx.events.ListEvent;
+			import mx.controls.Alert;
+			import negocio.vo.PreVendaVO;
 			import mx.collections.ArrayCollection;
 			import mx.rpc.events.ResultEvent;
 			import negocio.remote.Remote;
@@ -20,18 +26,52 @@
 			[Bindable]
 			private var array_preVenda:ArrayCollection = new ArrayCollection();
 			
+			[Bindable]
+			private var preVenda:PreVendaVO = new PreVendaVO();
+			
 			
 			private function pesquisarPreVenda():void{
-				this.ro.pesquisarPreVenda(result_pesquisarPreVenda,this.ti_pesquisaImport.text,'codigo');
+				if(this.ti_pesquisaImport.text == ""){
+					this.ro.listarPreVenda(result_pesquisarPreVenda);
+				}else{
+					this.ro.pesquisarPreVenda(result_pesquisarPreVenda,this.ti_pesquisaImport.text,'codigo');
+				}
 			}
 			
 			private function result_pesquisarPreVenda(event:ResultEvent):void{
+				if(event.result == null){
+					Alert.show("A pesquisa nâo retornou resultado!","Ops!",4,this);
+				}else{
+					this.array_preVenda = new ArrayCollection(event.result as Array);
+				}
+			}
+			
+			private function filtrarData():void{
+				var d:Date = this.df_data.selectedDate;				
+				this.ro.filtraDataPreVenda(result_pesquisarPreVenda,d.fullYear+'-'+(d.month+1)+'-'+d.getDate(),'dataAbertura');
+			}
+			
+			private function preVendaSelecionada():void{
+				if(this.grid_preVendas.selectedIndex!=-1){
+					this.preVenda = this.array_preVenda.getItemAt(this.grid_preVendas.selectedIndex) as PreVendaVO;
+				}				
+			}
+			
+			private function selecionarItem(event:ListEvent):void{
+				if(event.rowIndex == -1){
+					Alert.show("Produto não selecinado!","Ops!",4,this);
+				}else{
+					this.dispatchEvent(new PreVendaEvent(event.itemRenderer.data as PreVendaVO,PreVendaEvent.ADICIONADOSUCEESSO));
+					PopUpManager.removePopUp(this);	
+				}				
 				
 			}
 			
 			private function cancelarPesquisa():void{
 				
 			}
+			
+			
 		]]>
 	</mx:Script>
 
@@ -40,23 +80,23 @@
 		<mx:TextInput x="65" y="14" id="ti_pesquisaImport" width="106"/>
 		<mx:Label x="10" y="12" text="Código:"/>
 		<botoes:BuscarButton  x="190" y="14" click="{this.pesquisarPreVenda()}"/>
-		<mx:DateField x="248" y="14"/>
+		<mx:DateField x="248" y="14" id="df_data" change="{this.filtrarData()}"/>
 	</mx:Panel>
-	<mx:DataGrid x="10" y="138" width="842" height="174">
+	<mx:DataGrid id="grid_preVendas" doubleClickEnabled="true" 
+		itemDoubleClick="{this.selecionarItem(event)}" x="10" y="138" width="842" height="174" 
+		 dataProvider="{this.array_preVenda}" change="{this.preVendaSelecionada()}">
 		<mx:columns>
-			<mx:DataGridColumn headerText="Column 1" dataField="col1"/>
-			<mx:DataGridColumn headerText="Column 2" dataField="col2"/>
-			<mx:DataGridColumn headerText="Column 3" dataField="col3"/>
+			<mx:DataGridColumn headerText="Código" dataField="codigo"/>
+			<mx:DataGridColumn headerText="Data Abertura" dataField="dataAbertura"/>
+			<mx:DataGridColumn headerText="Valor Total" dataField="valorTotal"/>
 		</mx:columns>
 	</mx:DataGrid>
 	<mx:Panel title="Imformações Importação" layout="absolute" height="120" width="386" x="405" y="10">
 		<mx:Label text="Código:" x="10" y="10"/>
-		<mx:Label x="72" y="10" id="lb_codigoImport"/>
+		<mx:Label x="72" y="10" id="lb_codigoImport" text="{this.preVenda.codigo}"/>
 		<mx:Label x="10" y="36" text="Data Abertura"/>
-		<mx:Label x="125" y="36" id="lb_dataAberturaImport"/>
+		<mx:Label x="125" y="36" id="lb_dataAberturaImport" text="{this.preVenda.dataAbertura}"/>
 		<mx:Label x="125" y="10" text="Valor Total:"/>
-		<mx:Label x="210" y="10" id="lb_valoTotalImport"/>
-	</mx:Panel>
-	<botoes:ADDButton id="bt_addImpot" toolTip="Adiciona Importação." x="812" y="10"/>
-	<botoes:CleanButton id="bt_limparImport" x="812" y="40" toolTip="Limpa Importação."/>
+		<mx:Label x="210" y="10" id="lb_valoTotalImport" text="{this.preVenda.valorTotal}"/>
+	</mx:Panel>	
 </mx:TitleWindow>

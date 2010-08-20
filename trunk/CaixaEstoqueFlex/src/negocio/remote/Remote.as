@@ -78,6 +78,12 @@ package negocio.remote{
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
 		
+		public function getFormadePagto(result:Function,texto:String,coluna:String):void{
+ 			_remote.source = "ServicosFormadePagto";
+			var async:AsyncToken = _remote.getFormadePagto(texto,coluna);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
 		public function addFormadePagto(result:Function,forma:FormadePagtoVO):void{
 			var async:AsyncToken = _remote.addFormadePagto(forma);
 			async.addResponder(new Responder(result, defaultFaultHandler));
@@ -279,6 +285,20 @@ package negocio.remote{
 			var async:AsyncToken = _remote.pesquisarItens(texto,coluna);
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
+		
+		public function filtraDataPreVenda(result:Function,data:String,coluna:String):void{
+			_remote.source = "ServicosPreVenda";
+			var async:AsyncToken = _remote.filtraData(data,coluna);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
+		public function listarPreVenda(result:Function):void{
+ 			_remote.source = "ServicosPreVenda";
+			var async:AsyncToken = _remote.getItens();
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
+		
 		
  		public function fecharPreVenda(result:Function,preVenda:PreVendaVO):void{
  			_remote.source = "ServicosPreVenda";

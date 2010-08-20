@@ -46,6 +46,7 @@
 				}else{
 					var itemPrevenda:ItemPreVendaVO = new ItemPreVendaVO();
 					itemPrevenda.codProduto = this.produto.codigo;
+					itemPrevenda.descricao = this.produto.descricao;
 					itemPrevenda.quantidade = this.quantProduto.getValor();
 					itemPrevenda.valor = Number(this.valor);
 					this.dispatchEvent(new ItemPreVendaEvent(itemPrevenda,ItemPreVendaEvent.ADICIONADOSUCEESSO));
