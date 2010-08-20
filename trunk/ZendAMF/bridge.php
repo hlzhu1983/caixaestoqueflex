@@ -12,6 +12,7 @@ include 'app/servicos/ServicosUnidade.php';
 include 'app/servicos/ServicosGrupoProduto.php';
 include 'app/servicos/ServicosLocalProduto.php';
 include 'app/servicos/ServicosUsuario.php';
+include 'app/servicos/ServicosVenda.php';
 include_once 'app/vo/ClienteVO.php';
 require_once 'Zend/Amf/Server/Exception.php';
 
@@ -27,6 +28,7 @@ $server->setClass('ServicosFormadePagto');
 $server->setClass('ServicosGrupoProduto');
 $server->setClass('ServicosLocalProduto');
 $server->setClass('ServicosUsuario');
+$server->setClass('ServicosVenda');
 $server->setClassMap('UnidadeVO', 'UnidadeVO');
 $server->setClassMap('ClienteVO', 'ClienteVO');
 

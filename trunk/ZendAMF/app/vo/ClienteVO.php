@@ -20,6 +20,7 @@
 		public $contato;
 		public $email;
 		public $url;
+		public $limCredito;
 		public $obs;
 		
 	}
