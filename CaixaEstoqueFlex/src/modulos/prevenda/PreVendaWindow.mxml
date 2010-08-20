@@ -24,9 +24,8 @@
 			import mx.collections.ArrayCollection;
 			import mx.events.CloseEvent;
 			
-			[Bindable]
-			public var array_objPrevenda:ArrayCollection = new ArrayCollection();
 			
+			[Bindable]
 			private var array_itensPrevenda:ArrayCollection = new ArrayCollection();
 			
 			[Bindable]
@@ -70,13 +69,7 @@
 			
 			private function result_addItemProduto(event:ResultEvent):void{
 				var i:ItemPreVendaVO = event.result as ItemPreVendaVO;
-				var obj:Object = new Object();
-				obj.descricao = this.produto.descricao;
-				obj.codigo = this.produto.codigo;
-				obj.quantidade = i.quantidade;
-				obj.valor = i.valor;
-				this.array_itensPrevenda.addItem(i);
-				this.array_objPrevenda.addItem(obj);
+				this.array_itensPrevenda.addItem(i);				
 				this.valorTotal += i.valor;
 				this.isProduto = true;
 				this.focusManager.setFocus(this.codProduto);
@@ -110,10 +103,9 @@
         	}
         	
         	private function result_removeItemArrayCollection(event:ResultEvent):void{
-        		this.valorTotal -= this.array_objPrevenda.getItemAt(this.produtos.selectedIndex).valor;
-        			this.array_itensPrevenda.removeItemAt(this.produtos.selectedIndex);
-        			this.array_objPrevenda.removeItemAt(this.produtos.selectedIndex);
-					if(this.array_objPrevenda.length == 0){
+        		this.valorTotal -= this.array_itensPrevenda.getItemAt(this.produtos.selectedIndex).valor;
+        			this.array_itensPrevenda.removeItemAt(this.produtos.selectedIndex);        			
+					if(this.array_itensPrevenda.length == 0){
 							this.isProduto = false;
 						}	
         	}
@@ -213,7 +205,7 @@
 					<mx:Label id="ti_valorTotal" text="{Number(this.valorTotal).toFixed(2) }" fontSize="50"  x="23" y="26"/>
 				</mx:Panel>
 			</mx:HBox>
-			<mx:DataGrid id="produtos"  width="100%"  height="80%" rowCount="10" dataProvider="{array_objPrevenda}">
+			<mx:DataGrid id="produtos"  width="100%"  height="80%" rowCount="10" dataProvider="{array_itensPrevenda}">
 				<mx:columns>
 					<mx:DataGridColumn headerText="Cod. Produto" dataField="codigo"/>
 					<mx:DataGridColumn headerText="Descrição" dataField="descricao"/>
