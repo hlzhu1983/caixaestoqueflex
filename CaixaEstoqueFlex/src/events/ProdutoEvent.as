@@ -11,7 +11,7 @@ package events
 		public var produto:ProdutoVO;
 		
 		public function ProdutoEvent(produto:ProdutoVO,type:String){
-			super(type, true);
+			super(type, false);
 			this.produto = produto;
 		}
 		

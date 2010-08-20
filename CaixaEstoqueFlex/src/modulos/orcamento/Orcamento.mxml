@@ -1,23 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Window title="OrÃ§amento" xmlns:mx="http://www.adobe.com/2006/mxml" 
-	layout="absolute" width="1024" 
-	height="700" xmlns:utilidades="utilidades.*" closing="onCloseCommand(event)"
-	keyDown="funcionalidades(event)" xmlns:inputs="utilidades.inputs.*">
+<mx:Window  xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
+	width="1024" height="700" title="Orçamento"
+	xmlns:utilidades="utilidades.*" fontSize="12" closing="{this.onCloseCommand(event)}"
+	keyDown="keyEvento(event)"  backgroundAlpha="1.0" xmlns:inputs="utilidades.inputs.*" 
+	xmlns:botoes="utilidades.botoes.*" xmlns:local="*" creationComplete="init()" alpha="1.0" borderColor="#009DFF">
 	
 	<mx:Script>
 		<![CDATA[
+			import modulos.produto.BuscaProduto;
+			import utilidades.Util;
+			import modulos.prevenda.PreviewProdutoTitleWindow;
 			import mx.events.ValidationResultEvent;
 			import mx.controls.Alert;
+			import negocio.vo.ItemPreVendaVO;
+			import negocio.vo.ProdutoVO;
+			import negocio.remote.Remote;
+			import negocio.vo.OrcamentoVO;
 			import mx.collections.ArrayCollection;
 			import mx.events.CloseEvent;
+			import events.ItemPreVendaEvent;
+			import events.ProdutoEvent;
+			import mx.rpc.events.ResultEvent;
+			
 			
 			[Bindable]
-			public var produtoLista:ArrayCollection = new ArrayCollection();
+			public var array_objOrcamento:ArrayCollection = new ArrayCollection();
+			
+			private var array_itensOrcamento:ArrayCollection = new ArrayCollection();
 			
 			[Bindable]
 			public var isProduto:Boolean = false;
+			
+			[Bindable]
+			private var isFecharOrcamento:Boolean = false;
+			
+			[Bindable]
+			public var orcamento:OrcamentoVO;
+			
+			public var ro:Remote = Remote.getInstance();
+			
+			public var produto:ProdutoVO;
+			
+			[Bindable]
+			public var valorTotal:Number = 0;
+					
+			private function init():void{
+				this.orcamento = new OrcamentoVO();
+				this.orcamento.codUsuario = 1;
+				this.ro.abrirOrcamento(result_abrirOrcamento,this.orcamento);
+				this.focusManager.setFocus(this.ti_codProduto);
+			}
+			
+			private function result_abrirOrcamento(event:ResultEvent):void{
+				this.orcamento = event.result as OrcamentoVO;
+			}
+			
+			public function produtoSelecionado(e:ProdutoEvent):void{
+				this.ti_codProduto.text = e.produto.codigo.toString();
+				this.previewProduto();
+			}
+			
+			public function addItemProduto(event:ItemPreVendaEvent):void{
+				event.itemPreVenda.codigoPrevenda = this.orcamento.codigo;
+				var i:ItemPreVendaVO = event.itemPreVenda;
+				var obj:Object = new Object();
+				obj.descricao = this.produto.descricao;
+				obj.codigo = this.produto.codigo;
+				obj.quantidade = i.quantidade;
+				obj.valor = i.valor;
+				this.array_itensOrcamento.addItem(i);
+				this.array_objOrcamento.addItem(obj);
+				this.valorTotal += i.valor;
+				this.isProduto = true;
+				this.focusManager.setFocus(this.ti_codProduto);
+			}
+			
 						
-        	private function funcionalidades(event:KeyboardEvent):void{
+        	private function keyEvento(event:KeyboardEvent):void{
         		switch(event.keyCode){
         			case 123: 
 						this.stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
@@ -29,7 +88,7 @@
 	        						Alert.show("Deseja realmente deletar o item?",
 	        							"Alerta",Alert.OK | Alert.CANCEL,this,removeItemArrayCollection,null,Alert.OK);
 	        					}else{
-	        						Alert.show("Não há item selecionado!"+"","",4,this);
+	        						Alert.show("Não há item selecionado!","Ops!",4,this);
 	        					}							
 	        				}
         				}
@@ -39,8 +98,10 @@
         	
         	public function removeItemArrayCollection(event:CloseEvent):void{
         		if(event.detail == Alert.OK){
-        			this.produtoLista.removeItemAt(this.produtos.selectedIndex);
-					if(this.produtoLista.length == 0){
+        			this.valorTotal -= this.array_objOrcamento.getItemAt(this.produtos.selectedIndex).valor;
+        			this.array_itensOrcamento.removeItemAt(this.produtos.selectedIndex);
+        			this.array_objOrcamento.removeItemAt(this.produtos.selectedIndex);
+					if(this.array_objOrcamento.length == 0){
 							this.isProduto = false;
 						}	
         		}
@@ -48,74 +109,112 @@
         	}
 			
 			public function onCloseCommand(event:Event):void{
-				if(isProduto){
+				if(!isFecharOrcamento){
 					event.preventDefault();
-					Alert.show("A janela não pode ser fechada","Alerta",4,this);
+					this.cancelarOrcamento();
 				}				
    			}	
 			
 			
-			public function inserirProduto():void{
-				if(codProduto.validador.validate().type == ValidationResultEvent.INVALID){
-					focusManager.setFocus(codProduto);
-					Alert.show("Código Incorreto","Erro",4,this);
-					return;
+			public function previewProduto():void{
+				
+				if(this.ti_codProduto.validador.validate().type == ValidationResultEvent.INVALID){
+					this.ti_codProduto.setFocus();
+				}else{
+					this.ro.getProduto(result_previewProduto,this.ti_codProduto.text,"codigo");
 				}
-              	this.produtoLista.addItem({codProduto:this.codProduto.text,quantidade:this.quantProduto.text});
-				this.codProduto.text = "";
-				this.quantProduto.text = "";
-				focusManager.setFocus(codProduto);
-				this.isProduto = true;
-                
 			}
 			
-			public function orcamento():void{
-				this.close();
+			public function result_previewProduto(e:ResultEvent):void{
+				if(e.result == null){
+					Alert.show("Produto não exite","Ops!",4,this,focusTextCodProduto);
+				}else{
+					var pvProduto:PreviewProdutoTitleWindow = PreviewProdutoTitleWindow(Util.abrePopUp(this,PreviewProdutoTitleWindow,true));
+					pvProduto.addEventListener(ItemPreVendaEvent.ADICIONADOSUCEESSO,addItemProduto)
+					pvProduto.setProduto(e.result as ProdutoVO);
+					this.produto = e.result as ProdutoVO;
+					this.ti_codProduto.text = "";
+				}
 			}
 			
+			public function focusTextCodProduto(e:Event):void{
+				this.ti_codProduto.setFocus();
+			}
 			
-           
+			public function pesquisarProduto():void{
+				Util.abrePopUp(this,BuscaProduto,true).addEventListener(ProdutoEvent.PRODUTOSELECIONADO,produtoSelecionado);
+			}
+			
+			private function fecharOrcamento():void{
+				if(this.isProduto){
+					this.orcamento.valorTotal = this.valorTotal;
+					this.orcamento.itemOrcamento = this.array_itensOrcamento.toArray();
+					this.ro.fecharOrcamento(result_fecharOrcamento,this.orcamento);
+				}else{
+					Alert.show("Não ha produtos inseridos!","Ops!",4,this);
+				}
+			}
+			
+			private function result_fecharOrcamento(e:ResultEvent):void{
+				this.isFecharOrcamento = true;
+				Alert.show("Orçamento gerado com sucesso","Aew!",4,this,this.fechando);
+			}
+			
+			private function fechando(event:Event):void{
+				this.stage.nativeWindow.close();
+			}
+			
+			private function cancelarOrcamento():void{
+				Alert.show("Deseja realemente cancelar a orçamento?","Opa!",Alert.YES|Alert.NO,this,resposta_cancelarOrcamento);
+			}
+			
+			private function resposta_cancelarOrcamento(event:CloseEvent):void{
+				if(event.detail == Alert.YES){
+					this.ro.cancelarOrcamento(result_cancelarOrcamento,this.orcamento);					
+				}
+				
+			}
+			
+			private function result_cancelarOrcamento(e:ResultEvent):void{
+				this.isFecharOrcamento = true;
+				this.stage.nativeWindow.close();
+			}
+			
 			
 		]]>
 	</mx:Script>
 	
-		
-
-	<mx:VBox id="body" width="100%" height="100%">
-		<mx:HBox id="cabecalho" width="100%" height="43" fontWeight="bold">
-			<mx:Label text="Pedido: " fontSize="30"/>
-			<mx:Label id="numPedido" text="0001" fontSize="30"/>
-			<mx:Spacer width="100%"/>
+	<mx:VBox id="body" width="100%" height="100%" >
+		<mx:ApplicationControlBar dock="true" width="100%" height="45" fillAlphas="[1.0, 1.0]" fillColors="[#FFFFFF, #009DFF]">
+			<mx:Label text="Orçamento Nº: " fontSize="30" />
+			<mx:Label id="lb_numOrcamento" text="{this.orcamento.codigo}" fontSize="30" />
+			<mx:Spacer width="50%"/>
 			<utilidades:RelogioDigital/>	
-		</mx:HBox>
-		<mx:VBox width="100%" height="100%">
-			<mx:VBox width="100%" height="20%" horizontalAlign="right">
-				<mx:Label text="Valor Total:" fontSize="20" fontWeight="bold"/>
-				<mx:Label id="valorTotal" text="00,00" fontSize="60"/>
-			</mx:VBox>	
-			<mx:Form defaultButton="{inserir}">
-				<mx:HBox id="produto" width="100%" height="40" fontSize="20" verticalAlign="middle">				
-					<mx:FormItem label="Código Produto">
-						<inputs:InteiroInput id="codProduto" requerido="true"/>
-					</mx:FormItem>	
-					<mx:FormItem label="Quantidade" width="100%" height="100%">
-						<inputs:NumberInput id="quantProduto"/>
-					</mx:FormItem>
-					<mx:Button id="inserir" label="Inserir" click="{inserirProduto()}" />
-					<mx:Button id="buscarProdutos" label="Produtos" toolTip="Clique para procurar por um produto"/>
-				</mx:HBox>
-			</mx:Form>				
-			<mx:DataGrid id="produtos" width="100%" height="100%" rowCount="10" dataProvider="{produtoLista}">
+		</mx:ApplicationControlBar>
+		<mx:VBox height="80%" width="100%">
+			<mx:HBox width="100%" height="20%" horizontalAlign="center">
+				<mx:Panel title="Entrada de Produtos" layout="absolute" height="104" width="481">
+					<mx:Label text="Código Produto" x="18" y="17" fontSize="20"/>
+					<inputs:InteiroInput  id="ti_codProduto" requerido="true"  enter="{this.previewProduto()}" isEnter="false" x="184" y="15" fontSize="20" width="209"/>
+					<botoes:BuscarButton  x="405" y="21" click="{this.pesquisarProduto()}"/>
+				</mx:Panel>
+				<mx:Panel title="Valor Total" horizontalAlign="right" height="30%" width="395">
+					<mx:Label id="ti_valorTotal" text="{Number(this.valorTotal).toFixed(2) }" fontSize="50"  x="23" y="26"/>
+				</mx:Panel>
+			</mx:HBox>
+			<mx:DataGrid id="produtos"  width="100%"  height="80%" rowCount="10" dataProvider="{array_objOrcamento}">
 				<mx:columns>
-					<mx:DataGridColumn headerText="Cod Prod." dataField="codProduto"/>
+					<mx:DataGridColumn headerText="Cod. Produto" dataField="codigo"/>
+					<mx:DataGridColumn headerText="Descrição" dataField="descricao"/>
 					<mx:DataGridColumn headerText="Quantidade" dataField="quantidade"/>					
+					<mx:DataGridColumn headerText="Valor" dataField="valor"/>
 				</mx:columns>
 			</mx:DataGrid>
-		</mx:VBox>		
-		<mx:HBox id="rodape" width="100%" height="30">
-			<mx:Button id="gerarOrcamento" label="Gerar Orcamento" toolTip="Clique para gerar orçamento" click="{orcamento()}"/>
-			<mx:Button id="cancelarOrcamento" label="Cancelar Orcamento" toolTip="Clique para cancelar orçamento"/>
-		</mx:HBox>
+		</mx:VBox>	
+		<mx:Panel width="100%" title="Fechamento" layout="absolute"  height="20%">
+			<mx:Label x="10" y="10" text="Desconto:" fontSize="18" fontWeight="bold"/>
+			<mx:Button id="bt_cancelarOrcamento" label="Cancelar Orçamento" toolTip="Clique para cancelar Orçamento"  x="639" y="23"  click="{this.cancelarOrcamento()}"/>
+			<mx:Button id="bt_gerarOrcamento" label="Gerar Orçamento" toolTip="Clique para gerar Orçamento"  click="{this.fecharOrcamento()}" x="493" y="23"/>
+		</mx:Panel>
 	</mx:VBox>
-	
 </mx:Window>

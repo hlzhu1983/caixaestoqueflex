@@ -13,7 +13,7 @@ package events
 		public var itemPreVenda:ItemPreVendaVO;
 		
 		public function ItemPreVendaEvent(itemPreVenda:ItemPreVendaVO, type:String){
-			super(type, true, false);
+			super(type, false, false);
 			this.itemPreVenda = itemPreVenda;
 		}
 		
