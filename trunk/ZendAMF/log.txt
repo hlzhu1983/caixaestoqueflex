@@ -1,1 +1,1 @@
-1 dfas
+DELETE FROM itensprevenda WHERE codigo = 854647

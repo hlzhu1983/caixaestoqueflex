@@ -1,32 +1,28 @@
 <?php
-//include '/home2/pcmaisma/public_html/admProjetos/ZendAMFAdminProjeto/app/db/BaseDados.php';
-//include '/home2/pcmaisma/public_html/admProjetos/ZendAMFAdminProjeto/app/vo/ProjetoVO.php';
 
-//include 'app/db/BaseDados.php';
 include 'app/vo/PreVendaVO.php';
 include 'app/vo/ItemPrevendaVO.php';
 
-class ServicosPreVenda {
-	
+class ServicosOrcamento {
 	
 	private $conn;
 	
 	
-	function ServicosPreVenda() {
+	function ServicosOrcamento() {
 		$db = new BaseDados();
 		$this->conn = $db->conn;
 	}
 	
 	
-	public function abrirPreVenda(PreVendaVO $item){
-		$sql = "insert into prevenda (codUsuario,status,dataAbertura) values ('$item->codUsuario'		 
+	public function abrirOrcamento(OrcamentoVO $item){
+		$sql = "insert into orcamento (codUsuario,status,dataAbertura) values ('$item->codUsuario'		 
 		 ,'0' ,now())";
 		$this->conn->StartTrans();
 		$resultado = $this->conn->Execute($sql);
 		$item->codigo = $this->conn->insert_Id();
 		
 		if($this->conn->HasFailedTrans()){
-			throw new Exception("Erro ao abri pré-Venda",16);
+			throw new Exception("Erro ao abri orçamento",16);
 		}	
 		
 		$this->conn->CompleteTrans();
@@ -35,54 +31,17 @@ class ServicosPreVenda {
 		return $item;
 	}
 	
-	public function addItemPreVenda(ItemPreVendaVO $item){
-		
-			$f = fopen('log.txt','a+');
-			fwrite($f,"codigo Prevenda"+$item->codigoPrevenda+"\n");
-			$sql ="select * from produto where codigo = $item->codProduto";
-			$this->conn->StartTrans();
-			$result = $this->conn->Execute($sql);	
-			if(!$result){
-				throw new Exception("Produto não existe",4);
-			}
-			$registro = $result->FetchNextObject();
-			if($registro->QTDEMESTOQUE < $item->quantidade){
-				throw new Exception("Quantidade de produtos maior que disponível!",15);
-			}
+	
+	
+	
+	
+	
+	public function fecharPreVenda(OrcamentoVO $item){
+		foreach ($item->itemPreVenda as $temp) {
 			$sql = "insert into itensprevenda (codPrevenda, codProduto, quantidade,valor) 
-			      values ('$item->codigoPrevenda','$item->codProduto','$item->quantidade','$item->valor')";
+			      values ('$item->codigo','$temp->codProduto','$temp->quantidade','$temp->valor')";
 			$this->conn->Execute($sql);
-			
-					
-			$sql = "UPDATE produto SET qtdEmEstoque = (qtdEmEstoque - $item->quantidade) where codigo = $item->codProduto";
-			
-			$result = $this->conn->Execute($sql);
-			
-			$falhou = false;	
-			if($this->conn->HasFailedTrans()){
-				$falhou = true;
-			}
-			
-			$item->codigo = $this->conn->insert_Id();
-			$this->conn->CompleteTrans();
-			
-			if($falhou){
-				throw new Exception("Erro ao inserir item!",16);
-			}
-			
-			
-			return $item;
-			
-	}
-	
-	
-//	foreach ($item->itemPreVenda as $temp) {
-//			$sql = "insert into itensprevenda (codPrevenda, codProduto, quantidade,valor) 
-//			      values ('$item->codigo','$temp->codProduto','$temp->quantidade','$temp->valor')";
-//			$this->conn->Execute($sql);
-//		}
-	
-	public function fecharPreVenda(PreVendaVO $item){
+		}
 		if($item->codCliente==0){
 			$sql = "UPDATE prevenda SET codUsuario = '$item->codUsuario' , status = '1', obs = '$item->obs', desconto = '$item->desconto', valorTotal = '$item->valorTotal' where codigo = $item->codigo";
 		}else{
@@ -92,23 +51,8 @@ class ServicosPreVenda {
 		return $item;
 	}
 	
-	public function removerItemPreVenda(ItemPreVendaVO $item){
 		
-		$sql = "UPDATE produto SET qtdEmEstoque = (qtdEmEstoque + $item->quantidade)  WHERE codigo = $item->codProduto";
-		$this->conn->StartTrans();
-		$this->conn->Execute($sql);
-		$sql = "DELETE FROM itensprevenda WHERE codigo = $item->codigo";
-		$this->conn->Execute($sql);
-		if($this->conn->HasFailedTrans()){
-			$falhou = true;
-		}
-		$this->conn->CompleteTrans();
-		if($falhou){
-			throw new Exception("Erro ao remover item pré-venda!",101);
-		}
-	}
-	
-	public function cancelarPreVenda(PreVendaVO $item){	
+	public function cancelarOrcamento(OrcamentoVO $item){	
 		$sql = "select * FROM itensprevenda WHERE codPrevenda = $item->codigo";
 		$this->conn->StartTrans();
 		$resultado = $this->conn->Execute($sql);
@@ -178,10 +122,11 @@ class ServicosPreVenda {
 		}
 		return $retorna_dados_item;	
 	}
+
+
+
+
+
 }
-//$eu = new ServicosPreVenda();
-////$c = new PreVendaVo();
-////$c->codUsuario = 0;
-//$eu->addItemPreVenda(new ItemPreVendaVO());
 
 ?>
