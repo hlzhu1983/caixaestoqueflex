@@ -19,8 +19,11 @@ class ServicosPreVenda {
 	
 	
 	public function abrirPreVenda(PreVendaVO $item){
+		$f = fopen('log.txt',"w+");
+		
 		$sql = "insert into prevenda (codUsuario,status,dataAbertura) values ('$item->codUsuario'		 
 		 ,'0' ,now())";
+		fwrite($f,$sql);
 		$this->conn->StartTrans();
 		$resultado = $this->conn->Execute($sql);
 		$item->codigo = $this->conn->insert_Id();
@@ -49,8 +52,8 @@ class ServicosPreVenda {
 			if($registro->QTDEMESTOQUE < $item->quantidade){
 				throw new Exception("Quantidade de produtos maior que disponível!",15);
 			}
-			$sql = "insert into itensprevenda (codPrevenda, codProduto, quantidade,valor) 
-			      values ('$item->codigoPrevenda','$item->codProduto','$item->quantidade','$item->valor')";
+			$sql = "insert into itensprevenda (codPrevenda, codProduto, descricao, quantidade,valor) 
+			      values ('$item->codigoPrevenda','$item->codProduto','$item->descricao','$item->quantidade','$item->valor')";
 			$this->conn->Execute($sql);
 			
 					
@@ -83,11 +86,7 @@ class ServicosPreVenda {
 //		}
 	
 	public function fecharPreVenda(PreVendaVO $item){
-		if($item->codCliente==0){
-			$sql = "UPDATE prevenda SET codUsuario = '$item->codUsuario' , status = '1', obs = '$item->obs', desconto = '$item->desconto', valorTotal = '$item->valorTotal' where codigo = $item->codigo";
-		}else{
-			$sql = "UPDATE prevenda SET codUsuario = '$item->codUsuario' , codCliente = '$item->codCliente', status = '1', obs = '$item->obs', desconto = '$item->desconto', valorTotal = '$item->valorTotal' where codigo = $item->codigo";	
-		}
+		$sql = "UPDATE prevenda SET codUsuario = '$item->codUsuario' , status = '1', obs = '$item->obs', valorTotal = '$item->valorTotal' where codigo = $item->codigo";		
 		$this->conn->Execute($sql);
 		return $item;
 	}
@@ -143,40 +142,60 @@ class ServicosPreVenda {
 		return true;
 	}
 	
-	public function pesquisarItens($texto,$coluna){
-		$sql = "select * from prevenda where $coluna like '%$texto%'";
+	public function filtraData($data,$coluna){
+		$sql = "select * from prevenda where DATE($coluna) = '$data'";
 		$resultado = $this->conn->Execute($sql);
 		while($registro = $resultado->FetchNextObject()){			
-			$dados_item = new PreVendaVO();
+			$retorna_dados_item [] = $this->toPreVenda($registro);
+		}
+		return $retorna_dados_item;
+	}
+	
+	private function getItensPrevenda($codigo){
+		$sql = "select * from itensprevenda where codPrevenda  = $codigo";
+		$resultado = $this->conn->Execute($sql);
+		while($registro = $resultado->FetchNextObject()){
+			$dados_item = new ItemPreVendaVO();
 			$dados_item->codigo = $registro->CODIGO;
-			$dados_item->codCliente = $registro->CODCLIENTE;
-			$dados_item->codUsuario = $registro->CODUSUARIO;
-			$dados_item->obs = $registro->OBS;
-			$dados_item->status = $registro->STATUS;
-			$dados_item->dataAbertura = $registro->DATAABERTURA;
-			$dados_item->desconto = $registro->DESCONTO;
-			$dados_item->valorTotal = $registro->VALORTOTAL;
+			$dados_item->codigoPrevenda = $registro->CODUSUARIO;
+			$dados_item->descricao = $registro->DESCRICAO;
+			$dados_item->codProduto = $registro->CODPRODUTO;
+			$dados_item->quantidade = $registro->QUANTIDADE;
+			$dados_item->valor = $registro->VALOR;
 			$retorna_dados_item [] = $dados_item;
 		}
 		return $retorna_dados_item;
 	}
 	
-	public function getItens(){
-		$sql = "select * from projeto";
+	public function pesquisarItens($texto,$coluna){
+		$sql = "select * from prevenda where $coluna like '%$texto%'";
 		$resultado = $this->conn->Execute($sql);
 		while($registro = $resultado->FetchNextObject()){			
-			$dados_item = new PreVendaVO();
-			$dados_item->codigo = $registro->CODIGO;
-			$dados_item->codCliente = $registro->CODCLIENTE;
-			$dados_item->codUsuario = $registro->CODUSUARIO;
-			$dados_item->obs = $registro->OBS;
-			$dados_item->status = $registro->STATUS;
-			$dados_item->dataAbertura = $registro->DATAABERTURA;
-			$dados_item->desconto = $registro->DESCONTO;
-			$dados_item->valorTotal = $registro->VALORTOTAL;
-			$retorna_dados_item [] = $dados_item;
+			$retorna_dados_item [] = $this->toPreVenda($registro);
+		}
+		return $retorna_dados_item;
+	}
+	
+	public function getItens(){
+		$sql = "select * from prevenda";
+		$resultado = $this->conn->Execute($sql);
+		while($registro = $resultado->FetchNextObject()){			
+			$retorna_dados_item [] = $this->toPreVenda($registro);
 		}
 		return $retorna_dados_item;	
+	}
+	
+	
+	private function toPreVenda($registro){
+		$dados_item = new PreVendaVO();
+		$dados_item->codigo = $registro->CODIGO;
+		$dados_item->codUsuario = $registro->CODUSUARIO;
+		$dados_item->obs = $registro->OBS;
+		$dados_item->status = $registro->STATUS;
+		$dados_item->dataAbertura = $registro->DATAABERTURA;
+		$dados_item->valorTotal = $registro->VALORTOTAL;
+		$dados_item->itemPreVenda = $this->getItensPrevenda($registro->CODIGO);
+		return $dados_item;
 	}
 }
 //$eu = new ServicosPreVenda();

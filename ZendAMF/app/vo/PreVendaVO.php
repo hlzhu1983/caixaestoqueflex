@@ -1,14 +1,12 @@
 <?php
 class PreVendaVO {
 		
-		public $codigo;
-		public $codCliente;
+		public $codigo;		
 		public $codUsuario;
 		public $status;
 		public $obs;
 		public $itemPreVenda;
 		public $dataAbertura;
-		public $desconto;
 		public $valorTotal;
 	}
 

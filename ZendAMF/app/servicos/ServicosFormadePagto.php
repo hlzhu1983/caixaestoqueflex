@@ -32,14 +32,25 @@ class ServicosFormadePagto {
 		return true;
 	}
 	
+	public function getFormadePagto($texto,$coluna){
+		$sql = "select * from formadepgto where $coluna = '$texto'";
+		$resultado = $this->conn->Execute($sql);
+		while($registro = $resultado->FetchNextObject()){
+			if($registro->CODIGO !=0){			
+				$retorna_dados_formadepagto [] = $this->toFormaPgto($registro);
+			}
+		}
+		return $retorna_dados_formadepagto;
+	}
+	
+	
 	public function pesquisarFormadePagto($texto,$coluna){
 		$sql = "select * from formadepgto where $coluna like '%$texto%'";
 		$resultado = $this->conn->Execute($sql);
-		while($registro = $resultado->FetchNextObject()){			
-			$dados_formadepagto = new FormadePagtoVO();
-			$dados_formadepagto->codigo = $registro->CODIGO;
-			$dados_formadepagto->descricao = $registro->DESCRICAO;
-			$retorna_dados_formadepagto [] = $dados_formadepagto;
+		while($registro = $resultado->FetchNextObject()){
+			if($registro->CODIGO !=0){			
+				$retorna_dados_formadepagto [] = $this->toFormaPgto($registro);
+			}
 		}
 		return $retorna_dados_formadepagto;
 	}
@@ -49,13 +60,20 @@ class ServicosFormadePagto {
 		
 		$resultado = $this->conn->Execute($sql);
 		
-		while($registro = $resultado->FetchNextObject()){			
-			$dados_formadepagto = new FormadePagtoVO();
-			$dados_formadepagto->codigo = $registro->CODIGO;
-			$dados_formadepagto->descricao = $registro->DESCRICAO;
-			$retorna_dados_formadepagto [] = $dados_formadepagto;
+		while($registro = $resultado->FetchNextObject()){
+			if($registro->CODIGO !=0){				
+				$retorna_dados_formadepagto [] = $this->toFormaPgto($registro);
+			}
 		}
 		return $retorna_dados_formadepagto;	
+	}
+	
+	
+	private function toFormaPgto($registro){
+		$dados_formadepagto = new FormadePagtoVO();
+		$dados_formadepagto->codigo = $registro->CODIGO;
+		$dados_formadepagto->descricao = $registro->DESCRICAO;
+		return $dados_formadepagto;
 	}
 }
 
