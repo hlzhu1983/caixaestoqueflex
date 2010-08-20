@@ -164,14 +164,6 @@ CREATE TABLE IF NOT EXISTS `itensprevenda` (
 -- Extraindo dados da tabela `itensprevenda`
 --
 
-INSERT INTO `itensprevenda` (`codigo`, `codPrevenda`, `codProduto`, `quantidade`, `valor`) VALUES
-(76, 39, 2, '1.00', '1.00'),
-(77, 39, 2, '1.00', '1.00'),
-(79, 41, 2, '0.50', '0.50'),
-(80, 41, 2, '1.00', '1.00'),
-(81, 42, 2, '5.00', '5.00'),
-(82, 43, 3, '10.00', '12.50'),
-(83, 43, 2, '1.00', '1.00');
 
 -- --------------------------------------------------------
 
@@ -199,35 +191,20 @@ INSERT INTO `localproduto` (`codigo`, `descricao`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `prevenda` (
-  `codigo` int(11) NOT NULL AUTO_INCREMENT,
-  `codCliente` int(11) DEFAULT NULL,
+  `codigo` int(11) NOT NULL AUTO_INCREMENT,  
   `codUsuario` int(11) NOT NULL,
   `dataAbertura` datetime NOT NULL,
   `status` int(11) NOT NULL DEFAULT '0',
   `obs` text NOT NULL,
   `desconto` decimal(10,2) NOT NULL,
   `valorTotal` decimal(10,2) unsigned NOT NULL,
-  PRIMARY KEY (`codigo`),
-  KEY `codCliente` (`codCliente`),
+  PRIMARY KEY (`codigo`),  
   KEY `codUsuario_2` (`codUsuario`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=50 ;
 
 --
 -- Extraindo dados da tabela `prevenda`
 --
-
-INSERT INTO `prevenda` (`codigo`, `codCliente`, `codUsuario`, `dataAbertura`, `status`, `obs`, `desconto`, `valorTotal`) VALUES
-(39, NULL, 1, '2010-08-19 23:26:54', 1, '', '0.00', '2.00'),
-(40, NULL, 1, '2010-08-19 23:27:17', 2, '', '0.00', '0.00'),
-(41, NULL, 1, '2010-08-19 23:28:28', 1, '', '0.00', '1.50'),
-(42, NULL, 1, '2010-08-19 23:29:10', 1, '', '2.50', '2.50'),
-(43, NULL, 1, '2010-08-19 23:32:04', 1, '', '0.00', '13.50'),
-(44, NULL, 1, '2010-08-20 00:34:06', 2, '', '0.00', '0.00'),
-(45, NULL, 1, '2010-08-20 01:04:52', 2, '', '0.00', '0.00'),
-(46, NULL, 1, '2010-08-20 01:10:48', 2, '', '0.00', '0.00'),
-(47, NULL, 1, '2010-08-20 08:26:45', 2, '', '0.00', '0.00'),
-(48, NULL, 1, '2010-08-20 09:04:04', 2, '', '0.00', '0.00'),
-(49, NULL, 1, '2010-08-20 09:20:37', 2, '', '0.00', '0.00');
 
 -- --------------------------------------------------------
 
@@ -360,10 +337,6 @@ ALTER TABLE `itensprevenda`
 -- Restrições para a tabela `prevenda`
 --
 ALTER TABLE `prevenda`
-  ADD CONSTRAINT `prevenda_ibfk_1` FOREIGN KEY (`codCliente`) REFERENCES `cliente` (`codigo`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `prevenda_ibfk_2` FOREIGN KEY (`codCliente`) REFERENCES `cliente` (`codigo`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `prevenda_ibfk_3` FOREIGN KEY (`codCliente`) REFERENCES `cliente` (`codigo`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `prevenda_ibfk_4` FOREIGN KEY (`codCliente`) REFERENCES `cliente` (`codigo`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `prevenda_ibfk_5` FOREIGN KEY (`codUsuario`) REFERENCES `usuario` (`codigo`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --

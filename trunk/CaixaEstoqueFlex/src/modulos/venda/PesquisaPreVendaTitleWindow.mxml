@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
+	 layout="absolute" width="882" title="Pesquisar Pre-Venda" 
+	 height="370" xmlns:botoes="utilidades.botoes.*" showCloseButton="true" close="{this.cancelarPesquisa()}">
+
+	<mx:Metadata>
+		[Event(name="adicaoSucessoEvent","events.PreVendaEvent")]
+		[Event(name="adicaoFalhouEvent","events.PreVendaEvent")]
+	</mx:Metadata>
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.rpc.events.ResultEvent;
+			import negocio.remote.Remote;
+			
+			
+			private var ro:Remote = Remote.getInstance();
+			
+			[Bindable]
+			private var array_preVenda:ArrayCollection = new ArrayCollection();
+			
+			
+			private function pesquisarPreVenda():void{
+				this.ro.pesquisarPreVenda(result_pesquisarPreVenda,this.ti_pesquisaImport.text,'codigo');
+			}
+			
+			private function result_pesquisarPreVenda(event:ResultEvent):void{
+				
+			}
+			
+			private function cancelarPesquisa():void{
+				
+			}
+		]]>
+	</mx:Script>
+
+
+	<mx:Panel x="10" y="10" width="387" height="120" layout="absolute" title="Pesquisa">
+		<mx:TextInput x="65" y="14" id="ti_pesquisaImport" width="106"/>
+		<mx:Label x="10" y="12" text="Código:"/>
+		<botoes:BuscarButton  x="190" y="14" click="{this.pesquisarPreVenda()}"/>
+		<mx:DateField x="248" y="14"/>
+	</mx:Panel>
+	<mx:DataGrid x="10" y="138" width="842" height="174">
+		<mx:columns>
+			<mx:DataGridColumn headerText="Column 1" dataField="col1"/>
+			<mx:DataGridColumn headerText="Column 2" dataField="col2"/>
+			<mx:DataGridColumn headerText="Column 3" dataField="col3"/>
+		</mx:columns>
+	</mx:DataGrid>
+	<mx:Panel title="Imformações Importação" layout="absolute" height="120" width="386" x="405" y="10">
+		<mx:Label text="Código:" x="10" y="10"/>
+		<mx:Label x="72" y="10" id="lb_codigoImport"/>
+		<mx:Label x="10" y="36" text="Data Abertura"/>
+		<mx:Label x="125" y="36" id="lb_dataAberturaImport"/>
+		<mx:Label x="125" y="10" text="Valor Total:"/>
+		<mx:Label x="210" y="10" id="lb_valoTotalImport"/>
+	</mx:Panel>
+	<botoes:ADDButton id="bt_addImpot" toolTip="Adiciona Importação." x="812" y="10"/>
+	<botoes:CleanButton id="bt_limparImport" x="812" y="40" toolTip="Limpa Importação."/>
+</mx:TitleWindow>

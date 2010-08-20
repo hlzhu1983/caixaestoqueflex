@@ -190,36 +190,7 @@
 				this.stage.nativeWindow.close();
 			}
 			
-			private function addDesconto():void{
-				var desc:Number = this.ti_desconto.getValor();
-				
-				if(this.rb_descPercent.selected){
-					if(desc > 100){
-						Alert.show("Desconto maior que 100%","Ops!",4,this);
-						this.focusManager.setFocus(this.ti_desconto);
-						return;
-					}
-					desc = this.valorTotal * (desc / 100);
-					
-				}
-				
-				if(this.valorTotal < desc){
-					Alert.show("Desconto maior que o valor total.","Ops!",4,this);
-				}else{
-					this.preVenda.desconto = desc;
-					this.valorTotal -= desc;
-				}
-				
-			}
 			
-			private function removerDesconto():void{
-				if(this.preVenda.desconto>0){
-					this.valorTotal += this.preVenda.desconto;
-					this.preVenda.desconto = 0;
-					this.ti_desconto.text = this.ti_desconto.valorDefault;
-				}
-				
-			}
 			
 		]]>
 	</mx:Script>
@@ -252,18 +223,9 @@
 			</mx:DataGrid>
 		</mx:VBox>	
 		<mx:Panel width="100%" title="Fechamento" layout="absolute"  height="20%">
-			<mx:Label x="10" y="10" text="Desconto:" fontSize="18" fontWeight="bold"/>
+			<mx:Button id="bt_cancelarPreVenda" label="Cancelar Pré-Venda" toolTip="Clique para cancelar pré-venda"  x="478" y="14"  click="{this.cancelarPreVenda()}"/>
 			
-			<inputs:NumberInput id="ti_desconto" valorDefault="0,00"  enter="{this.addDesconto()}" x="139" y="14" fontSize="12" width="173"/>
-			<mx:RadioButtonGroup id="rg_descGrupo"/>
-			<mx:RadioButton id="rb_descValor" group="{rg_descGrupo}" x="139" y="44" label="Valor" selected="true"/>
-			<mx:RadioButton id="rb_descPercent" group="{rg_descGrupo}" x="204" label="Porcentagem" y="44"/>
-			<mx:Button x="334" y="14" label="Add Desconto" id="bt_addDesconto" click="{this.addDesconto()}"/>
-			
-			<mx:Button id="bt_cancelarPreVenda" label="Cancelar Pré-Venda" toolTip="Clique para cancelar pré-venda"  x="639" y="23"  click="{this.cancelarPreVenda()}"/>
-			
-			<mx:Button id="bt_gerarPreVenda" label="Gerar Pré-Venda" toolTip="Clique para gerar pré-venda"  click="{this.fecharPreVenda()}" x="493" y="23"/>
-			<mx:Button x="334" y="44" label="Exc. Desconto" id="bt_removerDesconto" click="{this.removerDesconto()}"/>
+			<mx:Button id="bt_gerarPreVenda" label="Gerar Pré-Venda" toolTip="Clique para gerar pré-venda"  click="{this.fecharPreVenda()}" x="298" y="14"/>
 			
 		</mx:Panel>
 	</mx:VBox>
