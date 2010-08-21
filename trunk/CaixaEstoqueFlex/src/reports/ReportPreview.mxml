@@ -5,6 +5,7 @@
  
 	<mx:Script>
 		<![CDATA[
+			import mx.binding.utils.BindingUtils;
 			import org.doc.PaperFormat;
 			import org.print.Report;
 			import org.print.Preview;
@@ -35,7 +36,7 @@
 					"<p><b>     Body:</b> add contents inside this container. The Body shows components when they fit one page, so you don't have components split in half.</p>";
 
 	        [Bindable] public var doc:Document = null;
-	        [Bindable] public var datasourceText:DemoReportDP = new DemoReportDP(text);
+            [Bindable] public var datasourceText:DemoReportDP = new DemoReportDP(text);
 	        [Bindable] public var title:String = null;
  
 	        /** Função que receberá o Relatório a ser impresso **/

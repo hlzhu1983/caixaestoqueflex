@@ -3,6 +3,7 @@
 	<name>CaixaEstoqueFlex</name>
 	<comment></comment>
 	<projects>
+		<project>FlexReport</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
