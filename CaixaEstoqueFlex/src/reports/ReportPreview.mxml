@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" 
+	creationComplete="initApplication()" 
+	xmlns:ns1="libs.reports.org.print.*" xmlns:print="org.print.*">
+ 
+	<mx:Script>
+		<![CDATA[
+			import org.doc.PaperFormat;
+			import org.print.Report;
+			import org.print.Preview;
+			
+			import org.doc.Document;
+           private var text:String = "" + 
+					"<p>Printing is a major feature in RIA, one Flash never seemed to cover well. Flash's printing capabilities are at the very least rudimentary mainly because Flash was always target at designers. And Flex inherited that flaw. Adobe seems to have forgotten that the needs in web design are quite different from those at organizations. Organizations still need paper!</p>" +
+					"<p></p>" +
+					"<p>There are many issues concerning printing in Flex:</p>" +
+					"<p></p>" +
+					"<p><b>    1. Report layout:</b> in order to print a page in Flex you need to create a container and add it to a FlexPrintJob. Not a big issue when working with static content. But when creating dynamic reports where you don't know how many pages you'll have this process can quickly become a nightmare.</p>" +
+					"<p></p>" +
+					"<p><b>    2. Multi-page content:</b> The only component specifically designed for printing is PrintDataGrid. There's no support for text or images.</p>" +
+					"<p></p>" +
+					"<p><b>    3. Print preview:</b> as I said before organizations need printing. But a thing they don't need is wasting paper. There's no way to make a print-preview with PrintJob. And no one likes printing 100 pages of a table, just to realize they are printing the wrong data.</p>" +
+					"<p></p>" +
+					"<p>FlexReport is a client-side report generation component. It allows you to easily generate, preview and print reports based in mxml/as3 templates.</p>" +
+					"<p></p>" +
+					"<p>There are still a few issues remaining but it's ready to be used on non critical applications. You can see a live demo and source here.</p>" +
+					"<p></p>" +
+					"<p>I decided to make this project public in order to get some help improving FlexReport. I'm really looking forward for your feature requests, bug reports and code improvements.</p>" +
+					"<p></p>" +
+					"<p>In order to use FlexReport you first have to create the document template. The templates are created using mxml and as3. Take the sample provided and modify it to your needs. Inside the sample template you will find comments telling which sections you should modify.</p>" + 
+					"<p>FlexReport includes components designed for printing:</p>" + 
+					"<p></p>" +
+					"<p><b>     PrintTextArea:</b> this is the component you should use to add text to your report. It handles multi-page text and adjusts it's size to fit the page.</p>" + 
+					"<p></p>" +
+					"<p><b>     Body:</b> add contents inside this container. The Body shows components when they fit one page, so you don't have components split in half.</p>";
+
+	        [Bindable] public var doc:Document = null;
+	        [Bindable] public var datasourceText:DemoReportDP = new DemoReportDP(text);
+	        [Bindable] public var title:String = null;
+ 
+	        /** Função que receberá o Relatório a ser impresso **/
+	        public function execute(report:Report = null):void
+	        {
+	         	/** Criando a instancia do documento **/
+	         	/** Pode-se passar o formato do papel do relatório **/
+	         	doc = new Document(report, datasourceText, PaperFormat.A4);
+ 
+	         	/** Script php de geração do PDF **/
+	         	doc.pdfScript = "http://www.flexpernambuco.com.br/solicite/libs/create.php";
+	         	doc.pdfEnabled = true;
+	        	doc.title = title;
+ 
+	        	printPreview.doc = doc;
+	        }
+ 
+			private function initApplication():void
+			{
+ 
+			}
+		]]>
+	</mx:Script>
+ 
+	<print:Preview id="printPreview" left="5" right="5" top="5" bottom="5"/>
+	
+ 
+</mx:Canvas>
+
