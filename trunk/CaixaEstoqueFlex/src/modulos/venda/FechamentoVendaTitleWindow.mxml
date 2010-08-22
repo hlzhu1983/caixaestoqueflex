@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" title="Fechamento Venda" width="624" height="567" xmlns:inputs="utilidades.inputs.*" xmlns:botoes="utilidades.botoes.*">
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
+	layout="absolute" title="Fechamento Venda" width="624"
+	 height="567" xmlns:inputs="utilidades.inputs.*" 
+	 xmlns:botoes="utilidades.botoes.*" creationComplete="{this.init()}">
 
 
 	<mx:Script>
 		<![CDATA[
+			import mx.rpc.events.ResultEvent;
+			import negocio.remote.Remote;
+			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;
+			import mx.managers.PopUpManagerChildList;
+			import events.VendaEvent;
 			import mx.controls.Alert;
 			import negocio.vo.FormaPgtoVendaVO;
 			import mx.collections.ArrayCollection;
@@ -20,14 +29,28 @@
 			public var cliente:ClienteVO;
 			
 			[Bindable] 
-			public var array_formaPgto:ArrayCollection;
+			public var array_formaPgto:ArrayCollection = new ArrayCollection();
 			
 			[Bindable]
 			public var valorTotalPago:Number = 0;
 			
+			[Bindable]
+			private var array_formasPagamento:ArrayCollection;
+			
+			private var ro:Remote = Remote.getInstance();
+			
+			[Bindable]
 			public var array_gridForm:ArrayCollection;
 			
+			private function init():void{				
+				this.ro.listarFormadePagto(result_povoarFormasPagamento);
+				this.array_gridForm = new ArrayCollection();				
+			}
 			
+			private function result_povoarFormasPagamento(e:ResultEvent):void{
+				this.array_formasPagamento = new ArrayCollection(e.result as Array);
+			}
+				
 			private function addFormaPgto():void{
 				var v:Number = this.ti_valor.getValor();
 				if(v!=0){
@@ -39,12 +62,14 @@
 						f.valor = v;
 						this.array_formaPgto.addItem(f);
 						var o:Object = new Object();
-						o.forma = f;
+						o.codigo = f.codigo;
 						o.descricao = this.cb_formasPagamento.selectedItem.descricao;
+						o.parcelas = this.ns_parcelas.value;
+						o.valor = f.valor;
 						this.array_gridForm.addItem(o);
 						this.valorTotalPago += f.valor;
-						if(Number(this.lb_valorTotal.text) - valorTotalPago <0){
-							this.lb_troco.text = (this.valorTotalPago - Number(this.lb_valorTotal.text)) + '';
+						if(Number(this.lb_valorPagar.text) < valorTotalPago){
+							this.lb_troco.text = (this.valorTotalPago - Number(this.lb_valorPagar.text)) + '';
 						}
 					}
 				}else{
@@ -72,27 +97,35 @@
 				}else{
 					var f:FormaPgtoVendaVO = this.array_formaPgto.getItemAt(this.gridFormaPagamento.selectedIndex) as FormaPgtoVendaVO; 				
 					this.valorTotalPago -= f.valor;
-					if(Number(this.lb_valorTotal.text) - valorTotalPago >0){
+					if(Number(this.lb_valorPagar.text) - valorTotalPago >0){
 						this.lb_troco.text = '0.00';
 					}
 				}
 			}
 			
 			private function gerarVenda():void{
-				if(this.valorTotalPago < Number(this.lb_valorPagar.text)){
-					
+				if(this.valorTotalPago > Number(this.lb_valorPagar.text)){
+					this.venda.formasPagamento = this.array_formaPgto.toArray();
+					this.dispatchEvent(new VendaEvent(this.venda,VendaEvent.FINALIZADASUCEESSO));
+					PopUpManager.removePopUp(this);
+				}else{
+					Alert.show("Valor pago insuficiente!","Ops!",4,this);
+				}
+			}
+			
+			private function cancelar():void{
+				Alert.show("Deseja realmente cancelar?","Atenção",Alert.YES|Alert.NO,this,result_cancelar);
+			}
+			
+			private function result_cancelar(e:CloseEvent):void{
+				if(e.detail == Alert.YES){
+					PopUpManager.removePopUp(this);
 				}
 			}
 			
 			
-			
 		]]>
 	</mx:Script>
-
-
-
-	
-	
 	
 	<mx:Panel x="10" y="10" width="584" height="140" layout="absolute" title="Informações Venda">
 		<mx:Label x="21" y="23" text="Valor Total:" />
@@ -101,22 +134,21 @@
 		<mx:Label x="99" y="49" id="lb_desconto" text="{this.venda.desconto}"/>
 		<mx:Label x="261" y="10" text="Valor à Pagar:" fontSize="17" fontWeight="bold"/>
 		<mx:Label x="261" y="36" id="lb_valorPagar" fontSize="20" fontWeight="bold" text="{this.venda.valorTotal - this.venda.desconto}"/>
-		<mx:Button x="449" y="15" label="Módulo Confia" click="{this.callModuloConfia()}"/>
 	</mx:Panel>
 	<mx:Label x="10" y="170" text="Valor:"/>
 	<inputs:NumberInput x="10" y="195" id="ti_valor" width="106" valorDefault="0,00"/>
 	<mx:Label x="124" y="170" text="Parcelas:"/>
 	<mx:NumericStepper x="124" y="195" minimum="1" id="ns_parcelas"/>
 	<mx:Label x="188" y="170" text="Formas de  Pagamento:"/>
-	<mx:ComboBox x="188" y="195" id="cb_formasPagamento"></mx:ComboBox>
+	<mx:ComboBox x="188" y="195" id="cb_formasPagamento" dataProvider="{this.array_formasPagamento}" labelField="descricao" editable="false"/>
 	<mx:Button x="356" y="195" label="Add Forma" width="104" click="{this.addFormaPgto()}"/>
 	<mx:Button x="466" y="195" label="Excluir Forma" click="{this.excluirFormaPgto()}"/>
-	<mx:DataGrid x="10" y="225" width="584" id="gridFormaPagamento">
+	<mx:DataGrid x="10" y="225" width="584" id="gridFormaPagamento" dataProvider="{this.array_gridForm}">
 		<mx:columns>
-			<mx:DataGridColumn headerText="Codigo" dataField="col1"/>
-			<mx:DataGridColumn headerText="Descrição" dataField="col2"/>
-			<mx:DataGridColumn headerText="Parcelas" dataField="col3"/>
-			<mx:DataGridColumn headerText="Valor" dataField="col3"/>
+			<mx:DataGridColumn headerText="Codigo" dataField="codigo"/>
+			<mx:DataGridColumn headerText="Descrição" dataField="descricao"/>
+			<mx:DataGridColumn headerText="Parcelas" dataField="parcelas"/>
+			<mx:DataGridColumn headerText="Valor" dataField="valor"/>
 		</mx:columns>
 	</mx:DataGrid>
 	<mx:Panel x="10" y="375" width="584" height="142" layout="absolute" title="Informações Finais">
@@ -124,9 +156,10 @@
 		<mx:Label x="151" y="55" fontWeight="bold" fontSize="20" id="lb_troco" text="0.00"/>
 		<mx:Label x="10" y="16" text="Total Pago:" fontWeight="bold" fontSize="20" />
 		<mx:Label x="151" y="16" fontWeight="bold" fontSize="20" id="lb_valorTotal" text="{this.valorTotalPago}"/>
-		<botoes:GerarButton x="352" y="35" id="bt_finalizar"/>
-		<botoes:CancelarButton x="445" y="35" id="bt_cancelar"/>
+		<botoes:GerarButton x="352" y="35" id="bt_finalizar" click="{this.gerarVenda()}"/>
+		<botoes:CancelarButton x="445" y="35" id="bt_cancelar" click="{this.cancelar()}"/>
 	</mx:Panel>
+	<mx:Button x="408" y="158" label="Módulo Confia" click="{this.callModuloConfia()}" width="117"/>
 	
 	
 	
