@@ -77,10 +77,11 @@
 
 
 	<mx:Panel x="10" y="10" width="387" height="120" layout="absolute" title="Pesquisa">
-		<mx:TextInput x="65" y="14" id="ti_pesquisaImport" width="106"/>
+		<mx:TextInput x="106" y="10" id="ti_pesquisaImport" width="106"/>
 		<mx:Label x="10" y="12" text="Código:"/>
-		<botoes:BuscarButton  x="190" y="14" click="{this.pesquisarPreVenda()}"/>
-		<mx:DateField x="248" y="14" id="df_data" change="{this.filtrarData()}"/>
+		<botoes:BuscarButton  x="220" y="6" click="{this.pesquisarPreVenda()}"/>
+		<mx:DateField x="106" y="42" id="df_data" change="{this.filtrarData()}" width="106"/>
+		<mx:Label x="10" y="46" text="Data Pré-Venda:"/>
 	</mx:Panel>
 	<mx:DataGrid id="grid_preVendas" doubleClickEnabled="true" 
 		itemDoubleClick="{this.selecionarItem(event)}" x="10" y="138" width="842" height="174" 

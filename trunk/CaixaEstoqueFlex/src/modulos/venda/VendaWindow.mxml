@@ -171,7 +171,7 @@
 	</mx:Script>
 	
 	<mx:VBox id="body" width="100%" height="100%" >
-		<mx:ApplicationControlBar dock="true" width="100%" height="45" fillAlphas="[1.0, 1.0]" fillColors="[#FFFFFF, #009DFF]">
+		<mx:ApplicationControlBar dock="true" width="100%" height="45" fillAlphas="[1.0, 1.0]" fillColors="[#FFFFFF, #D2D2D2]">
 			<mx:Label text="Cupom:" fontSize="30" />
 			<mx:Label id="numPedido" text="{this.venda.codigo}" fontSize="30" />
 			<mx:Spacer width="50%"/>

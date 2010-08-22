@@ -304,7 +304,7 @@
 	<mx:Label x="10" y="235" text="Fornecedor:"/>
 	<ns2:InteiroInput x="99" y="233" width="94" id="ti_codFornecedor"/>
 	<ns1:BuscarButton x="201" y="234" click="{this.procurarFornecedor()}" height="21"/>
-	<mx:Panel title="Imagem Produto" x="572" y="10" layout="absolute" height="325" width="280">
+	<mx:Panel title="Imagem Produto" x="563" y="10" layout="absolute" height="325" width="280">
 		<mx:Image x="10" y="10" id="img_produto" width="239" height="189" source="{this.ti_foto.text}"/>	
 		<mx:Label width="239" id="ti_foto" x="10" y="207"/>
 		<ns1:BuscarButton click="{this.localizar()}" height="23" x="34" y="235"/>
@@ -317,7 +317,7 @@
 	<mx:Label x="273" y="142" text="Referência:"/>
 	<mx:Label x="10" y="172" text="Descrição:"/>
 	<ns2:TextoInput x="99" y="170" width="450" id="ti_descricao"/>
-	<mx:Label x="249" y="233" width="300" id="ti_nomeFornecedor"/>
+	<mx:Label x="319" y="235" width="230" id="ti_nomeFornecedor"/>
 	<ns2:TextoInput x="357" y="140" width="192" maxChars="250" id="ti_referencia"/>
 	<mx:ComboBox x="99" selectedIndex="-1" y="139" width="166" dataProvider="{this.itensGrupo}" labelField="descricao" id="cb_grupo"></mx:ComboBox>
 	<mx:ComboBox x="99" selectedIndex="-1" y="202" width="166" dataProvider="{this.itensLocal}" labelField="descricao" id="cb_local"></mx:ComboBox>
@@ -335,8 +335,8 @@
 	<ns1:LimparButton x="257" y="311" click="{this.limpar()}"/>
 	<ns1:SalvarButton id="add" x="10" y="311" click="{this.adicionar()}"/>
 	<ns1:ExcluirButton id ="bt_remover"  x="136" y="311" click="{this.removerItem()}" enabled="false"/>
-	<ns1:BuscarButton x="397" y="10" click="{this.pesquisarItem()}" height="23"/>
-	<ns2:TextoInput x="36" y="10" width="339" id="ti_pesquisar"/>
+	<ns1:BuscarButton x="372" y="10" click="{this.pesquisarItem()}" height="23"/>
+	<ns2:TextoInput x="10" y="10" width="339" id="ti_pesquisar"/>
 	<mx:RadioButton x="110" y="40" label="descricao" id="rd_descricao"/>
 	<mx:RadioButton x="36" y="40" label="código" id="rd_codigo"/>
 	<mx:RadioButton x="208" y="40" label="referência" id="rd_referencia"/>

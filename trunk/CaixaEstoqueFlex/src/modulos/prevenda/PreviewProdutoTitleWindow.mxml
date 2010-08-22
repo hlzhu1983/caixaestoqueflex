@@ -2,7 +2,7 @@
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
 	layout="absolute" title="Preview Produto" xmlns:inputs="utilidades.inputs.*" 
 	alpha="1.0" backgroundAlpha="0.6" 
-	width="100%" height="302" creationComplete="init()" borderColor="#009DFF">
+	width="100%" height="302" creationComplete="init()" borderColor="#D2D2D2" themeColor="#D2D2D2">
 
 	<mx:Metadata>
 		[Event(name="adicaoSucessoEvent","events.ItemPreVendaEvent")]
