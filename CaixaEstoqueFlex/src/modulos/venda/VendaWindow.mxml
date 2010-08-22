@@ -49,6 +49,7 @@
 					
 			private function init():void{
 				this.venda = new VendaVO();
+				this.venda.desconto = 0;
 				this.venda.codUsuario = 0;
 				if(this.preVenda == null){
 					this.getPreVenda();
