@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" title="Fechamento Venda" width="624" height="531" xmlns:inputs="utilidades.inputs.*" xmlns:botoes="utilidades.botoes.*">
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" title="Fechamento Venda" width="624" height="567" xmlns:inputs="utilidades.inputs.*" xmlns:botoes="utilidades.botoes.*">
 
 
 	<mx:Script>
 		<![CDATA[
+			import mx.controls.Alert;
 			import negocio.vo.FormaPgtoVendaVO;
 			import mx.collections.ArrayCollection;
 			import negocio.vo.ClienteVO;
@@ -20,6 +21,9 @@
 			
 			[Bindable] 
 			public var array_formaPgto:ArrayCollection;
+			
+			[Bindable]
+			public var valorTotalPago:Number = 0;
 			
 			public var array_gridForm:ArrayCollection;
 			
@@ -38,7 +42,13 @@
 						o.forma = f;
 						o.descricao = this.cb_formasPagamento.selectedItem.descricao;
 						this.array_gridForm.addItem(o);
+						this.valorTotalPago += f.valor;
+						if(Number(this.lb_valorTotal.text) - valorTotalPago <0){
+							this.lb_troco.text = (this.valorTotalPago - Number(this.lb_valorTotal.text)) + '';
+						}
 					}
+				}else{
+					Alert.show("Campo valor vazio!","Ops!",4,this);
 				}
 				
 			}
@@ -57,8 +67,23 @@
 			}
 			
 			private function excluirFormaPgto():void{
-				
+				if(this.gridFormaPagamento.selectedIndex == -1){
+					Alert.show("Selecione uma forma de Pagamento válida","Ops!",4,this);
+				}else{
+					var f:FormaPgtoVendaVO = this.array_formaPgto.getItemAt(this.gridFormaPagamento.selectedIndex) as FormaPgtoVendaVO; 				
+					this.valorTotalPago -= f.valor;
+					if(Number(this.lb_valorTotal.text) - valorTotalPago >0){
+						this.lb_troco.text = '0.00';
+					}
+				}
 			}
+			
+			private function gerarVenda():void{
+				if(this.valorTotalPago < Number(this.lb_valorPagar.text)){
+					
+				}
+			}
+			
 			
 			
 		]]>
@@ -71,22 +96,22 @@
 	
 	<mx:Panel x="10" y="10" width="584" height="140" layout="absolute" title="Informações Venda">
 		<mx:Label x="21" y="23" text="Valor Total:" />
-		<mx:Label x="99" y="23" id="lb_valorTotal" text="{this.venda.valorTotal}"/>
+		<mx:Label x="99" y="23" id="lb_valorTotalVenda" text="{this.venda.valorTotal}"/>
 		<mx:Label x="21" y="49" text="Deconto:"/>
 		<mx:Label x="99" y="49" id="lb_desconto" text="{this.venda.desconto}"/>
 		<mx:Label x="261" y="10" text="Valor à Pagar:" fontSize="17" fontWeight="bold"/>
-		<mx:Label x="261" y="36" id="lb_valoPagar" fontSize="20" fontWeight="bold" text="{this.venda.valorTotal - this.venda.desconto}"/>
+		<mx:Label x="261" y="36" id="lb_valorPagar" fontSize="20" fontWeight="bold" text="{this.venda.valorTotal - this.venda.desconto}"/>
 		<mx:Button x="449" y="15" label="Módulo Confia" click="{this.callModuloConfia()}"/>
 	</mx:Panel>
 	<mx:Label x="10" y="170" text="Valor:"/>
 	<inputs:NumberInput x="10" y="195" id="ti_valor" width="106" valorDefault="0,00"/>
 	<mx:Label x="124" y="170" text="Parcelas:"/>
-	<mx:NumericStepper x="124" y="195" minimum="1" maximum="5" id="ns_parcelas"/>
+	<mx:NumericStepper x="124" y="195" minimum="1" id="ns_parcelas"/>
 	<mx:Label x="188" y="170" text="Formas de  Pagamento:"/>
 	<mx:ComboBox x="188" y="195" id="cb_formasPagamento"></mx:ComboBox>
 	<mx:Button x="356" y="195" label="Add Forma" width="104" click="{this.addFormaPgto()}"/>
 	<mx:Button x="466" y="195" label="Excluir Forma" click="{this.excluirFormaPgto()}"/>
-	<mx:DataGrid x="10" y="225" width="584">
+	<mx:DataGrid x="10" y="225" width="584" id="gridFormaPagamento">
 		<mx:columns>
 			<mx:DataGridColumn headerText="Codigo" dataField="col1"/>
 			<mx:DataGridColumn headerText="Descrição" dataField="col2"/>
@@ -94,11 +119,13 @@
 			<mx:DataGridColumn headerText="Valor" dataField="col3"/>
 		</mx:columns>
 	</mx:DataGrid>
-	<mx:Panel x="10" y="375" width="584" height="97" layout="absolute" title="Informações Finais">
-		<mx:Label x="10" y="10" text="Troco:" fontWeight="bold" fontSize="20"/>
-		<mx:Label x="95" y="10" fontWeight="bold" fontSize="20" id="lb_troco"/>
-		<botoes:GerarButton x="206" y="-21" id="bt_finalizar"/>
-		<botoes:CancelarButton x="351" y="10" id="bt_cancelar"/>
+	<mx:Panel x="10" y="375" width="584" height="142" layout="absolute" title="Informações Finais">
+		<mx:Label x="10" y="55" text="Troco:" fontWeight="bold" fontSize="20"/>
+		<mx:Label x="151" y="55" fontWeight="bold" fontSize="20" id="lb_troco" text="0.00"/>
+		<mx:Label x="10" y="16" text="Total Pago:" fontWeight="bold" fontSize="20" />
+		<mx:Label x="151" y="16" fontWeight="bold" fontSize="20" id="lb_valorTotal" text="{this.valorTotalPago}"/>
+		<botoes:GerarButton x="352" y="35" id="bt_finalizar"/>
+		<botoes:CancelarButton x="445" y="35" id="bt_cancelar"/>
 	</mx:Panel>
 	
 	
