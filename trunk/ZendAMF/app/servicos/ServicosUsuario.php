@@ -22,17 +22,28 @@ class ServicosUsuario {
 	}
 	
 	public function logar(UsuarioVO $usuario){
-		$sql = "select * from usuario where login = '{$usuario->login}'";
+		$sql = "select * from usuario where login = '$usuario->login'";
 		$resultado = $this->conn->Execute($sql);
 		
 		 if(!$resultado){
 			 throw new Exception(Erros::$SQL_ERRO_MENSAGEM,Erros::$SQL_ERRO_CODIGO);
 		 }
 		 $dados_usuario = NULL;
-		while($registro = $resultado->FetchNextObject()){			
-			 $dados_usuario = $this->toUsuario($registro);
+		 $f = fopen('logou.txt','w+');
+		 fwrite($f,$dados_usuario->login);
+		while($registro = $resultado->FetchNextObject()){	
+			$dados_usuario = new UsuarioVO();
+			$dados_usuario->nome = $registro->NOME;
+			$dados_usuario->codigo = $registro->CODIGO;
+			$dados_usuario->comissao = (float)$registro->COMISSAO;
+			$dados_usuario->permissao = $registro->PERMISSAO;
+			$dados_usuario->senha = $registro->SENHA;
+			$dados_usuario->login = $registro->LOGIN;
 		}
+		fwrite($f,$dados_usuario->login);
+		fwrite($f,$dados_usuario->senha);
 		if($dados_usuario->senha==$usuario->senha){
+			fwrite($f,'Entrou');
 			return $dados_usuario;
 		}else{
 			 throw new Exception(Erros::$AUTENTICACAO_FALHOU_MENSAGEM
