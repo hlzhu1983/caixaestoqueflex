@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
 	 layout="absolute" xmlns:ns1="utilidades.inputs.*" 
-	 creationComplete="{this.listarAllItems()}"
 	 title="Módulo Confia" 
-	 showCloseButton="true"
-	 close="{this.fechar()}"
 	 xmlns:botoes="utilidades.botoes.*" width="732" height="446" xmlns:utilidades="utilidades.*">
 	
 	<mx:Metadata>
@@ -14,6 +11,7 @@
 	
 		<mx:Script>
 		<![CDATA[
+			import mx.events.CloseEvent;
 			import negocio.vo.FormadePagtoVO;
 		
 			import events.ConfiaEvent;
@@ -37,15 +35,15 @@
 			
 			
 			private function pesquisarCliente():void{
-				if(this.ti_pesquisaImport.text == ""){
+				if(this.ti_pesquisCliente.text == ""){
 					this.ro.listarCliente(result_pesquisarCliente);
 				}else{
 					if(this.rb_codigo.selectedField){
-						this.ro.pesquisarCliente(result_pesquisarCliente,this.ti_pesquisaImport.text,'codigo');
+						this.ro.pesquisarCliente(result_pesquisarCliente,this.ti_pesquisCliente.text,'codigo');
 					}else if(this.rb_nome.selectedField){
-						this.ro.pesquisarCliente(result_pesquisarCliente,this.ti_pesquisaImport.text,'nome');
+						this.ro.pesquisarCliente(result_pesquisarCliente,this.ti_pesquisCliente.text,'nome');
 					}else{
-						this.ro.pesquisarCliente(result_pesquisarCliente,this.ti_pesquisaImport.text,'telefone');
+						this.ro.pesquisarCliente(result_pesquisarCliente,this.ti_pesquisCliente.text,'telefone');
 					}
 				}
 			}
@@ -60,8 +58,8 @@
 			
 			
 			private function clienteSelecionado():void{
-				if(this.grid_preVendas.selectedIndex!=-1){
-					this.cliente = this.array_cliente.getItemAt(this.grid_preVendas.selectedIndex) as ClenteVO;
+				if(this.grid_listCliente.selectedIndex!=-1){
+					this.cliente = this.array_cliente.getItemAt(this.grid_listCliente.selectedIndex) as ClienteVO ;
 				}				
 			}
 			
@@ -69,16 +67,13 @@
 				if(event.rowIndex == -1){
 					Alert.show("Produto não selecinado!","Ops!",4,this);
 				}else{
-					this.dispatchEvent(new PreVendaEvent(event.itemRenderer.data as PreVendaVO,PreVendaEvent.ADICIONADOSUCEESSO));
-					PopUpManager.removePopUp(this);	
+					
 				}
 			}
 			
 			private function finalizarConfia():void{
 				if(this.cliente != null){
 					this.ro.getFormadePagto(result_finalizarConfia,'0','codigo');				
-					this.dispatchEvent(new ConfiaEvent(this.cliente,this.formPgto,ConfiaEvent.ADICIONADOSUCEESSO));
-					PopUpManager.removePopUp(this);
 				}else{
 					Alert.show("Cliente não foi selecionado!","Ops!",4,this);
 					
@@ -92,10 +87,10 @@
 			}
 			
 			private function cancelarConfia():void{
-				Alert.show("Deseja realemente cancelar o Confia?","Opa!",Alert.YES|Alert.NO,this,resposta_cancelarPreVenda);
+				Alert.show("Deseja realemente cancelar o Confia?","Opa!",Alert.YES|Alert.NO,this,result_cancelarConfia);
 			}
 			
-			private function result_cancelarPreVenda(e:CloseEvent):void{
+			private function result_cancelarConfia(e:CloseEvent):void{
 				if (e.detail == Alert.YES) {
 					PopUpManager.removePopUp(this);
 				}
@@ -104,7 +99,7 @@
 		]]>
 	</mx:Script>
 		
-	<mx:DataGrid x="12" y="101" id="grid_listCliente" editable="false" width="690" height="166">
+	<mx:DataGrid x="12" y="101" id="grid_listCliente" editable="false" dataProvider="{this.array_cliente}" width="690" height="166">
 		<mx:columns>
 			<mx:DataGridColumn headerText="Código" dataField="{this.cliente.codigo}" width="70"/>
 			<mx:DataGridColumn headerText="CPF" dataField="{this.cliente.cpf_cnpj}" width="150"/>
@@ -116,10 +111,10 @@
 	<mx:Panel x="10" y="10" width="690" height="83" layout="absolute" title="Pesquisa">
 		<mx:TextInput x="101" y="10" id="ti_pesquisCliente" width="247"/>
 		<mx:RadioButton x="488" y="11" label="Nome" id="rb_nome" groupName="grupo"/>
-		<mx:RadioButton x="420" y="11" label="Código" id="rb_codigo" selected="true"/>
+		<mx:RadioButton x="420" y="11" label="Código" id="rb_codigo" groupName="grupo" selected="true"/>
 		<mx:RadioButton x="557" y="11" label="Telefone" id="rb_telefone" groupName="grupo"/>
 		<mx:Label x="25" y="12" text="Campo:"/>
-		<botoes:BuscarButton  x="356" y="11" click="{}"/>
+		<botoes:BuscarButton  x="356" y="11" click="{this.pesquisarCliente()}"/>
 	</mx:Panel>
 	<mx:Panel x="10" y="275" width="366" height="120" layout="absolute" title="Informações Cliente">
 		<mx:Label x="10" y="10" text="Código:"/>

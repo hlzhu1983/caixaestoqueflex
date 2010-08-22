@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" close="fechar()" creationComplete="init()" showCloseButton="true" layout="absolute" title="Gerenciamento LocalProdutos" xmlns:utilidades="utilidades.*" xmlns:botoes="utilidades.botoes.*" xmlns:inputs="utilidades.inputs.*" borderColor="#009DFF">
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" close="fechar()" creationComplete="init()" showCloseButton="true" layout="absolute" title="Gerenciamento LocalProdutos" xmlns:utilidades="utilidades.*" xmlns:botoes="utilidades.botoes.*" xmlns:inputs="utilidades.inputs.*" borderColor="#030303" width="436">
 	
 	<mx:Script>
 		<![CDATA[
@@ -19,6 +19,8 @@
 			[Bindable]
 			private var localProduto:LocalProdutoVO;
 			
+			private var index:int;
+			
 			private var tipoPesquisa:String;
 		
 			private var ro:Remote = Remote.getInstance();
@@ -32,10 +34,16 @@
 				if(this.descInput.validador.validate().type == ValidationResultEvent.INVALID){
 					Alert.show("Campo descrição obrigatorio!","Ops!");
 				}else{
-					u.descricao = this.descInput.text;
-					this.ro.addLocalProduto(resultadoAddLocalProduto,u);
+					if(this.codInput.text == ""){
+						u.descricao = this.descInput.text;
+						this.ro.addLocalProduto(resultadoAddLocalProduto,u);
+					}else{
+						u.codigo = int(this.codInput.text);
+						u.descricao = this.descInput.text;
+						this.ro.atualizarLocalProduto(resultado_atualizarLocalProduto,u);
+					}
+					
 				}
-				
 				
 			}
 			
@@ -45,15 +53,18 @@
 				this.limparCampos();
 			}
 			
+			private function resultado_atualizarLocalProduto(event:ResultEvent):void{
+				this.localProdutosArray.setItemAt(event.result, this.index);
+				this.limparCampos();
+			}
+			
 			private function listarAllLocalProdutos():void{
 				this.ro.listarLocalProduto(resultListarLocalProdutos);
 				
 			}
 			
 			private function resultListarLocalProdutos(event:ResultEvent):void{
-								
 				this.localProdutosArray = new ArrayCollection(event.result as Array);
-				
 			}
 			
 			public function localProdutoSelecionado(event:Event):void{
@@ -61,11 +72,9 @@
 				this.codInput.text = this.localProduto.codigo.toString();
 				this.descInput.text = this.localProduto.descricao;
                 this.remover.enabled = true;
+                this.index = this.localProdutoGrid.selectedIndex;
                 						
 			}
-			
-			
-			
 			
 			private function removerLocalProduto():void{
 				this.localProduto = this.localProdutoGrid.selectedItem as LocalProdutoVO;
@@ -131,17 +140,17 @@
 		</mx:HBox>
 			
 	</mx:FormItem>	
-	<botoes:BuscarButton id="bt_buscar" x="312" y="10" click="{this.pesquisarItem()}"/>		
+	<botoes:BuscarButton id="bt_buscar" x="318" y="10" click="{this.pesquisarItem()}"/>		
 		<mx:FormItem label="Código" x="10" y="80" >		
 			<mx:Label id="codInput"/>
 		</mx:FormItem>
-		<botoes:RemoveButton id="remover" click="removerLocalProduto()"  enabled="false" x="140" y="140"/>
-		<botoes:ADDButton id="add" click="addLocalProduto()" x="92" y="140"/>
-		<botoes:CleanButton  x="188" y="140" click="{this.limparCampos()}"/>
+		<botoes:ExcluirButton id="remover" click="removerLocalProduto()"  enabled="false" x="219" y="68"/>
+		<botoes:SalvarButton id="add" click="addLocalProduto()" x="119" y="68"/>
+		<botoes:LimparButton  x="318" y="68" click="{this.limparCampos()}"/>
 		<mx:FormItem label="Descrição" x="10" y="110" required="true">
 			<inputs:TextoInput id="descInput" requerido="true"/>
 		</mx:FormItem>
-		<mx:DataGrid x="0" y="169" width="388" id="localProdutoGrid" change="{localProdutoSelecionado(event)}" dataProvider="{this.localProdutosArray}">
+		<mx:DataGrid x="10" y="140" width="396" id="localProdutoGrid" change="{localProdutoSelecionado(event)}" dataProvider="{this.localProdutosArray}">
 			<mx:columns>
 				<mx:DataGridColumn headerText="Código" dataField="codigo"/>
 				<mx:DataGridColumn headerText="Descrição" dataField="descricao"/>			

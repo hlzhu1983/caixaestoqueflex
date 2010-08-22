@@ -46,10 +46,8 @@
 					
 			private function init():void{
 				this.preVenda = new PreVendaVO();
-				this.preVenda.codUsuario = 1;
+				this.preVenda.codUsuario = 0;
 				this.ro.abrirPreVenda(result_abrirPreVenda,this.preVenda);
-				this.addEventListener(ItemPreVendaEvent.ADICIONADOSUCEESSO,addItemProduto);
-				Application.application.systemManager.addEventListener(ProdutoEvent.PRODUTOSELECIONADO,produtoSelecionado);
 				this.focusManager.setFocus(this.codProduto);
 			}
 			
@@ -144,7 +142,8 @@
 			}
 			
 			public function pesquisarProduto():void{
-				Util.abrePopUp(this,BuscaProduto,true);
+				var p:BuscaProduto = BuscaProduto(Util.abrePopUp(this,BuscaProduto,true));
+				p.addEventListener(ProdutoEvent.PRODUTOSELECIONADO,produtoSelecionado);
 			}
 			
 			private function fecharPreVenda():void{

@@ -142,7 +142,8 @@
 			}
 			
 			public function pesquisarProduto():void{
-				Util.abrePopUp(this,BuscaProduto,true).addEventListener(ProdutoEvent.PRODUTOSELECIONADO,produtoSelecionado);
+				var p:BuscaProduto = BuscaProduto(Util.abrePopUp(this,BuscaProduto,true));
+				p.addEventListener(ProdutoEvent.PRODUTOSELECIONADO,produtoSelecionado);
 			}
 			
 			private function fecharOrcamento():void{

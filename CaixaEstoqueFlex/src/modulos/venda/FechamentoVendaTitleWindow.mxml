@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" title="Fechamento Venda" width="600" height="503" xmlns:inputs="utilidades.inputs.*">
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" title="Fechamento Venda" width="624" height="531" xmlns:inputs="utilidades.inputs.*" xmlns:botoes="utilidades.botoes.*">
 
 
 	<mx:Script>
@@ -48,12 +48,16 @@
 				t.addEventListener(ConfiaEvent.ADICIONADOSUCEESSO,addCreditoCliente);
 			}
 			
-			private function addCreditoCliente(e:ConfiaEvent){
+			private function addCreditoCliente(e:ConfiaEvent):void{
 				this.cliente = e.cliente;
 				if(this.array_formaPgto == null){
 					this.array_formaPgto = new ArrayCollection();
 				}
 				this.array_formaPgto.addItem(e.formaPgto);
+			}
+			
+			private function excluirFormaPgto():void{
+				
 			}
 			
 			
@@ -65,24 +69,24 @@
 	
 	
 	
-	<mx:Panel x="10" y="10" width="560" height="122" layout="absolute" title="Informações Venda">
+	<mx:Panel x="10" y="10" width="584" height="140" layout="absolute" title="Informações Venda">
 		<mx:Label x="21" y="23" text="Valor Total:" />
 		<mx:Label x="99" y="23" id="lb_valorTotal" text="{this.venda.valorTotal}"/>
 		<mx:Label x="21" y="49" text="Deconto:"/>
 		<mx:Label x="99" y="49" id="lb_desconto" text="{this.venda.desconto}"/>
 		<mx:Label x="261" y="10" text="Valor à Pagar:" fontSize="17" fontWeight="bold"/>
 		<mx:Label x="261" y="36" id="lb_valoPagar" fontSize="20" fontWeight="bold" text="{this.venda.valorTotal - this.venda.desconto}"/>
-		<mx:Button x="425" y="15" label="Módulo Confia" click="{this.callModuloConfia()}"/>
+		<mx:Button x="449" y="15" label="Módulo Confia" click="{this.callModuloConfia()}"/>
 	</mx:Panel>
-	<mx:Label x="10" y="140" text="Valor:"/>
-	<inputs:NumberInput x="10" y="165" id="ti_valor" width="106" valorDefault="0,00"/>
-	<mx:Label x="124" y="140" text="Parcelas:"/>
-	<mx:NumericStepper x="124" y="165" minimum="1" maximum="5" id="ns_parcelas"/>
-	<mx:Label x="188" y="140" text="Formas de  Pagamento:"/>
-	<mx:ComboBox x="188" y="165" id="cb_formasPagamento"></mx:ComboBox>
-	<mx:Button x="356" y="165" label="Add Forma" width="104" click="{this.addFormaPgto()}"/>
-	<mx:Button x="466" y="165" label="Excluir Forma" click="{this.excluirFormaPgto()}"/>
-	<mx:DataGrid x="10" y="195" width="560">
+	<mx:Label x="10" y="170" text="Valor:"/>
+	<inputs:NumberInput x="10" y="195" id="ti_valor" width="106" valorDefault="0,00"/>
+	<mx:Label x="124" y="170" text="Parcelas:"/>
+	<mx:NumericStepper x="124" y="195" minimum="1" maximum="5" id="ns_parcelas"/>
+	<mx:Label x="188" y="170" text="Formas de  Pagamento:"/>
+	<mx:ComboBox x="188" y="195" id="cb_formasPagamento"></mx:ComboBox>
+	<mx:Button x="356" y="195" label="Add Forma" width="104" click="{this.addFormaPgto()}"/>
+	<mx:Button x="466" y="195" label="Excluir Forma" click="{this.excluirFormaPgto()}"/>
+	<mx:DataGrid x="10" y="225" width="584">
 		<mx:columns>
 			<mx:DataGridColumn headerText="Codigo" dataField="col1"/>
 			<mx:DataGridColumn headerText="Descrição" dataField="col2"/>
@@ -90,11 +94,11 @@
 			<mx:DataGridColumn headerText="Valor" dataField="col3"/>
 		</mx:columns>
 	</mx:DataGrid>
-	<mx:Panel x="10" y="356" width="560" height="97" layout="absolute" title="Informações Finais">
+	<mx:Panel x="10" y="375" width="584" height="97" layout="absolute" title="Informações Finais">
 		<mx:Label x="10" y="10" text="Troco:" fontWeight="bold" fontSize="20"/>
 		<mx:Label x="95" y="10" fontWeight="bold" fontSize="20" id="lb_troco"/>
-		<mx:Button x="215" y="19" label="Finalizar" id="bt_finalizar"/>
-		<mx:Button x="323" y="19" label="Cancelar" id="bt_cancelar"/>
+		<botoes:GerarButton x="206" y="-21" id="bt_finalizar"/>
+		<botoes:CancelarButton x="351" y="10" id="bt_cancelar"/>
 	</mx:Panel>
 	
 	

@@ -136,11 +136,19 @@ package negocio.remote{
 		}
 		
 		public function addLocalProduto(result:Function,local:LocalProdutoVO):void{
+			_remote.source = "ServicosLocalProduto";
 			var async:AsyncToken = _remote.addLocalProduto(local);
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
 		
+		public function atualizarLocalProduto(result:Function,local:LocalProdutoVO):void{
+			_remote.source = "ServicosLocalProduto";
+			var async:AsyncToken = _remote.atualizarLocalProduto(local);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
 		public function removerLocalProduto(result:Function,local:LocalProdutoVO):void{
+			_remote.source = "ServicosLocalProduto";
 			var async:AsyncToken = _remote.removerLocalProduto(local);
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
@@ -186,6 +194,12 @@ package negocio.remote{
  		public function listarUsuario(result:Function):void{
  			_remote.source = "ServicosUsuario";
 			var async:AsyncToken = _remote.getUsuarios();
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
+		public function atualizarUsuario(result:Function,usuario:UsuarioVO):void{
+			_remote.source = "ServicosUsuario";
+			var async:AsyncToken = _remote.atualizarUsuario(usuario);
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
 		
@@ -297,8 +311,6 @@ package negocio.remote{
 			var async:AsyncToken = _remote.getItens();
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
-		
-		
 		
  		public function fecharPreVenda(result:Function,preVenda:PreVendaVO):void{
  			_remote.source = "ServicosPreVenda";

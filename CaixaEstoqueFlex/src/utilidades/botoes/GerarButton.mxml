@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Button xmlns:mx="http://www.adobe.com/2006/mxml" label="Gerar" height="30" icon="@Embed(source='../../icons/gerar.png')" >
+	
+</mx:Button>

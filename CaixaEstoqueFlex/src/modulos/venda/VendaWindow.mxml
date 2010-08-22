@@ -7,6 +7,7 @@
 	
 	<mx:Script>
 		<![CDATA[
+			import events.VendaEvent;
 			import mx.events.ChildExistenceChangedEvent;
 			import events.PreVendaEvent;
 			import mx.containers.TitleWindow;
@@ -33,7 +34,7 @@
 			private var array_itensVenda:ArrayCollection;
 			
 			[Bindable]
-			public var isProduto:Boolean = false;
+			public var isPreVenda:Boolean = false;
 			
 			[Bindable]
 			private var isFecharVenda:Boolean = false;
@@ -45,11 +46,10 @@
 			public var preVenda:PreVendaVO;
 			
 			public var ro:Remote = Remote.getInstance();			
-			
 					
 			private function init():void{
 				this.venda = new VendaVO();
-				this.venda.codUsuario = 1;
+				this.venda.codUsuario = 0;
 				if(this.preVenda == null){
 					this.getPreVenda();
 				}else {
@@ -68,7 +68,8 @@
 				this.venda.codPreVenda = event.preVenda.codigo;
 				this.venda.valorTotal = event.preVenda.valorTotal;
 				this.array_itensVenda = new ArrayCollection(event.preVenda.itemPreVenda);
-				this.ro.abrirVenda(result_abrirVenda,this.venda);				
+				this.ro.abrirVenda(result_abrirVenda,this.venda);
+				this.isPreVenda = true;				
 			}
 			
 			private function result_abrirVenda(event:ResultEvent):void{
@@ -90,20 +91,22 @@
 					this.cancelarVenda();
 				}				
    			}	
-			
-			private function fecharVenda():void{
-				Alert.show("Não ha produtos inseridos!","Ops!",4,this);
-				
-				if(this.isProduto){					
-					this.ro.fecharVenda(result_fecharVenda,this.venda);
+   			
+   			private function finalizarVenda():void{
+   				if(this.isPreVenda){	
+					var fin:FechamentoVendaTitleWindow = FechamentoVendaTitleWindow(Util.abrePopUp(this,FechamentoVendaTitleWindow,true));
+					fin.addEventListener(VendaEvent.FINALIZADASUCEESSO,fecharVenda);				
 				}else{
-					
+					Alert.show("Adcione uma pré-venda!","Ops!",4,this);
 				}
+   			}
+			
+			private function fecharVenda(event:VendaEvent):void{
+				this.ro.fecharVenda(result_fecharVenda,this.venda);
 			}
 			
 			private function result_fecharVenda(e:ResultEvent):void{
-				var fin:FechamentoVendaTitleWindow: FechamentoVendaTitleWindow(Util.abrePopUp(this,FechamentoVendaTitleWindow,true);
-				fin.addEventListener();
+				this.close();
 				
 			}
 			
@@ -122,11 +125,9 @@
 				
 			}
 			
-			private function result_cancelarPreVenda(e:CloseEvent):void{
-				if (e.detail == Alert.YES) {
-					this.isFecharVenda = true;
-					this.stage.nativeWindow.close();
-				}
+			private function result_cancelarPreVenda(e:ResultEvent):void{
+				this.isFecharVenda = true;
+				this.stage.nativeWindow.close();
 			}
 			
 			private function addDesconto():void{
@@ -183,6 +184,7 @@
 					<mx:Label text="Data Abertura:" x="114" y="10" />
 					<mx:Label id="lb_dataAberturaPreVenda" x="114" y="32" text="{this.preVenda.dataAbertura}"/>
 					<mx:Text id="tx_obsPreVenda" x="246" y="10" width="297" height="42" />
+					<mx:Button x="315" y="-30" label="Button"/>
 				</mx:Panel>
 				<mx:Panel title="Valor Total" horizontalAlign="right" height="30%" width="395">
 					<mx:Label id="ti_valorTotal" text="{Number(this.venda.valorTotal).toFixed(2) }" fontSize="50"  x="23" y="26"/>
@@ -207,8 +209,8 @@
 			<mx:Button x="334" y="14" label="Add Desconto" id="bt_addDesconto" click="{this.addDesconto()}"/>
 			<mx:Button x="334" y="44" label="Exc. Desconto" id="bt_removerDesconto" click="{this.removerDesconto()}"/>
 			
-			<mx:Button id="bt_gerarVenda" label="Gerar Venda" toolTip="Clique para gerar venda"  click="{this.fecharVenda()}" x="493" y="23"/>
-			<mx:Button id="bt_cancelarVenda" label="Cancelar Venda" toolTip="Clique para cancelar venda"  x="639" y="23"  click="{this.cancelarVenda()}"/>
+			<mx:Button id="bt_finalizarVenda" label="Finalizar" toolTip="Clique para finalizar venda"  click="{this.finalizarVenda()}" x="493" y="23"/>
+			<mx:Button id="bt_cancelarVenda" label="Cancelar" toolTip="Clique para cancelar venda"  x="639" y="23"  click="{this.cancelarVenda()}"/>
 			
 			
 			
