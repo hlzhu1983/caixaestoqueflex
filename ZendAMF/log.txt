@@ -1,1 +1,1 @@
-inicioinsert into venda (codUsuario,codPreVenda,status,dataVenda) values ('1', '56','0' ,now())insert into venda (codUsuario,codPreVenda,status,dataVenda) values ('1', '56','0' ,now())
+Entrou akiEntrou aki
