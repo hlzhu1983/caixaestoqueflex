@@ -259,9 +259,9 @@
 			
 	</mx:FormItem>	
 	<botoes:BuscarButton id="bt_buscar" x="312" y="10" click="{this.pesquisarItem()}"/>		
-	<botoes:RemoveButton id="remover"  label="Remover"  enabled="false" x="707" y="50" click="{this.removerItem()}"  width="108"/>
-	<botoes:ADDButton id="add" x="707" y="20" click="{this.addItem()}"/>
-	<botoes:CleanButton  x="707" label="Limpar" y="80" click="{this.limparCampos()}" width="108"  textAlign="left"/>
+	<botoes:ExcluirButton id="remover"  label="Remover"  enabled="false" x="707" y="50" click="{this.removerItem()}"  width="108"/>
+	<botoes:SalvarButton id="add" x="707" y="20" click="{this.addItem()}"/>
+	<botoes:LimparButton  x="707" label="Limpar" y="80" click="{this.limparCampos()}" width="108"  textAlign="left"/>
 	<mx:DataGrid id="grid_itens" x="13" y="368" width="847" dataProvider="{this.itensArray}" change="{this.itemSelecionado(event)}">
 		<mx:columns>
 			<mx:DataGridColumn headerText="Código: " dataField="codigo"/>

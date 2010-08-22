@@ -15,7 +15,6 @@
 			public function init():void{	
 					
 				this.restrict = "0-9";			
-				this.maxChars = 8;
 			}			
 			
 			

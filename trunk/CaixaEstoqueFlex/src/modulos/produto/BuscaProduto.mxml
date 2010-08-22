@@ -65,7 +65,7 @@
 					this.sql[3] = "";
 				}else{
 					this.sql[3] = "codFornecedor = '"+this.itensFornecedor.getItemAt(this.cb_fornecedor.selectedIndex).codigo+"'";
-					this.ro.filtroProduto(resultListaProduto,sql);
+					this.pesquisarProduto();
 				}
 			}
 			
@@ -74,7 +74,7 @@
 					this.sql[4] = "";
 				}else{
 					this.sql[4] = "codUnidade = '"+this.itensUnidade.getItemAt(this.cb_unidade.selectedIndex).codigo+"'";
-					this.ro.filtroProduto(resultListaProduto,sql);
+					this.pesquisarProduto();
 				}
 			}
 			
@@ -83,7 +83,7 @@
 					this.sql[5] = "";
 				}else{
 					this.sql[5] = "codGrupo = '"+this.itensGrupo.getItemAt(this.cb_grupo.selectedIndex).codigo+"'";
-					this.ro.filtroProduto(resultListaProduto,sql);
+					this.pesquisarProduto();
 				}
 			}
 			
@@ -92,13 +92,18 @@
 					this.sql[6] = "";
 				}else{
 					this.sql[6] = "codLocal = '"+this.itensLocal.getItemAt(this.cb_local.selectedIndex).codigo+"'";
-					this.ro.filtroProduto(resultListaProduto,sql);
+					this.pesquisarProduto();
 				}
 			}
 			
 			
 			public function resultListaProduto(e:ResultEvent):void{
-				this.itensProduto = new ArrayCollection(e.result as Array);
+				if(e.result == null){
+					this.itensProduto = new ArrayCollection();
+					Alert.show("A pesquisa não retornou resultado!","Ops!",4,this);
+				}else{
+					this.itensProduto = new ArrayCollection(e.result as Array);
+				}
 			}
 			
 			private function preencheCBUnidade(event:ResultEvent):void{
@@ -126,9 +131,9 @@
 			
 			private function selecionarItem(event:ListEvent):void{
 				if(event.rowIndex == -1){
-					Alert.show("Produto não selecinado!","Ops!",4,this);
+					Alert.show("Produto não selecinado!","Ops!",4,this);					
 				}else{
-					Application.application.dispatchEvent(new ProdutoEvent(event.itemRenderer.data as ProdutoVO,ProdutoEvent.PRODUTOSELECIONADO));
+					this.dispatchEvent(new ProdutoEvent(event.itemRenderer.data as ProdutoVO,ProdutoEvent.PRODUTOSELECIONADO));
 					PopUpManager.removePopUp(this);	
 				}				
 				
@@ -136,28 +141,22 @@
 			
 			public function pesquisarProduto():void{
 				
-				var flag:Boolean = false;
 				if(this.ti_descricao.text !=""){
 					this.sql[0] = "descricao like '%"+this.ti_descricao.text+"%'";
-					flag = true;
 				}else{
 					this.sql[0] = "";
 				}
 				if(this.ti_precoVenda.text !="0,00"){
-					this.sql[1] = "precoVenda = '"+this.ti_precoVenda.text+"'";
-					flag = true;
+					this.sql[1] = "precoVenda = "+this.ti_precoVenda.getValor();
 				}else{
 					this.sql[1] = "";
 				}
 				if(this.ti_referencia.text !=""){
-					this.sql[2] = "referencia = '%"+this.ti_referencia.text+"%'";
-					flag = true;
+					this.sql[2] = "referencia like '%"+this.ti_referencia.text+"%'";
 				}else{
 					this.sql[2] = "";
 				}
-				if(flag){
-					this.ro.filtroProduto(resultListaProduto,sql);
-				}
+					this.ro.filtroProduto(resultListaProduto,this.sql);
 			}
 			
 		]]>
@@ -169,7 +168,7 @@
 		<mx:FormItem label="Referência: " horizontalAlign="left" x="20" y="52">
 			<inputs:TextoInput width="225" id="ti_referencia" />
 		</mx:FormItem>
-		<mx:FormItem label="Preço: " horizontalAlign="left" x="400" y="52">
+		<mx:FormItem label="Preço: " defaultButton="{this.bt_pesquisar}" horizontalAlign="left" x="400" y="52">
 			<inputs:NumberInput width="158" valorDefault="0,00" id="ti_precoVenda" />
 		</mx:FormItem>
 		<mx:Panel x="0" y="82" width="100%" height="155" layout="absolute" title="Filtros">
@@ -191,5 +190,5 @@
 					<mx:DataGridColumn headerText="Referência" dataField="referencia"/>
 				</mx:columns>
 			</mx:DataGrid>
-		<botoes:BuscarButton  x="636" y="22" click="{this.pesquisarProduto()}"/>
+		<botoes:BuscarButton  id="bt_pesquisar" x="636" y="22" click="{this.pesquisarProduto()}"/>
 </mx:TitleWindow>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Button xmlns:mx="http://www.adobe.com/2006/mxml" 
-	icon="@Embed(source='../../icons/senha.GIF')" label=" Alterar Senha" height="30">
+	icon="@Embed(source='../../icons/usuario.gif')"  height="30" label="Logoff">
 	
 </mx:Button>

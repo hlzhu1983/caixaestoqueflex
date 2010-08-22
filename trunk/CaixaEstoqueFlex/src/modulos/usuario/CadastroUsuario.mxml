@@ -3,13 +3,13 @@
 	 close="fechar()" 
 	 creationComplete="init()"
 	  showCloseButton="true"
-	   layout="vertical" title="Gerenciamento Usuarios" xmlns:utilidades="utilidades.*" xmlns:botoes="utilidades.botoes.*" xmlns:inputs="utilidades.inputs.*" width="538" height="396" borderColor="#009DFF">
+	   layout="vertical" title="Gerenciamento Usuarios" xmlns:utilidades="utilidades.*" xmlns:botoes="utilidades.botoes.*" xmlns:inputs="utilidades.inputs.*" width="538" height="100%" borderColor="#000000">
 	<mx:states>
 		<mx:State name="st_alterarSenha">
 			<mx:AddChild relativeTo="{this.vb_senhas}" position="before">
 				<mx:VBox width="100%">
 					<mx:Label text="Senha Antiga:"/>
-					<inputs:TextoInput id="ti_senhaAntiga" requerido="true" displayAsPassword="true"/>
+					<inputs:TextoInput id="ti_senhaAntiga" requerido="true" displayAsPassword="true" click="{this.alterarSenha()}"/>
 				</mx:VBox>
 			</mx:AddChild>  
 			<mx:AddChild relativeTo="{this.hb_botoes}" position="right">
@@ -46,7 +46,36 @@
 			}
 			
 			private function alterarSenha():void{
-				
+				if(this.ti_nome.validador.validate().type == ValidationResultEvent.INVALID){
+					Alert.show("Campo nome obrigatorio!","Ops!");
+				}else{
+					
+					if(this.ti_senha.text == ""){
+							Alert.show("Campo senha obrigatorio!","Ops!");
+						}else{
+							if(this.ti_confSenha.text == ""){
+								Alert.show("Campo conf. senha obrigatorio!","Ops!");
+							}else{
+								if(this.ti_confSenha.text == ""){
+									Alert.show("Campo senha antiga obrigatoria!","Ops!");
+								}else{
+									if(this.ti_confSenha.text == this.ti_senha.text && this.usuario.senha == this.ti_senhaAntiga.text){
+										this.usuario.nome = this.ti_nome.text;
+										this.usuario.comissao = ti_comissao.getValor();
+										this.usuario.login = this.ti_nome.text;
+										this.usuario.senha = this.ti_senha.text;
+										this.usuario.permissao = this.cb_permissao.selectedIndex;
+										this.ro.atualizarUsuario(result_atualizarUsuario,this.usuario);											
+									}else{
+										Alert.show("Problema na alteração da senha!","Ops!",4,this);
+										this.ti_confSenha.text = "";
+										this.ti_senha.text = "";
+									}
+								
+							}
+						}
+				}
+			}
 			}
 			
 			private function addUsuario():void{
@@ -54,21 +83,22 @@
 					Alert.show("Campo nome obrigatorio!","Ops!");
 				}else{
 					
-					if(this.ti_senha.validador.validate().type == ValidationResultEvent.INVALID){
+					if(this.ti_senha.text == ""){
 							Alert.show("Campo senha obrigatorio!","Ops!");
 						}else{
-							if(this.ti_confSenha.validador.validate().type == ValidationResultEvent.INVALID){
+							if(this.ti_confSenha.text == ""){
 								Alert.show("Campo conf. senha obrigatorio!","Ops!");
 							}else{
 								if(this.ti_confSenha.text == this.ti_senha.text ){
 									this.usuario.nome = this.ti_nome.text;
 									this.usuario.comissao = ti_comissao.getValor();
+									this.usuario.login = this.ti_nome.text;
 									this.usuario.senha = this.ti_senha.text;
 									this.usuario.permissao = this.cb_permissao.selectedIndex;
 									if(this.lb_codInput.text == ""){
 										this.ro.addUsuario(resultadoAddUsuario,this.usuario);
 									}else{
-										//this.ro.atualizarUsuario();
+										this.ro.atualizarUsuario(result_atualizarUsuario,this.usuario);
 									}
 										
 								}else{
@@ -79,6 +109,11 @@
 							}
 						}
 				}
+			}
+			
+			private function result_atualizarUsuario():void{
+				this.limparCampos();
+				Alert.show("Usuário Atualizado!","Sucesso",4,this);
 			}
 			
 			private function resultadoAddUsuario(event:ResultEvent):void{
@@ -112,10 +147,12 @@
 			
 			
 			private function removerUsuario():void{
-				this.usuario = this.grid_usuario.selectedItem as UsuarioVO;
-				this.ro.removerUsuario(resultadoRemoverUsuario, this.usuario);
-				
-				
+				if(this.grid_usuario.selectedIndex == -1){
+					Alert.show("Selecione um Usuário!","Ops!",4,this);
+				}else{
+					this.usuario = this.grid_usuario.selectedItem as UsuarioVO;
+					this.ro.removerUsuario(resultadoRemoverUsuario, this.usuario);
+				}
 			}
 			
 			private function resultadoRemoverUsuario(event:ResultEvent):void{
@@ -161,6 +198,7 @@
 				this.ti_senha.text = "";
 				this.ti_comissao.text = this.ti_comissao.valorDefault;
 				this.grid_usuario.selectedIndex = -1;
+				this.usuario = new UsuarioVO();
 			}
 			
 		]]>
@@ -185,9 +223,9 @@
 		
 		<mx:HBox id="hb_botoes" width="100%" horizontalAlign="right">
 			<mx:LinkButton label="Alterar Senha?" id="lk_alterarSenha" click="this.currentState = 'st_alterarSenha'"/>
-			<botoes:RemoveButton id="remover" click="removerUsuario()"  enabled="false"/>
-			<botoes:ADDButton id="add" click="addUsuario()"/>
-			<botoes:CleanButton  id="bt_clean" click="{this.limparCampos()}"/>
+			<botoes:SalvarButton id="add" click="addUsuario()"/>
+			<botoes:ExcluirButton id="remover" click="removerUsuario()"  enabled="false"/>
+			<botoes:LimparButton  id="bt_clean" click="{this.limparCampos()}"/>
 		</mx:HBox>
 		
 		<mx:HBox width="100%">
@@ -196,9 +234,9 @@
 		</mx:HBox>
 		
 		<mx:HBox width="100%">
-			<mx:VBox>
+			<mx:VBox width="186" height="100%">
 				<mx:Label text="Nome: "/>
-				<inputs:TextoInput id="ti_nome" width="250" requerido="true"/>
+				<inputs:TextoInput id="ti_nome" requerido="true" width="180" maxChars="100"/>
 			</mx:VBox>
 			<mx:VBox>
 				<mx:Label text="Tipo Usuario: "/>
@@ -216,11 +254,11 @@
 			<mx:HBox width="100%">
 			<mx:VBox>
 				<mx:Label text="Senha: "/>
-				<inputs:TextoInput id="ti_senha" requerido="true" displayAsPassword="true"/>
+				<mx:TextInput restrict="A-Z a-z 0-9 , @ . : / _ "  id="ti_senha" displayAsPassword="true" maxChars="10"/>
 			</mx:VBox>
 			<mx:VBox>
 				<mx:Label text="Conf. Senha: "/>
-				<inputs:TextoInput id="ti_confSenha" requerido="true" displayAsPassword="true"/>
+				<mx:TextInput  restrict="A-Z a-z 0-9 , @ . : / _ " id="ti_confSenha" displayAsPassword="true"  maxChars="10"/>
 			</mx:VBox>
 			<mx:VBox>
 				<mx:Label text="Comissão: "/>

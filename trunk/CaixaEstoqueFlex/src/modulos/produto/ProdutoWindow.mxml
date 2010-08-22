@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Window xmlns:mx="http://www.adobe.com/2006/mxml" 
 	creationComplete="{this.listarALLItens()}" 
-	layout="absolute"  width="856" height="556" 
+	layout="absolute"  width="874" height="556" 
+	title="Gerênciador Produto"
 	fontSize="12" xmlns:ns1="utilidades.botoes.*" xmlns:ns2="utilidades.inputs.*" borderColor="#009DFF" backgroundColor="#FFFFFF">
 	
 	<mx:Script>
@@ -31,7 +32,7 @@
 			}
 			public function quando_enviado(event:Event):void
 			{
-				Alert.show("Arquivo enviado com sucesso!");
+				Alert.show("Arquivo enviado com sucesso!","Aew!",4,this);
 				ti_foto.text = "";
 				ti_foto.text = arquivo.name;
 			}	
@@ -101,13 +102,13 @@
 						u.foto = "";
 						
 						}else{
-						Alert.show("O campo Unidade é requerido");
+						Alert.show("O campo Unidade é requerido","Ops!",4,this);
 						}
 						}else{
-						Alert.show("O campo Local é requerido");
+						Alert.show("O campo Local é requerido","Ops!",4,this);
 						}
 						}else{
-						Alert.show("O campo Grupo é requerido");
+						Alert.show("O campo Grupo é requerido","Ops!",4,this);
 						}
 						this.ro.addProduto(resultadoAddItem,u);
 					}
@@ -128,13 +129,13 @@
 						u.referencia = this.ti_referencia.text;
 						u.codigo = Number(this.ti_codigo.text);
 						}else{
-						Alert.show("O campo Unidade é requerido");
+						Alert.show("O campo Unidade é requerido","Ops!!",4,this);
 						}
 						}else{
-						Alert.show("O campo Local é requerido");
+						Alert.show("O campo Local é requerido","Ops!!",4,this);
 						}
 						}else{
-						Alert.show("O campo Grupo é requerido");
+						Alert.show("O campo Grupo é requerido","Ops!!",4,this);
 						}
 						
 						this.ro.atualizarProduto(resultadoAtualizarItem,u);
@@ -146,13 +147,13 @@
 			
 			private function resultadoAddItem(event:ResultEvent):void{
 				this.itensArray.addItem(event.result);
-				Alert.show("O item foi adicionado!","Sucesso!");
+				Alert.show("O item foi adicionado!","Sucesso!",4,this);
 				this.limpar();
 			}
 			
 			private function resultadoAtualizarItem(event:ResultEvent):void{
 				this.itensArray[this.modificado] = event.result;	
-				Alert.show("O item foi Atualizado!","Sucesso!");
+				Alert.show("O item foi Atualizado!","Sucesso!",4,this);
 				this.limpar();
 			}
 			
@@ -165,10 +166,10 @@
 			}
 			private function resultadoRemover(event:ResultEvent):void{
 				if(event.result){
-					Alert.show("O item foi removido!","Sucesso");
+					Alert.show("O item foi removido!","Sucesso",4,this);
 					this.itensArray.removeItemAt(this.grid_itens.selectedIndex);
 				}else{
-					Alert.show("O item não pôde ser removido!","Ops!");					
+					Alert.show("O item não pôde ser removido!","Ops!",4,this);					
 				}
 				this.limpar();
 			}
@@ -260,7 +261,7 @@
 					}
 					
 				}else{
-					Alert.show("erro");
+					Alert.show("Campo Vazio!","Ops!",4,this);
 				}
 			}
 			private function resultadoPesquisaItem(event:ResultEvent):void{
@@ -273,7 +274,7 @@
 		 
 			 this.ro.pesquisarFornecedor(pegouF,this.ti_codFornecedor.text,"codigo")
 			 }else{
-			 Alert.show("O campo Codigo Fornecedor é requerido");
+			 Alert.show("O campo Codigo Fornecedor é requerido","Ops!",4,this);
 			 }
 			
 			}
@@ -289,7 +290,7 @@
 		]]>
 	</mx:Script>
 	
-	<mx:DataGrid x="10" y="358" id = "grid_itens" dataProvider="{this.itensArray}" change="{this.itemSelecionado(event)}" width="799" height="172">
+	<mx:DataGrid x="10" y="358" id = "grid_itens" dataProvider="{this.itensArray}" change="{this.itemSelecionado(event)}" width="833" height="172">
 		<mx:columns>
 			<mx:DataGridColumn headerText="Código" dataField="codigo"/>
 			<mx:DataGridColumn headerText="Descrição" dataField="descricao"/>
@@ -297,16 +298,17 @@
 		</mx:columns>
 	</mx:DataGrid>
 	<mx:Label x="10" y="111" text="Código:"/>
-	<mx:TextInput x="72" y="109" width="94" backgroundColor="#AAB5F6" id="ti_codigo" editable="false"/>
+	<mx:Label x="72" y="109" width="94" id="ti_codigo" />
 	<mx:Label x="10" y="281" text="Qtd. Estoque:"/>
 	<mx:Label x="178" y="281" text="Preco de Compra:"/>
 	<mx:Label x="10" y="235" text="Fornecedor:"/>
 	<ns2:InteiroInput x="99" y="233" width="94" id="ti_codFornecedor"/>
 	<ns1:BuscarButton x="201" y="234" click="{this.procurarFornecedor()}" height="21"/>
-	<mx:Panel title="Imagem Produto" x="585" y="10" layout="absolute" height="293" width="259">
-		<mx:Image x="10" y="10" id="img_produto" width="219" height="189" source="{this.ti_foto.text}"/>	
-		<mx:TextInput width="171" backgroundColor="#AAB5F6" id="ti_foto" x="10" y="207"/>
-		<ns1:BuscarButton click="{this.localizar()}" height="23" x="189" y="208"/>
+	<mx:Panel title="Imagem Produto" x="572" y="10" layout="absolute" height="325" width="280">
+		<mx:Image x="10" y="10" id="img_produto" width="239" height="189" source="{this.ti_foto.text}"/>	
+		<mx:Label width="239" id="ti_foto" x="10" y="207"/>
+		<ns1:BuscarButton click="{this.localizar()}" height="23" x="34" y="235"/>
+		<mx:Button x="137" y="235" click="this.enviar_arquivo()" label="enviar"/>
 	</mx:Panel>
 	<mx:Label x="190" y="109" text="Cód. Barra:"/>
 	<mx:TextInput x="271" y="107" maxChars="20" width="166" id="ti_codBarra"/>
@@ -315,7 +317,7 @@
 	<mx:Label x="273" y="142" text="Referência:"/>
 	<mx:Label x="10" y="172" text="Descrição:"/>
 	<ns2:TextoInput x="99" y="170" width="450" id="ti_descricao"/>
-	<ns2:TextoInput x="249" y="233" width="300" backgroundColor="#AAB5F6" id="ti_nomeFornecedor" editable="false"/>
+	<mx:Label x="249" y="233" width="300" id="ti_nomeFornecedor"/>
 	<ns2:TextoInput x="357" y="140" width="192" maxChars="250" id="ti_referencia"/>
 	<mx:ComboBox x="99" selectedIndex="-1" y="139" width="166" dataProvider="{this.itensGrupo}" labelField="descricao" id="cb_grupo"></mx:ComboBox>
 	<mx:ComboBox x="99" selectedIndex="-1" y="202" width="166" dataProvider="{this.itensLocal}" labelField="descricao" id="cb_local"></mx:ComboBox>
@@ -330,10 +332,9 @@
 	<ns2:NumberInput x="304" y="279" width="60" id="ti_pCompra"/>
 	<mx:Label x="372" y="281" text="Preco de Venda:"/>
 	<ns2:NumberInput x="489" y="279" width="60" id="ti_pVenda"/>
-	<ns1:CleanButton x="257" y="311" click="{this.limpar()}" label="Limpar"/>
-	<ns1:ADDButton id="add" x="10" y="311" click="{this.adicionar()}" label="Adicionar"/>
-	<ns1:RemoveButton id ="bt_remover"  x="136" y="311" click="{this.removerItem()}" label="Remover" enabled="false"/>
-	<mx:Button x="407" y="311" click="this.enviar_arquivo()" label="enviar"/>
+	<ns1:LimparButton x="257" y="311" click="{this.limpar()}"/>
+	<ns1:SalvarButton id="add" x="10" y="311" click="{this.adicionar()}"/>
+	<ns1:ExcluirButton id ="bt_remover"  x="136" y="311" click="{this.removerItem()}" enabled="false"/>
 	<ns1:BuscarButton x="397" y="10" click="{this.pesquisarItem()}" height="23"/>
 	<ns2:TextoInput x="36" y="10" width="339" id="ti_pesquisar"/>
 	<mx:RadioButton x="110" y="40" label="descricao" id="rd_descricao"/>
