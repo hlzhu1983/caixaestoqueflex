@@ -95,6 +95,7 @@
    			private function finalizarVenda():void{
    				if(this.isPreVenda){	
 					var fin:FechamentoVendaTitleWindow = FechamentoVendaTitleWindow(Util.abrePopUp(this,FechamentoVendaTitleWindow,true));
+					fin.venda = this.venda;
 					fin.addEventListener(VendaEvent.FINALIZADASUCEESSO,fecharVenda);				
 				}else{
 					Alert.show("Adcione uma pré-venda!","Ops!",4,this);
