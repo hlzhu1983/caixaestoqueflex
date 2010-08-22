@@ -15,15 +15,23 @@ class ServicosLocalProduto {
 	public function addLocalProduto(LocalProdutoVO $localproduto){
 		
 		$sql = "insert into localproduto (descricao) values ('{$localproduto->descricao}')";
-		
 		$resultado = $this->conn->Execute($sql);
 		$localproduto->codigo = $this->conn->insert_Id();
 		return $localproduto;
 		
 	}
 	
-	public function removerLocalProduto(LocalProdutoVO $localproduto){
+	public function atualizarLocalProduto(LocalProdutoVO $localproduto){
+		$f = fopen('log1.txt','w+');
+		fwrite($f,'entroue');
+		$sql = "update localproduto SET descricao = '$localproduto->descricao' WHERE codigo = $localproduto->codigo";
+		fwrite($f,$sql);
+		$resultado = $this->conn->Execute($sql);
+		return $localproduto;
 		
+	}
+	
+	public function removerLocalProduto(LocalProdutoVO $localproduto){
 		$sql = "delete from localproduto  where codigo = {$localproduto->codigo}";
 		$resultado = $this->conn->Execute($sql);
 		if($this->conn->Affected_Rows()==0){

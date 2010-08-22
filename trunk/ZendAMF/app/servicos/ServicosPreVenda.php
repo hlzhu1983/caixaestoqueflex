@@ -19,8 +19,7 @@ class ServicosPreVenda {
 	
 	
 	public function abrirPreVenda(PreVendaVO $item){
-		$f = fopen('log.txt',"w+");
-		
+		$f = fopen('log2.txt',"w+");
 		$sql = "insert into prevenda (codUsuario,status,dataAbertura) values ('$item->codUsuario'		 
 		 ,'0' ,now())";
 		fwrite($f,$sql);
@@ -29,7 +28,7 @@ class ServicosPreVenda {
 		$item->codigo = $this->conn->insert_Id();
 		
 		if($this->conn->HasFailedTrans()){
-			throw new Exception("Erro ao abri pré-Venda",16);
+			throw new Exception("Erro ao abrir pré-Venda",16);
 		}	
 		
 		$this->conn->CompleteTrans();
@@ -39,9 +38,6 @@ class ServicosPreVenda {
 	}
 	
 	public function addItemPreVenda(ItemPreVendaVO $item){
-		
-			$f = fopen('log.txt','a+');
-			fwrite($f,"codigo Prevenda"+$item->codigoPrevenda+"\n");
 			$sql ="select * from produto where codigo = $item->codProduto";
 			$this->conn->StartTrans();
 			$result = $this->conn->Execute($sql);	
@@ -154,10 +150,11 @@ class ServicosPreVenda {
 	private function getItensPrevenda($codigo){
 		$sql = "select * from itensprevenda where codPrevenda  = $codigo";
 		$resultado = $this->conn->Execute($sql);
+		$retorna_dados_item = null;
 		while($registro = $resultado->FetchNextObject()){
 			$dados_item = new ItemPreVendaVO();
 			$dados_item->codigo = $registro->CODIGO;
-			$dados_item->codigoPrevenda = $registro->CODUSUARIO;
+			$dados_item->codigoPrevenda = $registro->CODPREVENDA;
 			$dados_item->descricao = $registro->DESCRICAO;
 			$dados_item->codProduto = $registro->CODPRODUTO;
 			$dados_item->quantidade = $registro->QUANTIDADE;
@@ -177,8 +174,12 @@ class ServicosPreVenda {
 	}
 	
 	public function getItens(){
+		$f = fopen('log.txt','w+');
+		fwrite($f,'Entrou aki');
 		$sql = "select * from prevenda";
+		fwrite($f,'Entrou aki');
 		$resultado = $this->conn->Execute($sql);
+		$retorna_dados_item = null;
 		while($registro = $resultado->FetchNextObject()){			
 			$retorna_dados_item [] = $this->toPreVenda($registro);
 		}
@@ -198,9 +199,9 @@ class ServicosPreVenda {
 		return $dados_item;
 	}
 }
-//$eu = new ServicosPreVenda();
+$eu = new ServicosPreVenda();
 ////$c = new PreVendaVo();
 ////$c->codUsuario = 0;
-//$eu->addItemPreVenda(new ItemPreVendaVO());
+$eu->getItens();
 
 ?>

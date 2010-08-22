@@ -80,18 +80,19 @@ class ServicosProduto {
 	
 	public function filtroProduto($sqlArray){
 		$sql = "select * from produto where ";
-		$campos = array("descricao","referencia","precoVenda","codFornecedor","codLocal","codUnidade","codGrupo");
 		$entrou = false;
-		for ($index = 0; $index < count($sqlArray); $index++) {
-			if($sqlArray[$index]!= ""){
+		foreach($sqlArray as $str) {
+			if($str != ""){
 				if($entrou){
-					$sql = $sql." and ".$sqlArray[$index]." ";
+					$sql = "$sql and $str ";
 				}else{
-					$sql = $sql.$sqlArray[$index]." ";
+					$sql = "$sql $str ";
 					$entrou = true;
 				}
 			}
 		}
+		$f = fopen('logo.txt','w+');
+		fwrite($f,$sql);
 		$resultado = $this->conn->Execute($sql);
 		return $this->toProdutos($resultado);	
 	}

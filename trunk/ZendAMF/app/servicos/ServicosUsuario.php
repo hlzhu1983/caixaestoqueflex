@@ -30,13 +30,7 @@ class ServicosUsuario {
 		 }
 		 $dados_usuario = NULL;
 		while($registro = $resultado->FetchNextObject()){			
-			$dados_usuario = new UsuarioVO();
-			$dados_usuario->nome = $registro->NOME;
-			$dados_usuario->codigo = $registro->CODIGO;
-			$dados_usuario->comissao = (float)$registro->COMISSAO;
-			$dados_usuario->permissao = $registro->PERMISSAO;
-			$dados_usuario->senha = $registro->SENHA;
-			$dados_usuario->login = $registro->LOGIN;
+			 $dados_usuario = $this->toUsuario($registro);
 		}
 		if($dados_usuario->senha==$usuario->senha){
 			return $dados_usuario;
@@ -62,14 +56,7 @@ class ServicosUsuario {
 		$sql = "select * from usuario where $coluna like '%$texto%'";
 		$resultado = $this->conn->Execute($sql);
 		while($registro = $resultado->FetchNextObject()){			
-			$dados_usuario = new UsuarioVO();
-			$dados_usuario->nome = $registro->NOME;
-			$dados_usuario->codigo = $registro->CODIGO;
-			$dados_usuario->comissao = (float)$registro->COMISSAO;
-			$dados_usuario->permissao = $registro->PERMISSAO;
-			$dados_usuario->senha = $registro->SENHA;
-			$dados_usuario->login = $registro->LOGIN;
-			$retorna_dados_usuario [] = $dados_usuario;
+			$retorna_dados_usuario [] = $this->toUsuario($registro);
 		}
 		return $retorna_dados_usuario;
 	}
@@ -80,6 +67,13 @@ class ServicosUsuario {
 		$resultado = $this->conn->Execute($sql);
 		
 		while($registro = $resultado->FetchNextObject()){			
+			$retorna_dados_usuario [] = $this->toUsuario($registro);
+		}
+		return $retorna_dados_usuario;	
+	}
+	
+	private function toUsuario($registro){
+		if($registro->CODIGO != 0){
 			$dados_usuario = new UsuarioVO();
 			$dados_usuario->nome = $registro->NOME;
 			$dados_usuario->codigo = $registro->CODIGO;
@@ -87,9 +81,8 @@ class ServicosUsuario {
 			$dados_usuario->permissao = $registro->PERMISSAO;
 			$dados_usuario->senha = $registro->SENHA;
 			$dados_usuario->login = $registro->LOGIN;
-			$retorna_dados_usuario [] = $dados_usuario;
+			return $dados_usuario;
 		}
-		return $retorna_dados_usuario;	
 	}
 }
 

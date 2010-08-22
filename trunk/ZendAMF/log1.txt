@@ -1,0 +1,1 @@
+entroueupdate localproduto SET descricao = 'PRATILEIRA 4' WHERE codigo = 10
