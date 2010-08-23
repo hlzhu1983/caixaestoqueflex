@@ -24,6 +24,7 @@
 	
 	import negocio.vo.UsuarioVO;
 	
+	import utilidades.Calculadora;
 	import utilidades.Util;
 	
 	[Bindable]
@@ -47,7 +48,7 @@
          {label: "Pedido de Compra"},{label: "Orçamento", funcao: orcamentoWindow},
          {label: "Transf Filiais"},{label: "Devolução"}],
          [{label: "Ainda Falta Fazer"}],
-         [{label: "Calculadora"},{label: "Cálculo de Dias"}],
+         [{label: "Calculadora",funcao:getCalculadora},{label: "Cálculo de Dias"}],
          [{label: "Ajuda"},{label: "Sobre o Sistema"},{label: "Tópicos de Ajuda"},
          {label: "Versão"}]];
 	
@@ -159,6 +160,11 @@
 	public function gerCliente():void{		
 		Util.abrePopUp(this,CadastroCliente,true);
 	}
+
+public function getCalculadora():void{		
+		Util.abrePopUp(this,Calculadora,true);
+	}
+
 	
 	public function gerProduto():void{
 		
