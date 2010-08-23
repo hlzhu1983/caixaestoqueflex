@@ -20,7 +20,7 @@
  
 	<mx:Label text="Nome da Empresa" color="#000000" fontWeight="bold" fontSize="16" top="0" left="0"/>
 	<mx:Label text="Página: {pageNumber}" fontSize="12" right="0" top="0"/>
-	<mx:Image x="0" y="23" source="/imagens/caixaEstoque48.png"/>
+	<mx:Image x="0" y="23" source="{logo}"/>
 	<mx:Label text="{title}" color="#000000" fontWeight="bold" fontSize="12" top="32" left="47"/>
 	<mx:Label text="22/02/2010 as 14:00hrs" color="#000000" fontWeight="normal" fontSize="12" top="51" left="47"/>
 </PrintComponent>

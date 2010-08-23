@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow title="Calculadora" xmlns:mx="http://www.adobe.com/2006/mxml" fontSize="18" height="290" width="248" creationComplete="{this.init()}">
+<mx:Script>
+	<![CDATA[
+	    [Bindable]
+		public var calcController:CalcController;
+		public function init():void{
+			this.calcController = new CalcController();
+		}
+	]]>
+</mx:Script>
+<mx:Label id="calcDisplay" text="{this.calcController.texto}" width="199" textAlign="right"/>
+<mx:Grid width="198">
+	<mx:GridRow width="198" horizontalAlign="right">
+		 <mx:GridItem colSpan="2" horizontalAlign="left">
+              <mx:Button label="CE" width="82" click="calcController.clearAll()" labelPlacement="left"/>
+       </mx:GridItem>
+	<mx:GridItem>
+              <mx:Button label="C/E" width="37" click="calcController.clearEntry()"/>
+       </mx:GridItem>
+       <mx:GridItem>
+              <mx:Button label="+" width="36" click="calcController.setOperation0(CalcController.ADD)" labelPlacement="left"/>
+       </mx:GridItem>
+       </mx:GridRow>
+	 <mx:GridRow width="198" horizontalAlign="right">
+       <mx:GridItem>
+              <mx:Button label="1" width="37" click="calcController.addNumber('1')"/>
+       </mx:GridItem>
+       <mx:GridItem>
+              <mx:Button label="2" width="37" click="calcController.addNumber('2')"/>
+       </mx:GridItem>
+       <mx:GridItem>
+              <mx:Button label="3" width="37" click="calcController.addNumber('3')"/>
+       </mx:GridItem>
+       <mx:GridItem>
+              <mx:Button label="-" width="37" click="calcController.setOperation0(CalcController.SUB)"/>
+       </mx:GridItem>
+       </mx:GridRow>
+	<mx:GridRow width="198" horizontalAlign="right">
+       <mx:GridItem >
+              <mx:Button label="4" width="37" click="calcController.addNumber('4')"/>
+       </mx:GridItem>
+       <mx:GridItem>
+              <mx:Button label="5" width="37" click="calcController.addNumber('5')"/>
+       </mx:GridItem>
+       <mx:GridItem>
+              <mx:Button label="6" width="37" click="calcController.addNumber('6')"/>
+       </mx:GridItem>
+       <mx:GridItem>
+              <mx:Button label="*" width="37" click="calcController.setOperation0(CalcController.MULT)"/>
+       </mx:GridItem>
+       </mx:GridRow>
+       <mx:GridRow width="198" horizontalAlign="right">
+       <mx:GridItem>
+              <mx:Button label="7" width="37" click="calcController.addNumber('7')"/>
+       </mx:GridItem>
+       <mx:GridItem>
+              <mx:Button label="8" width="37" click="calcController.addNumber('8')"/>
+       </mx:GridItem>
+       <mx:GridItem>
+              <mx:Button label="9" width="37" click="calcController.addNumber('9')"/>
+       </mx:GridItem>
+       <mx:GridItem>
+              <mx:Button label="/" width="37" click="calcController.setOperation0(CalcController.DIV)"/>
+       </mx:GridItem>
+       </mx:GridRow>
+       <mx:GridRow  width="198" horizontalAlign="right">
+       <mx:GridItem colSpan="2" horizontalAlign="right">
+              <mx:Button label="0" width="82" click="calcController.addNumber('0')"/>
+       </mx:GridItem>
+       <mx:GridItem>
+              <mx:Button label="." width="37" click="calcController.addNumber('.')"/>
+       </mx:GridItem>
+       <mx:GridItem>
+              <mx:Button label="=" width="37" click="calcController.doOperation()"/>
+       </mx:GridItem>
+       </mx:GridRow>
+</mx:Grid>
+
+</mx:TitleWindow>
