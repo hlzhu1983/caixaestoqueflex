@@ -17,14 +17,14 @@ class ServicosCliente {
 		$sql = "insert into cliente (nome,tipoPessoa
 		 ,sexo ,dataNascimento ,dataCadastro ,endereco
 		 ,bairro ,cidade ,UF ,cep ,cpf_cnpj ,insc_estadual
-		 ,fone ,contato ,email ,url ,obs) values ('{$item->nome}'		 
+		 ,fone ,contato ,email ,url ,obs,limCredito) values ('{$item->nome}'		 
 		 ,'{$item->tipoPessoa}' ,'{$item->sexo}' ,'{$item->dataNascimento}'
 		 ,'{$item->dataCadastro}' ,'{$item->endereco}'
 		 ,'{$item->bairro}' ,'{$item->cidade}'
 		 ,'{$item->UF}' ,'{$item->cep}'
 		 ,'{$item->cpf_cnpj}' ,'{$item->insc_estadual}'
 		 ,'{$item->fone}' ,'{$item->contato}'
-		 ,'{$item->email}' ,'{$item->url}' ,'{$item->obs}')";
+		 ,'{$item->email}' ,'{$item->url}' ,'{$item->obs}','{$item->limCredito}')";
 		
 		$resultado = $this->conn->Execute($sql);
 		$item->codigo = $this->conn->insert_Id();
@@ -69,6 +69,7 @@ class ServicosCliente {
 			$dados_item->tipoPessoa = $registro->TIPOPESSOA;
 			$dados_item->UF = $registro->UF;
 			$dados_item->url = $registro->URL;
+			$dados_item->limCredito = $registro->LIMCREDITO;
 			$retorna_dados_item [] = $dados_item;
 		}
 		return $retorna_dados_item;
@@ -99,6 +100,7 @@ class ServicosCliente {
 			$dados_item->tipoPessoa = $registro->TIPOPESSOA;
 			$dados_item->UF = $registro->UF;
 			$dados_item->url = $registro->URL;
+			$dados_item->limCredito = $registro->LIMCREDITO;
 			$retorna_dados_item [] = $dados_item;
 		}
 		return $retorna_dados_item;	

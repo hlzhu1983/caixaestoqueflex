@@ -1,0 +1,1 @@
+1UPDATE venda SET codUsuario = '0' , codCliente = 1, codPreVenda = 56, status = '1', desconto = 0, obs = '', valorTotal = '1.25' where codigo = 71

@@ -32,11 +32,30 @@ class ServicosVenda {
 	
 	
 	public function fecharVenda(VendaVO $item){
+		$f = fopen('lo3.txt','w+');
 		$this->conn->StartTrans();
-		$sql = "UPDATE prevenda SET status = 3 WHERE codigo = $item->codPrevenda"; 
+		fwrite($f,$item->codCliente);
+		if($item->codCliente != 0){
+			foreach ($item->formasPagamento as $v) {
+				if($v->codFormaPagamento == 0){
+					$sql = "UPDATE cliente SET limCredito = (limCredito - $v->valor) WHERE codigo = $item->codCliente";
+					$this->conn->Execute($sql);
+				}
+			}
+		}
+		$sql = "UPDATE prevenda SET status = 3 WHERE codigo = $item->codPreVenda"; 
 		$this->conn->Execute($sql);
-		$sql = "UPDATE venda SET codUsuario = '$item->codUsuario' , codCliente = $item->codCliente, codPreVenda = $item->codPrevenda, status = '1', desconto = $item->desconto, obs = '$item->obs', valorTotal = '$item->valorTotal' where codigo = $item->codigo";		
+		$sql = "UPDATE venda SET codUsuario = '$item->codUsuario' , codCliente = $item->codCliente, codPreVenda = $item->codPreVenda, status = '1', desconto = $item->desconto, obs = '$item->obs', valorTotal = '$item->valorTotal' where codigo = $item->codigo";
+		fwrite($f,$sql);		
 		$this->conn->Execute($sql);
+		$falhou = false;
+		if($this->conn->HasFailedTrans()){
+			$falhou = true;
+		}
+		$this->conn->CompleteTrans();
+		if($falhou){
+			throw new Exception("Erro ao cancelar venda. Venda não cancelada!",100);
+		}
 		return $item;
 	}
 	

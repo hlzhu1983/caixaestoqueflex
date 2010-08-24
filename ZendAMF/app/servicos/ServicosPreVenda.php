@@ -139,7 +139,7 @@ class ServicosPreVenda {
 	}
 	
 	public function filtraData($data,$coluna){
-		$sql = "select * from prevenda where DATE($coluna) = '$data'";
+		$sql = "select * from prevenda where DATE($coluna) = '$data' and status = 1";
 		$resultado = $this->conn->Execute($sql);
 		while($registro = $resultado->FetchNextObject()){			
 			$retorna_dados_item [] = $this->toPreVenda($registro);
@@ -164,6 +164,8 @@ class ServicosPreVenda {
 		return $retorna_dados_item;
 	}
 	
+	
+	
 	public function pesquisarItens($texto,$coluna){
 		$sql = "select * from prevenda where $coluna like '%$texto%'";
 		$resultado = $this->conn->Execute($sql);
@@ -184,6 +186,25 @@ class ServicosPreVenda {
 			$retorna_dados_item [] = $this->toPreVenda($registro);
 		}
 		return $retorna_dados_item;	
+	}
+	
+	public function getItensValidos(){
+		$sql = "select * from prevenda where status = 1";
+		$resultado = $this->conn->Execute($sql);
+		$retorna_dados_item = null;
+		while($registro = $resultado->FetchNextObject()){			
+			$retorna_dados_item [] = $this->toPreVenda($registro);
+		}
+		return $retorna_dados_item;	
+	}
+	
+	public function pesquisarItensValidos($texto,$coluna){
+		$sql = "select * from prevenda where $coluna like '%$texto%' and status = 1";
+		$resultado = $this->conn->Execute($sql);
+		while($registro = $resultado->FetchNextObject()){			
+			$retorna_dados_item [] = $this->toPreVenda($registro);
+		}
+		return $retorna_dados_item;
 	}
 	
 	
