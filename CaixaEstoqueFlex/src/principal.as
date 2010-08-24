@@ -24,8 +24,8 @@
 	
 	import negocio.vo.UsuarioVO;
 	
-	import utilidades.Calculadora;
 	import utilidades.Util;
+	import utilidades.calculadora.Calculadora;
 	
 	[Bindable]
 	public var usuario:UsuarioVO;
@@ -162,7 +162,7 @@
 	}
 
 public function getCalculadora():void{		
-		Util.abrePopUp(this,Calculadora,true);
+		Util.abrePopUp(this,Calculadora,false);
 	}
 
 	
