@@ -1,14 +1,10 @@
-package utilidades
+package utilidades.calculadora
 {
 	public class Node
 	{
 		private var elemento:Object;
 		private var proximo:Node;
-		public function Node()
-		{
-			this.elemento = null;
-			this.proximo = null;
-		}
+		
     
     public function Node(elm:Object)
 		{
@@ -26,7 +22,7 @@ package utilidades
     public function setElemento(elm:Object):void{
      this.elemento = elm;
     }
-     public function getElemento():Node{
+     public function getElemento():Object{
       return this.elemento;
      }
 	}

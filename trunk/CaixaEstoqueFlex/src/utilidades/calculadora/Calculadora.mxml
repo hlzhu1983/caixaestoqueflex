@@ -1,12 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:TitleWindow title="Calculadora" xmlns:mx="http://www.adobe.com/2006/mxml" fontSize="18" height="290" width="248" creationComplete="{this.init()}">
+<mx:TitleWindow title="Calculadora" showCloseButton="true" keyDown="{escrever(event)}" close="{this.fechar()}" xmlns:mx="http://www.adobe.com/2006/mxml" fontSize="18" height="290" width="248" creationComplete="{this.init()}">
 <mx:Script>
 	<![CDATA[
+		import mx.managers.PopUpManager;
 	    [Bindable]
 		public var calcController:CalcController;
 		public function init():void{
 			this.calcController = new CalcController();
 		}
+		
+			private function escrever(event:KeyboardEvent):void{
+				var aux:String;
+				var numero:Boolean;
+				var backSpace:Boolean;
+				switch(event.charCode){
+					case Keyboard.NUMBER_0:
+					calcController.addNumber('0')
+						break;
+					case Keyboard.NUMPAD_0:
+					calcController.addNumber('1')	
+						break;
+					case Keyboard.NUMPAD_2:
+					calcController.addNumber('2')	
+						break;
+					case Keyboard.NUMPAD_3:
+					calcController.addNumber('3')	
+						break;
+					case Keyboard.NUMPAD_4:
+					calcController.addNumber('4')
+						break;
+					case Keyboard.NUMPAD_5:
+					calcController.addNumber('5')	
+						break;
+					case Keyboard.NUMPAD_6:
+						calcController.addNumber('6')
+						break;
+					case Keyboard.NUMPAD_7:
+					calcController.addNumber('7')	
+						break;
+					case Keyboard.NUMPAD_8:
+						calcController.addNumber('8')
+						break;
+					case Keyboard.NUMPAD_9:
+						calcController.addNumber('9')
+						break;
+					case (Keyboard.BACKSPACE):
+						calcController.clearEntry();
+						break;	
+					case (Keyboard.NUMPAD_ADD):
+						calcController.setOperation0(CalcController.ADD);
+						break;
+						case (Keyboard.NUMPAD_SUBTRACT):
+						calcController.setOperation0(CalcController.SUB);
+						break;
+						case (Keyboard.NUMPAD_MULTIPLY):
+						calcController.setOperation0(CalcController.MULT);
+						break;
+						case (Keyboard.NUMPAD_DIVIDE):
+						calcController.setOperation0(CalcController.DIV);
+						break;
+						case (Keyboard.NUMPAD_DECIMAL):
+						calcController.addNumber('.');
+						break;
+						case (Keyboard.ENTER):
+						calcController.doOperation();
+						break;
+							
+				}
+					
+			}
+		
+		private function fechar():void{
+				PopUpManager.removePopUp(this);
+			}
 	]]>
 </mx:Script>
 <mx:Label id="calcDisplay" text="{this.calcController.texto}" width="199" textAlign="right"/>
@@ -24,13 +90,13 @@
        </mx:GridRow>
 	 <mx:GridRow width="198" horizontalAlign="right">
        <mx:GridItem>
-              <mx:Button label="1" width="37" click="calcController.addNumber('1')"/>
+              <mx:Button label="7" width="37" click="calcController.addNumber('7')"/>
        </mx:GridItem>
        <mx:GridItem>
-              <mx:Button label="2" width="37" click="calcController.addNumber('2')"/>
+              <mx:Button label="8" width="37" click="calcController.addNumber('8')"/>
        </mx:GridItem>
        <mx:GridItem>
-              <mx:Button label="3" width="37" click="calcController.addNumber('3')"/>
+              <mx:Button label="9" width="37" click="calcController.addNumber('9')"/>
        </mx:GridItem>
        <mx:GridItem>
               <mx:Button label="-" width="37" click="calcController.setOperation0(CalcController.SUB)"/>
@@ -52,13 +118,13 @@
        </mx:GridRow>
        <mx:GridRow width="198" horizontalAlign="right">
        <mx:GridItem>
-              <mx:Button label="7" width="37" click="calcController.addNumber('7')"/>
+              <mx:Button label="1" width="37" click="calcController.addNumber('1')"/>
        </mx:GridItem>
        <mx:GridItem>
-              <mx:Button label="8" width="37" click="calcController.addNumber('8')"/>
+              <mx:Button label="2" width="37" click="calcController.addNumber('2')"/>
        </mx:GridItem>
        <mx:GridItem>
-              <mx:Button label="9" width="37" click="calcController.addNumber('9')"/>
+              <mx:Button label="3" width="37" click="calcController.addNumber('3')"/>
        </mx:GridItem>
        <mx:GridItem>
               <mx:Button label="/" width="37" click="calcController.setOperation0(CalcController.DIV)"/>

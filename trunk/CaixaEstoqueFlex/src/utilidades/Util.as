@@ -10,10 +10,11 @@ package utilidades
 		
 		
 		public static function abrePopUp(proprietario:DisplayObject,classe:Class,model:Boolean):TitleWindow{
-			var tWindow:TitleWindow = TitleWindow(PopUpManager.createPopUp(proprietario,classe,true));
+			var tWindow:TitleWindow = TitleWindow(PopUpManager.createPopUp(proprietario,classe,model));
 			PopUpManager.centerPopUp(tWindow);
 			return tWindow;
 		}
 
+		
 	}
 }
