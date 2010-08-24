@@ -43,6 +43,17 @@ class ServicosFormadePagto {
 		return $retorna_dados_formadepagto;
 	}
 	
+	public function getConfia($texto,$coluna){
+		$sql = "select * from formadepgto where $coluna = '$texto'";
+		$resultado = $this->conn->Execute($sql);
+		while($registro = $resultado->FetchNextObject()){
+			$dados_formadepagto = new FormadePagtoVO();
+			$dados_formadepagto->codigo = $registro->CODIGO;
+			$dados_formadepagto->descricao = $registro->DESCRICAO;			
+		}
+		return $dados_formadepagto;
+	}
+	
 	
 	public function pesquisarFormadePagto($texto,$coluna){
 		$sql = "select * from formadepgto where $coluna like '%$texto%'";
