@@ -7,18 +7,9 @@
 		
 	<mx:ApplicationControlBar  x="0" dock="true" y="0" width="1024" horizontalAlign="center" fillAlphas="[1.0, 1.0]" 
 		height="46" color="#FFFFFF" fillColors="[#FFFFFF, #D2D2D2]" cornerRadius="11">
-		<botoes:UsuarioButton id="bt_usuario"/>
+		<botoes:UsuarioButton id="bt_usuario" click="{this.logoff()}"/>
 		<mx:Label id="nomeUsuario" text="{this.usuario.nome}" fontWeight="bold" fontSize="12" color="#000000"/>
-		<mx:ButtonBar id="btBar" itemClick="{itemClickInfo(event)}" alpha="1.0"  fontWeight="normal" horizontalGap="3" color="#000000">
-			<mx:dataProvider>
-	           <mx:Object label="Arquivo"/>
-	           <mx:Object label="Cadastros"/>
-	           <mx:Object label="Módulos"/>
-	           <mx:Object label="Relatórios"/>
-	           <mx:Object label="Utilitários"/>
-	           <mx:Object label="Ajuda"/>
-        	</mx:dataProvider>
-		</mx:ButtonBar>
+		<mx:ButtonBar id="btBar" itemClick="{itemClickInfo(event)}" alpha="1.0"  fontWeight="normal" horizontalGap="3" color="#000000" dataProvider="{this.menuArray}"/>
 	</mx:ApplicationControlBar>	
 	<mx:VBox id="body" width="100%" height="100%" horizontalAlign="center" paddingTop="30" verticalAlign="top" color="#FFFFFF">
 		<mx:TileList id="tl_itens" direction="horizontal" dataProvider="{itensLista}" alpha="0.60"

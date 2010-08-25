@@ -25,7 +25,6 @@
 	import negocio.vo.UsuarioVO;
 	
 	import utilidades.Util;
-	import utilidades.calculadora.Calculadora;
 	
 	[Bindable]
 	public var usuario:UsuarioVO;
@@ -37,9 +36,18 @@
 	
 	public var logou:Boolean;
 	
+	[Bindable]
+	public var menuArray:ArrayCollection;
+	
+	public var menuItens:Array = [
+				{label:"Arquivo"},{label:"Cadastros"},{label:"Módulos"},
+	           {label:"Relatórios"},{label:"Utilitários"},{label:"Ajuda"}];
+	           
+	public var menuItensVendedor:Array = [{label:"Módulos"}];
+	
 	private var listArray:Array=[
-         [{label: "Alterar Senha do Usuario", funcao: testImage},{label: "Sair"}],
-         [{label: "Cad. Empresa"},{label: "Cad. Cliente", funcao: gerCliente},
+         [{label: "Sair"}],
+         [{label: "Cad. Cliente", funcao: gerCliente},
          {label: "Cad. Usuário", funcao: gerUsuario },{label: "Cad. Gpo Produto", funcao: gerGrupoProduto },
          {label: "Cad. Loc. Produto", funcao: gerLocalProduto},{label: "Cad. Produto", funcao: gerProduto },
          {label: "Cad. Fornecedor", funcao: gerFornecedor}, {label: "Cad. Unidades", funcao: gerUnidade},
@@ -48,7 +56,7 @@
          {label: "Pedido de Compra"},{label: "Orçamento", funcao: orcamentoWindow},
          {label: "Transf Filiais"},{label: "Devolução"}],
          [{label: "Ainda Falta Fazer"}],
-         [{label: "Calculadora",funcao:getCalculadora},{label: "Cálculo de Dias"}],
+         [{label: "Calculadora"},{label: "Cálculo de Dias"}],
          [{label: "Ajuda"},{label: "Sobre o Sistema"},{label: "Tópicos de Ajuda"},
          {label: "Versão"}]];
 	
@@ -59,15 +67,32 @@
 		Util.abrePopUp(this,ComponenteAutenticacao,true);
 	}	
 	
+	private function logoff():void{
+		this.tl_itens.visible = false;
+		Util.abrePopUp(this,ComponenteAutenticacao,true);
+	}
+		
+		
+	
 	public function usuarioAutenticado(event:AutenticacaoUsuarioEvent):void{
 		this.usuario = event.usuario;
+		if(this.usuario.permissao == 1){
+			this.menuArray  = new ArrayCollection(this.menuItensVendedor);
+		}else{
+			this.menuArray  = new ArrayCollection(this.menuItens);
+		}
+			
 		this.logou = true;
 	}
 	
 	private function itemClickTile(event:ListEvent):void {
 		this.tl_itens.visible = false;
 		try{
-			this.listArray[this.currentMenu][(event.rowIndex * 4) + event.columnIndex].funcao();
+			if(this.usuario.codigo == 1){
+				this.listArray[2][(event.rowIndex * 4) + event.columnIndex].funcao();
+			}else{
+				this.listArray[this.currentMenu][(event.rowIndex * 4) + event.columnIndex].funcao();
+			}
 		}catch(e:Error){
 			Alert.show("Não Implementado","Ops!");
 		}
@@ -76,8 +101,13 @@
 	private function itemClickInfo(event:ItemClickEvent):void {
 		this.tl_itens.visible = true;
 		this.menuEfeito();
-		this.currentMenu = event.index;
-		this.tl_itens.dataProvider = new ArrayCollection(this.listArray[event.index]);
+		if(this.usuario.permissao == 1){
+			this.currentMenu = 2;
+			this.tl_itens.dataProvider = new ArrayCollection(this.listArray[2]);
+		}else{
+			this.currentMenu = event.index;
+			this.tl_itens.dataProvider = new ArrayCollection(this.listArray[event.index]);
+		}
     }
     
     public function menuEfeito():void{
@@ -160,11 +190,6 @@
 	public function gerCliente():void{		
 		Util.abrePopUp(this,CadastroCliente,true);
 	}
-
-public function getCalculadora():void{		
-		Util.abrePopUp(this,Calculadora,false);
-	}
-
 	
 	public function gerProduto():void{
 		
