@@ -38,13 +38,15 @@
 				if(this.ti_pesquisCliente.text == ""){
 					this.ro.listarCliente(result_pesquisarCliente);
 				}else{
-					if(this.rb_codigo.selectedField){
+					if(this.rb_codigo.selected){
 						this.ro.pesquisarCliente(result_pesquisarCliente,this.ti_pesquisCliente.text,'codigo');
-					}else if(this.rb_nome.selectedField){
-						this.ro.pesquisarCliente(result_pesquisarCliente,this.ti_pesquisCliente.text,'nome');
 					}else{
-						this.ro.pesquisarCliente(result_pesquisarCliente,this.ti_pesquisCliente.text,'telefone');
-					}
+						if(this.rb_nome.selected){
+							this.ro.pesquisarCliente(result_pesquisarCliente,this.ti_pesquisCliente.text,'nome');
+						}else{
+							this.ro.pesquisarCliente(result_pesquisarCliente,this.ti_pesquisCliente.text,'fone');
+						}
+					} 
 				}
 			}
 			
@@ -101,11 +103,11 @@
 		
 	<mx:DataGrid x="12" y="101" id="grid_listCliente" editable="false" dataProvider="{this.array_cliente}" width="690" height="166">
 		<mx:columns>
-			<mx:DataGridColumn headerText="Código" dataField="{this.cliente.codigo}" width="70"/>
-			<mx:DataGridColumn headerText="CPF" dataField="{this.cliente.cpf_cnpj}" width="150"/>
-			<mx:DataGridColumn headerText="Nome" dataField="{this.cliente.nome}"/>
-			<mx:DataGridColumn headerText="Telefone" dataField="{this.cliente.fone}" width="120"/>
-			<mx:DataGridColumn headerText="Lim. Credito" dataField="{this.cliente.limCredito}" width="100"/>
+			<mx:DataGridColumn headerText="Código" dataField="codigo" width="70"/>
+			<mx:DataGridColumn headerText="CPF" dataField="cpf_cnpj" width="150"/>
+			<mx:DataGridColumn headerText="Nome" dataField="nome"/>
+			<mx:DataGridColumn headerText="Telefone" dataField="fone" width="120"/>
+			<mx:DataGridColumn headerText="Lim. Credito" dataField="limCredito" width="100"/>
 		</mx:columns>
 	</mx:DataGrid>
 	<mx:Panel x="10" y="10" width="690" height="83" layout="absolute" title="Pesquisa">

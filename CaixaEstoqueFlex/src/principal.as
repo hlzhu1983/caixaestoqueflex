@@ -25,6 +25,7 @@
 	import negocio.vo.UsuarioVO;
 	
 	import utilidades.Util;
+	import utilidades.calculadora.Calculadora;
 	
 	[Bindable]
 	public var usuario:UsuarioVO;
@@ -56,7 +57,7 @@
          {label: "Pedido de Compra"},{label: "Orçamento", funcao: orcamentoWindow},
          {label: "Transf Filiais"},{label: "Devolução"}],
          [{label: "Ainda Falta Fazer"}],
-         [{label: "Calculadora"},{label: "Cálculo de Dias"}],
+         [{label: "Calculadora", funcao:gerCalculadora},{label: "Cálculo de Dias"}],
          [{label: "Ajuda"},{label: "Sobre o Sistema"},{label: "Tópicos de Ajuda"},
          {label: "Versão"}]];
 	
@@ -166,6 +167,10 @@
 		newWindow.nativeWindow.x = 0;
 		newWindow.nativeWindow.y = 0;
 		newWindow.activate();
+	}
+	
+	public function gerCalculadora():void{		
+		Util.abrePopUp(this,Calculadora,true);
 	}
 	
 	public function gerUnidade():void{		
