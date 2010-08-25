@@ -21,6 +21,14 @@ class ServicosUsuario {
 		
 	}
 	
+	public function atualizarUsuario(UsuarioVO $usuario){
+		$sql = "UPDATE usuario SET nome = '{$usuario->nome}' , comissao = {$usuario->comissao} , senha = '{$usuario->senha}', permissao = {$usuario->permissao} , login  = '{$usuario->login}' where codigo = $usuario->codigo";
+		$resultado = $this->conn->Execute($sql);
+		$usuario->codigo = $this->conn->insert_Id();
+		return $usuario;
+		
+	}
+	
 	public function logar(UsuarioVO $usuario){
 		$sql = "select * from usuario where login = '$usuario->login'";
 		$resultado = $this->conn->Execute($sql);
