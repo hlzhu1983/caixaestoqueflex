@@ -3,12 +3,12 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: localhost
--- Tempo de Geração: Ago 18, 2010 as 02:59 PM
+-- Tempo de Geração: Ago 22, 2010 as 05:28 
 -- Versão do Servidor: 5.1.41
 -- Versão do PHP: 5.3.1
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
+
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -42,15 +42,19 @@ CREATE TABLE IF NOT EXISTS `cliente` (
   `contato` varchar(100) NOT NULL,
   `email` varchar(150) NOT NULL,
   `url` varchar(150) DEFAULT NULL,
+  `limCredito` decimal(10,2) unsigned NOT NULL DEFAULT '0.00',
   `obs` text,
   `dataCadastro` date NOT NULL,
   PRIMARY KEY (`codigo`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 --
 -- Extraindo dados da tabela `cliente`
 --
 
+INSERT INTO `cliente` (`codigo`, `nome`, `tipoPessoa`, `sexo`, `dataNascimento`, `endereco`, `bairro`, `cidade`, `UF`, `cep`, `cpf_cnpj`, `insc_estadual`, `fone`, `contato`, `email`, `url`, `limCredito`, `obs`, `dataCadastro`) VALUES
+(1, 'JULIO CESAR', 0, 0, '2010-08-21', '', '', '', 'PE', '', '', '', '', '', '', '', '296.00', '', '2010-08-21'),
+(2, 'MARIA JOSE', 0, 0, '2010-08-02', '', '', '', 'PE', '', '', '', '3249', '', '', '', '0.00', '', '2010-08-21');
 
 -- --------------------------------------------------------
 
@@ -62,10 +66,36 @@ CREATE TABLE IF NOT EXISTS `formadepgto` (
   `codigo` int(11) NOT NULL AUTO_INCREMENT,
   `descricao` varchar(100) NOT NULL,
   PRIMARY KEY (`codigo`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
 --
 -- Extraindo dados da tabela `formadepgto`
+--
+
+INSERT INTO `formadepgto` (`codigo`, `descricao`) VALUES
+(0, 'Confia'),
+(1, 'A VISTA'),
+(4, '15 DIAS');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `formapagamentovenda`
+--
+
+CREATE TABLE IF NOT EXISTS `formapagamentovenda` (
+  `codigo` int(11) NOT NULL AUTO_INCREMENT,
+  `codVenda` int(11) NOT NULL,
+  `codFormaPagamento` int(11) NOT NULL,
+  `numParcelas` int(11) DEFAULT NULL,
+  `valor` decimal(10,2) NOT NULL,
+  PRIMARY KEY (`codigo`),
+  KEY `codFormaPagamento` (`codFormaPagamento`),
+  KEY `codVenda` (`codVenda`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `formapagamentovenda`
 --
 
 
@@ -92,14 +122,15 @@ CREATE TABLE IF NOT EXISTS `fornecedor` (
   `obs` text,
   `avaliacao` text,
   PRIMARY KEY (`codigo`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 --
 -- Extraindo dados da tabela `fornecedor`
 --
 
 INSERT INTO `fornecedor` (`codigo`, `nome`, `endereco`, `bairro`, `cidade`, `UF`, `cep`, `cpf_cnpj`, `insc_estadual`, `fone`, `contato`, `email`, `url`, `obs`, `avaliacao`) VALUES
-(1, 'EMPRESA A', 'AVENIDA A', 'A', 'A', '1', '50920000', '', NULL, '', '', '', NULL, NULL, NULL);
+(1, 'EMPRESA A', 'AVENIDA A', 'A', 'A', 'PE', '50920700', '00000000000000', '0000000000000', '000', '000', '000', '00', '00000', 'GASG'),
+(2, 'AMBEV', '', '', '', 'PE', '', '', '', '', '', '', '', '', '');
 
 -- --------------------------------------------------------
 
@@ -111,14 +142,16 @@ CREATE TABLE IF NOT EXISTS `grupoproduto` (
   `codigo` int(11) NOT NULL AUTO_INCREMENT,
   `descricao` varchar(100) NOT NULL,
   PRIMARY KEY (`codigo`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
 --
 -- Extraindo dados da tabela `grupoproduto`
 --
 
 INSERT INTO `grupoproduto` (`codigo`, `descricao`) VALUES
-(1, 'PREGO');
+(1, 'PREGO'),
+(2, 'ceramicas'),
+(3, 'PET');
 
 -- --------------------------------------------------------
 
@@ -130,17 +163,21 @@ CREATE TABLE IF NOT EXISTS `itensprevenda` (
   `codigo` int(11) NOT NULL AUTO_INCREMENT,
   `codPrevenda` int(11) NOT NULL,
   `codProduto` int(11) NOT NULL,
+  `descricao` text NOT NULL,
   `quantidade` decimal(10,2) NOT NULL,
   `valor` decimal(10,2) NOT NULL,
   PRIMARY KEY (`codigo`),
-  KEY `codProduto` (`codProduto`),
-  KEY `codPrevenda_2` (`codPrevenda`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+  KEY `itensprevenda_ibfk_1` (`codPrevenda`),
+  KEY `itensprevenda_ibfk_2` (`codProduto`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=97 ;
 
 --
 -- Extraindo dados da tabela `itensprevenda`
 --
 
+INSERT INTO `itensprevenda` (`codigo`, `codPrevenda`, `codProduto`, `descricao`, `quantidade`, `valor`) VALUES
+(95, 89, 3, 'NOVO PRODUTO', '1.00', '1.00'),
+(96, 89, 3, 'NOVO PRODUTO', '1.00', '1.00');
 
 -- --------------------------------------------------------
 
@@ -152,14 +189,17 @@ CREATE TABLE IF NOT EXISTS `localproduto` (
   `codigo` int(11) NOT NULL AUTO_INCREMENT,
   `descricao` varchar(100) NOT NULL,
   PRIMARY KEY (`codigo`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
 
 --
 -- Extraindo dados da tabela `localproduto`
 --
 
 INSERT INTO `localproduto` (`codigo`, `descricao`) VALUES
-(1, 'PRATILEIRA 1');
+(1, 'PRATILEIRA 1'),
+(5, 'PRATILEIRA 2'),
+(7, 'PRATILEIRA 3'),
+(10, 'PRATILEIRA 4');
 
 -- --------------------------------------------------------
 
@@ -169,20 +209,24 @@ INSERT INTO `localproduto` (`codigo`, `descricao`) VALUES
 
 CREATE TABLE IF NOT EXISTS `prevenda` (
   `codigo` int(11) NOT NULL AUTO_INCREMENT,
-  `codCliente` int(11) NOT NULL,
   `codUsuario` int(11) NOT NULL,
   `dataAbertura` datetime NOT NULL,
   `status` int(11) NOT NULL DEFAULT '0',
   `obs` text NOT NULL,
+  `valorTotal` decimal(10,2) unsigned NOT NULL,
   PRIMARY KEY (`codigo`),
-  KEY `codCliente` (`codCliente`),
   KEY `codUsuario_2` (`codUsuario`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=93 ;
 
 --
 -- Extraindo dados da tabela `prevenda`
 --
 
+INSERT INTO `prevenda` (`codigo`, `codUsuario`, `dataAbertura`, `status`, `obs`, `valorTotal`) VALUES
+(89, 0, '2010-08-22 15:12:16', 1, '', '2.00'),
+(90, 0, '2010-08-22 15:12:56', 2, '', '0.00'),
+(91, 0, '2010-08-22 15:37:13', 2, '', '0.00'),
+(92, 0, '2010-08-22 16:44:14', 2, '', '0.00');
 
 -- --------------------------------------------------------
 
@@ -199,7 +243,7 @@ CREATE TABLE IF NOT EXISTS `produto` (
   `codLocal` int(11) NOT NULL,
   `codUnidade` int(11) NOT NULL,
   `qtdPorUnidade` int(11) NOT NULL,
-  `qtdEmEstoque` int(11) NOT NULL,
+  `qtdEmEstoque` decimal(10,2) unsigned NOT NULL,
   `codFornecedor` int(11) NOT NULL,
   `precoCompra` decimal(10,2) DEFAULT NULL,
   `precoVenda` decimal(10,2) NOT NULL,
@@ -209,15 +253,15 @@ CREATE TABLE IF NOT EXISTS `produto` (
   KEY `codLocal` (`codLocal`),
   KEY `codUnidade` (`codUnidade`),
   KEY `codFornecedor` (`codFornecedor`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
 --
 -- Extraindo dados da tabela `produto`
 --
 
 INSERT INTO `produto` (`codigo`, `codBarra`, `codGrupo`, `descricao`, `referencia`, `codLocal`, `codUnidade`, `qtdPorUnidade`, `qtdEmEstoque`, `codFornecedor`, `precoCompra`, `precoVenda`, `foto`) VALUES
-(0, NULL, 1, 'OUTROS/DESCONTO', '', 1, 1, 0, 0, 1, NULL, '0.00', NULL),
-(1, NULL, 1, 'CERAMICA BRANCA', '1M x 1M', 1, 1, 1, 10, 1, '5.00', '10.00', NULL);
+(2, '1111', 2, 'CERAMICA BRANCA', '2 X 2', 1, 3, 1, '0.50', 1, '1.00', '1.00', ''),
+(3, '', 1, 'NOVO PRODUTO', '1 X 1', 1, 2, 0, '2.00', 1, '1.00', '1.00', '');
 
 -- --------------------------------------------------------
 
@@ -261,11 +305,46 @@ CREATE TABLE IF NOT EXISTS `usuario` (
 --
 
 INSERT INTO `usuario` (`codigo`, `comissao`, `senha`, `permissao`, `nome`, `login`) VALUES
-(1, '30.500', 'admin', 4, 'ADMIN', 'ADMIN');
+(0, '30.500', '1', 4, 'ADMIN', 'ADMIN'),
+(1, '0.000', '1', 1, 'JOAO FEIO', 'JOAO FEIO');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `venda`
+--
+
+CREATE TABLE IF NOT EXISTS `venda` (
+  `codigo` int(11) NOT NULL AUTO_INCREMENT,
+  `codCliente` int(11) DEFAULT NULL,
+  `codPreVenda` int(11) DEFAULT NULL,
+  `codUsuario` int(11) NOT NULL,
+  `status` int(11) NOT NULL,
+  `dataVenda` datetime NOT NULL,
+  `desconto` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `valorTotal` decimal(10,2) NOT NULL,
+  `obs` text NOT NULL,
+  PRIMARY KEY (`codigo`),
+  KEY `codCliente` (`codCliente`),
+  KEY `codPreVenda` (`codPreVenda`),
+  KEY `codUsuario` (`codUsuario`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `venda`
+--
+
 
 --
 -- Restrições para as tabelas dumpadas
 --
+
+--
+-- Restrições para a tabela `formapagamentovenda`
+--
+ALTER TABLE `formapagamentovenda`
+  ADD CONSTRAINT `formapagamentovenda_ibfk_1` FOREIGN KEY (`codFormaPagamento`) REFERENCES `formadepgto` (`codigo`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `formapagamentovenda_ibfk_2` FOREIGN KEY (`codVenda`) REFERENCES `venda` (`codigo`) ON UPDATE CASCADE;
 
 --
 -- Restrições para a tabela `itensprevenda`
@@ -278,8 +357,7 @@ ALTER TABLE `itensprevenda`
 -- Restrições para a tabela `prevenda`
 --
 ALTER TABLE `prevenda`
-  ADD CONSTRAINT `prevenda_ibfk_1` FOREIGN KEY (`codCliente`) REFERENCES `cliente` (`codigo`) ON DELETE NO ACTION ON UPDATE CASCADE,
-  ADD CONSTRAINT `prevenda_ibfk_2` FOREIGN KEY (`codUsuario`) REFERENCES `usuario` (`codigo`) ON DELETE NO ACTION ON UPDATE CASCADE;
+  ADD CONSTRAINT `prevenda_ibfk_5` FOREIGN KEY (`codUsuario`) REFERENCES `usuario` (`codigo`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Restrições para a tabela `produto`
@@ -289,6 +367,14 @@ ALTER TABLE `produto`
   ADD CONSTRAINT `produto_ibfk_2` FOREIGN KEY (`codLocal`) REFERENCES `localproduto` (`codigo`) ON UPDATE CASCADE,
   ADD CONSTRAINT `produto_ibfk_3` FOREIGN KEY (`codUnidade`) REFERENCES `unidade` (`codigo`) ON UPDATE CASCADE,
   ADD CONSTRAINT `produto_ibfk_4` FOREIGN KEY (`codFornecedor`) REFERENCES `fornecedor` (`codigo`) ON UPDATE CASCADE;
+
+--
+-- Restrições para a tabela `venda`
+--
+ALTER TABLE `venda`
+  ADD CONSTRAINT `venda_ibfk_1` FOREIGN KEY (`codCliente`) REFERENCES `cliente` (`codigo`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `venda_ibfk_2` FOREIGN KEY (`codPreVenda`) REFERENCES `prevenda` (`codigo`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `venda_ibfk_3` FOREIGN KEY (`codUsuario`) REFERENCES `usuario` (`codigo`) ON UPDATE CASCADE;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
