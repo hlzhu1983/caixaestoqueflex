@@ -3,7 +3,7 @@
 	 xmlns:mx="http://www.adobe.com/2006/mxml"  
 	layout="absolute" borderThickness="0" fontSize="12" cornerRadius="0"
 	 xmlns:local="*" verticalAlign="top" horizontalAlign="center" backgroundImage="icons/fundo.jpg" xmlns:botoes="utilidades.botoes.*">
-	 <mx:Script source="principal.as"/>
+	 <mx:Script source="principal1.as"/>
 		
 	<mx:ApplicationControlBar  x="0" dock="true" y="0" width="1024" horizontalAlign="center" fillAlphas="[1.0, 1.0]" 
 		height="46" color="#FFFFFF" fillColors="[#FFFFFF, #D2D2D2]" cornerRadius="11">
