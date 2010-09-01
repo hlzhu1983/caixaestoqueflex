@@ -24,7 +24,7 @@ class ServicosFormadePagto {
 	
 	public FormadePagtoVO addFormadePagto(FormadePagtoVO formadepgto){
 		
-		String sql = "insert into formadepgto (descricao) values ('{formadepgto.descricao}')";
+		String sql = "insert into formadepgto (descricao) values ('"+formadepgto.descricao+"')";
 		
 		if(banco.executarNoQuery(sql)==0){
 			try {
@@ -41,7 +41,7 @@ class ServicosFormadePagto {
 	
 	public boolean removerFormadePagto(FormadePagtoVO formadepgto){
 		
-		String sql = "delete from formadepgto  where codigo = {formadepgto.codigo}";
+		String sql = "delete from formadepgto  where codigo = "+formadepgto.codigo+"";
 		
 		if(banco.executarNoQuery(sql)==0){
 			return false;
@@ -50,8 +50,8 @@ class ServicosFormadePagto {
 	}
 	
 	public Map<Integer, FormadePagtoVO> pesquisarFormadePagto(String texto,String coluna){
-		String sql = "select * from formadepgto where coluna like '%texto%'";
-		Map<Integer,FormadePagtoVO> clientes = null;
+		String sql = "select * from formadepgto where "+coluna+" like '%"+texto+"%'";
+		Map<Integer,FormadePagtoVO> fp = null;
 		try{
 			ResultSet rs =  banco.executar(sql);
 			
@@ -62,7 +62,7 @@ class ServicosFormadePagto {
 				dados_item.codigo = rs.getInt("codigo");
 				dados_item.descricao = rs.getString("descricao");
 				
-				clientes.put(i, dados_item);
+				fp.put(i, dados_item);
 			i++;
 			}
 			
@@ -70,14 +70,14 @@ class ServicosFormadePagto {
 			}catch (SQLException e) {
 			 System.out.println("erro");
 			}
-			return clientes;
+			return fp;
 			}
 
 	
 	
 	public  Map<Integer, FormadePagtoVO> getFormadePagtos(){
 		String sql = "select * from formadepgto";
-		Map<Integer,FormadePagtoVO> clientes = null;
+		Map<Integer,FormadePagtoVO> fp = null;
 		try{
 			ResultSet rs =  banco.executar(sql);
 			
@@ -88,7 +88,7 @@ class ServicosFormadePagto {
 				dados_item.codigo = rs.getInt("codigo");
 				dados_item.descricao = rs.getString("descricao");
 				
-				clientes.put(i, dados_item);
+				fp.put(i, dados_item);
 			i++;
 			}
 			
@@ -96,7 +96,7 @@ class ServicosFormadePagto {
 			}catch (SQLException e) {
 			 System.out.println("erro");
 			}
-			return clientes;
+			return fp;
 			}
 }
 

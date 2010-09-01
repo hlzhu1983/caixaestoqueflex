@@ -23,7 +23,7 @@ class ServicosLocalProduto {
 	
 	public LocalProdutoVO addLocalProduto(LocalProdutoVO localproduto){
 		
-		String sql = "insert into localproduto (descricao) values ('{localproduto.descricao}')";
+		String sql = "insert into localproduto (descricao) values ('"+localproduto.descricao+"')";
 		
 		if(banco.executarNoQuery(sql)==0){
 			try {
@@ -40,7 +40,7 @@ class ServicosLocalProduto {
 	
 	public boolean removerLocalProduto(LocalProdutoVO localproduto){
 		
-		String sql = "delete from localproduto  where codigo = {localproduto.codigo}";
+		String sql = "delete from localproduto  where codigo = "+localproduto.codigo+"";
 		
 		if(banco.executarNoQuery(sql)==0){
 			return false;
@@ -49,7 +49,7 @@ class ServicosLocalProduto {
 	}
 	
 	public Map<Integer, LocalProdutoVO> pesquisarLocalProduto(String texto,String coluna){
-		String sql = "select * from localproduto where coluna like '%texto%'";
+		String sql = "select * from localproduto where "+coluna+" like '%"+texto+"%'";
 		Map<Integer,LocalProdutoVO> lp = null;
 		try{
 			ResultSet rs =  banco.executar(sql);

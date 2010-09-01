@@ -3,7 +3,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 
-import exception.UsuarioJaExistenteException;
+import exception.GrupoProdutoJaExistenteException;
 
 import vo.GrupoProdutoVO;
 import arquitetura.BancoDeDados;
@@ -21,14 +21,14 @@ class ServicosGrupoProduto {
 		
 	}
 	
-	public GrupoProdutoVO addUnidade(GrupoProdutoVO grupoproduto){
+	public GrupoProdutoVO addGrupoProduto(GrupoProdutoVO grupoproduto){
 		
-		String sql = "insert into grupoproduto (descricao) values ('{grupoproduto.descricao}')";
+		String sql = "insert into grupoproduto (descricao) values ('"+grupoproduto.descricao+"')";
 		
 		if(banco.executarNoQuery(sql)==0){
 			try {
-				throw new UsuarioJaExistenteException();
-			} catch (UsuarioJaExistenteException e) {
+				throw new GrupoProdutoJaExistenteException();
+			} catch (GrupoProdutoJaExistenteException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -38,9 +38,9 @@ class ServicosGrupoProduto {
 		
 	}
 	
-	public boolean removerUnidade(GrupoProdutoVO grupoproduto){
+	public boolean removerGrupoProduto(GrupoProdutoVO grupoproduto){
 		
-		String sql = "delete from grupoproduto  where codigo = {grupoproduto.codigo}";
+		String sql = "delete from grupoproduto  where codigo = "+grupoproduto.codigo+"";
 		
 		if(banco.executarNoQuery(sql)==0){
 			return false;
@@ -48,8 +48,8 @@ class ServicosGrupoProduto {
 		return true;
 	}
 	
-	public Map<Integer, GrupoProdutoVO> pesquisarUnidade(String texto,String coluna){
-		String sql = "select * from grupoproduto where coluna like '%texto%'";
+	public Map<Integer, GrupoProdutoVO> pesquisarGrupoProduto(String texto,String coluna){
+		String sql = "select * from grupoproduto where "+coluna+" like '%"+texto+"%'";
 		Map<Integer,GrupoProdutoVO> gp = null;
 		try{
 			ResultSet rs =  banco.executar(sql);
@@ -74,7 +74,7 @@ class ServicosGrupoProduto {
 
 	
 	
-	public  Map<Integer, GrupoProdutoVO> getUnidades(){
+	public  Map<Integer, GrupoProdutoVO> getGrupoProdutos(){
 		String sql = "select * from grupoproduto";
 		Map<Integer,GrupoProdutoVO> gp = null;
 		try{

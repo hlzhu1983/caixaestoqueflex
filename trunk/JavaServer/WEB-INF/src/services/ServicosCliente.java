@@ -11,10 +11,7 @@ import util.UtilData;
 import vo.*;
 import arquitetura.BancoDeDados;
 
-
-
-
-class ServicosCliente {
+public class ServicosCliente {
 	
 	
 	private BancoDeDados banco;
@@ -28,8 +25,10 @@ class ServicosCliente {
 						"'"+item.UF+"','"+item.cep+"','"+item.cpf_cnpj+"','"+item.insc_estadual+"','"+item.fone+"','"+item.contato+"',"
 		 +item.email+"','"+item.url+"','"+item.obs+"','"+item.limCredito+"')";
 		
-		banco.executarNoQuery(sql);
-       //como pegar o ultimo codigo
+		if(banco.executarNoQuery(sql)==0){
+			throw new RuntimeException("Erro ao Adicionar Cliente");
+		}
+       
 		
 		return item;
 		
@@ -45,8 +44,8 @@ class ServicosCliente {
 		return true;
 	}
 	
-	public Map<Integer, ClienteVO>  pesquisarCliente(String texto,String $coluna){
-		String sql = "select *, date_format(datacadastro, '%m/%d/%Y') as dCadastro, date_format(datanascimento, '%m/%d/%Y') as dNascimento from cliente where $coluna like '%$texto%'";
+	public Map<Integer, ClienteVO>  pesquisarCliente(String texto,String coluna){
+		String sql = "select *, date_format(datacadastro, '%m/%d/%Y') as dCadastro, date_format(datanascimento, '%m/%d/%Y') as dNascimento from cliente where "+coluna+" like '%"+texto+"%'";
 	ResultSet rs =  banco.executar(sql);
 	Map<Integer,ClienteVO> clientes = null;
 	int i=0;
@@ -61,8 +60,8 @@ class ServicosCliente {
 		dados_item.cidade = rs.getString("cidade");
 		dados_item.contato = rs.getString("contato");
 		dados_item.cpf_cnpj = rs.getString("cpf_cnpj");
-		dados_item.dataCadastro = rs.getDate("dataCadastro");
-		dados_item.dataNascimento = rs.getDate("dataNascimento");
+		dados_item.dataCadastro = rs.getDate("dCadastro");
+		dados_item.dataNascimento = rs.getDate("dNascimento");
 		dados_item.email = rs.getString("email");
 		dados_item.endereco = rs.getString("endereco");
 		dados_item.fone = rs.getString("fone");
@@ -100,8 +99,8 @@ class ServicosCliente {
 			dados_item.cidade = rs.getString("cidade");
 			dados_item.contato = rs.getString("contato");
 			dados_item.cpf_cnpj = rs.getString("cpf_cnpj");
-			dados_item.dataCadastro = rs.getDate("dataCadastro");
-			dados_item.dataNascimento = rs.getDate("dataNascimento");
+			dados_item.dataCadastro = rs.getDate("dCadastro");
+			dados_item.dataNascimento = rs.getDate("dNascimento");
 			dados_item.email = rs.getString("email");
 			dados_item.endereco = rs.getString("endereco");
 			dados_item.fone = rs.getString("fone");
