@@ -23,7 +23,7 @@ class ServicosUnidade {
 	
 	public UnidadeVO addUnidade(UnidadeVO unidade){
 		
-		String sql = "insert into unidade (descricao) values ('{unidade.descricao}')";
+		String sql = "insert into unidade (descricao) values ('"+unidade.descricao+"')";
 		
 		if(banco.executarNoQuery(sql)==0){
 			try {
@@ -40,7 +40,7 @@ class ServicosUnidade {
 	
 	public boolean removerUnidade(UnidadeVO unidade){
 		
-		String sql = "delete from unidade  where codigo = {unidade.codigo}";
+		String sql = "delete from unidade  where codigo = "+unidade.codigo+"";
 		
 		if(banco.executarNoQuery(sql)==0){
 			return false;
@@ -49,7 +49,7 @@ class ServicosUnidade {
 	}
 	
 	public Map<Integer, UnidadeVO> pesquisarUnidade(String texto,String coluna){
-		String sql = "select * from unidade where coluna like '%texto%'";
+		String sql = "select * from unidade where "+coluna+" like '%"+texto+"%'";
 		Map<Integer,UnidadeVO> unidade = null;
 		try{
 			ResultSet rs =  banco.executar(sql);

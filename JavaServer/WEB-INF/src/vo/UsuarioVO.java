@@ -6,6 +6,6 @@ public class UsuarioVO {
 	public String nome;
 	public double comissao;
 	public String senha;
-	public String permissao;
+	public int permissao;
 	public String login;
 }
