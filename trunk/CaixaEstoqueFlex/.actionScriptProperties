@@ -10,7 +10,6 @@
 </compiler>
 <applications>
 <application path="main.mxml"/>
-<application path="ReportFlex.mxml"/>
 </applications>
 <modules/>
 <buildCSSFiles/>

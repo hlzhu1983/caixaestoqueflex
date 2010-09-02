@@ -78,9 +78,12 @@
 			
 			
 			private function removerFormadePagto():void{
-				this.formadepagto = this.formadepagtoGrid.selectedItem as FormadePagtoVO;
-				this.ro.removerFormadePagto(resultadoRemoverFormadePagto, this.formadepagto);
-				
+				if(this.formadepagtoGrid.selectable!=-1){
+					this.formadepagto = this.formadepagtoGrid.selectedItem as FormadePagtoVO;
+					this.ro.removerFormadePagto(resultadoRemoverFormadePagto, this.formadepagto);
+				}else{
+					Alert.show("Nenhum item selecionado!","Ops!",4,this);
+				}
 				
 			}
 			

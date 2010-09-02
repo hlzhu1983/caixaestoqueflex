@@ -57,7 +57,7 @@ package negocio.remote{
 		}
 		
 		public function addUnidade(result:Function,unidade:UnidadeVO):void{
-			var async:AsyncToken = _remote.addUnidade(unidade);
+			var async:AsyncToken = _remote.salvarUnidade(unidade);
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
 		
