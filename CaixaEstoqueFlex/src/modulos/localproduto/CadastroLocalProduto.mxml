@@ -141,15 +141,20 @@
 			
 	</mx:FormItem>	
 	<botoes:BuscarButton id="bt_buscar" x="318" y="10" click="{this.pesquisarItem()}"/>		
+		
 		<mx:FormItem label="Código" x="10" y="80" >		
 			<mx:Label id="codInput"/>
 		</mx:FormItem>
-		<botoes:ExcluirButton id="remover" click="removerLocalProduto()"  enabled="false" x="219" y="68"/>
-		<botoes:SalvarButton id="add" click="addLocalProduto()" x="119" y="68"/>
-		<botoes:LimparButton  x="318" y="68" click="{this.limparCampos()}"/>
+		
 		<mx:FormItem label="Descrição" x="10" y="110" required="true">
 			<inputs:TextoInput id="descInput" requerido="true"/>
 		</mx:FormItem>
+		
+		<botoes:SalvarButton id="add" click="addLocalProduto()" x="119" y="68"/>
+		<botoes:ExcluirButton id="remover" click="removerLocalProduto()"  enabled="false" x="219" y="68"/>
+		<botoes:LimparButton  x="318" y="68" click="{this.limparCampos()}"/>
+	
+		
 		<mx:DataGrid x="10" y="140" width="396" id="localProdutoGrid" change="{localProdutoSelecionado(event)}" dataProvider="{this.localProdutosArray}">
 			<mx:columns>
 				<mx:DataGridColumn headerText="Código" dataField="codigo"/>

@@ -280,17 +280,90 @@
 		</mx:HBox>
 			
 	</mx:FormItem>	
-	<botoes:BuscarButton id="bt_buscar" x="312" y="10" click="{this.pesquisarItem()}"/>		
-	<botoes:SalvarButton id="add" click="{this.addItem()}" x="504" y="9"/>
-	<botoes:ExcluirButton id="remover"  label="Remover"  enabled="true" x="612" y="9" click="{this.removerItem()}"  width="114"/>
-	<botoes:LimparButton  x="734" label="Limpar" y="9" click="{this.limparCampos()}" width="108"  textAlign="left"/>
+	<botoes:BuscarButton id="bt_buscar" x="312" y="10" click="{this.pesquisarItem()}"/>	
 	
+	<mx:Label x="10" y="77" text="Tipo Usuário:"/>
+	<mx:ComboBox x="98" y="75" id="tipoUsuario" selectedIndex="0" editable="false">
+		<mx:ArrayCollection>
+         <mx:Object label="Fisica" data="0"/>
+         <mx:Object label="Jurídica" data="1"/>
+      </mx:ArrayCollection>
+	</mx:ComboBox>
+	
+	<mx:Label x="271" y="77" text="Data Cadastro:"/>
+	<utilidades:DateInput x="369" y="75" id="dataCadastro" showToday="true"/>
+	
+	<mx:Label x="475" y="77" text="Lim. Crédito:"/>
+	<ns1:NumberInput id="ti_limCredito" x="568" y="75" width="131" />
+	
+	<mx:Label x="10" y="107" text="Codigo:"/>
+	<mx:Label id="ti_codigo" width="81" x="10" y="125" height="20" fontWeight="bold"/>
+	
+	<mx:Label x="99" y="105" text="Nome:"/>
+	<ns1:TextoInput id="ti_nome" width="399" requerido="true" x="99" y="123"/>	
+	
+	<mx:Label x="506" y="103" text="Sexo:" id="lb_sexo"/>		
 	<mx:ComboBox x="506" y="123" width="112" id="sexo" selectedIndex="0" editable="false">
 		<mx:ArrayCollection>
          <mx:Object label="Masculino" data="M"/>
          <mx:Object label="Feminino" data="F"/>
       </mx:ArrayCollection>
 	</mx:ComboBox>
+	
+	<mx:Label x="10" y="153" text="Fone:"/>
+	<ns1:InteiroInput id="ti_fone" width="169" x="10" y="170" maxChars="11"/>
+	
+	<mx:Label x="187" y="153" text="Contato:"/>
+	<ns1:TextoInput id="ti_contato"  x="187" y="170" width="160"/>
+	
+	<mx:Label x="355" y="153" text="Data Nascimento:"/>
+	<utilidades:DateInput x="355" y="170"   showToday="true" id="dataNascimento" width="143"/>
+	
+	<mx:Label x="10" y="202" text="Email:"/>
+	<ns1:TextoInput x="10" y="219" id="ti_email"  width="234"/>
+	
+	<mx:Label x="252" y="202" text="URL:"/>
+	<ns1:TextoInput x="252" y="219" id="ti_url" width="240"/>
+	
+	<mx:Label x="10" y="249" text="CPF/CNPJ:"/>
+	<ns1:InteiroInput id="ti_cpf_cnpj"  width="185" x="11" y="266" maxChars="13"/>
+	
+	<mx:Label x="204" y="249" text="Insc. Estadual:"/>
+	<ns1:InteiroInput id="ti_inscEstadual" width="201" x="204" y="266" maxChars="20"/>
+	
+	<mx:Label x="10" y="296" text="Observações:"/>
+	<mx:TextArea x="10" y="311" width="488" height="81" id="obs"/>
+	
+	
+	<mx:Panel x="506" y="153" width="351" height="239" layout="absolute" title="Endereço">
+		
+		
+		<mx:Label x="10" y="0" text="Rua/Logradouro:"/>
+		<ns1:TextoInput id="ti_endereco" width="308" x="10" y="20"/>
+		
+		<mx:Label x="10" y="50" text="Bairro:"/>
+		<ns1:TextoInput id="ti_bairro"  x="10" y="67"/>
+		
+	
+		<mx:Label x="178" y="50" text="Cep:"/>
+		<ns1:InteiroInput id="ti_cep" x="178" y="67" width="140"/>
+		
+		<mx:Label x="10" y="97" text="UF:"/>	
+	<mx:ComboBox x="10" y="113" id="estado" selectedIndex="0" editable="false" dataProvider="{this.estados}">	
+		</mx:ComboBox>
+		
+		<mx:Label x="77" y="97" text="Cidade:"/>	
+		<ns1:TextoInput id="ti_cidade"  x="77" y="113" width="244"/>
+	
+	
+	</mx:Panel>
+	
+	<botoes:SalvarButton id="add" click="{this.addItem()}" x="504" y="9"/>
+	<botoes:ExcluirButton id="remover"  label="Remover"  enabled="true" x="612" y="9" click="{this.removerItem()}"  width="114"/>
+	<botoes:LimparButton  x="734" label="Limpar" y="9" click="{this.limparCampos()}" width="108"  textAlign="left"/>
+	
+	
+	
 	<mx:DataGrid id="grid_itens" x="10" y="400" width="847" dataProvider="{this.itensArray}" change="{this.itemSelecionado(event)}">
 		<mx:columns>
 			<mx:DataGridColumn headerText="Código: " dataField="codigo"/>
@@ -300,55 +373,5 @@
 		</mx:columns>
 	</mx:DataGrid>
 	
-	<utilidades:DateInput x="355" y="170"   showToday="true" id="dataNascimento" width="143"/>
-	<utilidades:DateInput x="369" y="75" id="dataCadastro" showToday="true"/>
-	<mx:Label x="355" y="153" text="Data Nascimento:"/>
-	<mx:Label x="271" y="77" text="Data Cadastro:"/>
-	<mx:Label x="475" y="77" text="Lim. Crédito:"/>
-	<ns1:NumberInput id="ti_limCredito" x="568" y="75" width="131" />
-	
-	<mx:ComboBox x="98" y="75" id="tipoUsuario" selectedIndex="0" editable="false">
-		<mx:ArrayCollection>
-         <mx:Object label="Fisica" data="0"/>
-         <mx:Object label="Jurídica" data="1"/>
-      </mx:ArrayCollection>
-	</mx:ComboBox>
-	<mx:Label x="10" y="77" text="Tipo Usuário:"/>
-	<mx:Label x="99" y="105" text="Nome:"/>
-	<mx:Label x="10" y="202" text="Email:"/>
-	<mx:Label x="187" y="153" text="Contato:"/>
-	<mx:Label x="10" y="296" text="Observações:"/>
-	<mx:Label x="252" y="202" text="URL:"/>
-	<mx:Label x="10" y="153" text="Fone:"/>
-	<mx:Label x="204" y="249" text="Insc. Estadual:"/>
-	<mx:Label x="10" y="249" text="CPF/CNPJ:"/>
-	<mx:Label x="506" y="103" text="Sexo:" id="lb_sexo"/>
-	<ns1:TextoInput id="ti_nome" width="399" requerido="true" x="99" y="123"/>
-	<mx:Label x="10" y="107" text="Codigo:"/>
-	<mx:Label id="ti_codigo" width="81" x="10" y="125" height="20" fontWeight="bold"/>
-	<ns1:InteiroInput id="ti_cpf_cnpj"  width="185" x="11" y="266" maxChars="13"/>
-	<ns1:InteiroInput id="ti_inscEstadual" width="201" x="204" y="266" maxChars="20"/>
-	<ns1:InteiroInput id="ti_fone" width="169" x="10" y="170" maxChars="11"/>
-	<ns1:TextoInput id="ti_contato"  x="187" y="170" width="160"/>
-	<ns1:TextoInput x="10" y="219" id="ti_email"  width="234"/>
-	<ns1:TextoInput x="252" y="219" id="ti_url" width="240"/>
-	<mx:TextArea x="10" y="311" width="488" height="81" id="obs"/>
-	<mx:Panel x="506" y="153" width="351" height="239" layout="absolute" title="Endereço">
-		<mx:ComboBox x="10" y="113" id="estado" selectedIndex="0" editable="false" dataProvider="{this.estados}">
-			
-		</mx:ComboBox>
-		<mx:Label x="10" y="97" text="UF:"/>
-		<ns1:TextoInput id="ti_endereco" width="308" x="10" y="20"/>
-		<mx:Label x="10" y="0" text="Rua/Logradouro:"/>
-		<ns1:InteiroInput id="ti_cep" x="178" y="67" width="140"/>
-		<mx:Label x="178" y="50" text="Cep:"/>
-		<mx:Label x="10" y="50" text="Bairro:"/>
-		<ns1:TextoInput id="ti_bairro"  x="10" y="67"/>
-		<ns1:TextoInput id="ti_cidade"  x="77" y="113" width="244"/>
-		<mx:Label x="77" y="97" text="Cidade:"/>
-	</mx:Panel>
-	
-	
-			
-	
+		
 </mx:TitleWindow>

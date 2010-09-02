@@ -141,6 +141,7 @@
 	<mx:NumericStepper x="124" y="195" minimum="1" id="ns_parcelas"/>
 	<mx:Label x="188" y="170" text="Formas de  Pagamento:"/>
 	<mx:ComboBox x="188" y="195" id="cb_formasPagamento" dataProvider="{this.array_formasPagamento}" labelField="descricao" editable="false"/>
+	<mx:Button x="408" y="158" label="Módulo Confia" click="{this.callModuloConfia()}" width="117"/>
 	<mx:Button x="356" y="195" label="Add Forma" width="104" click="{this.addFormaPgto()}"/>
 	<mx:Button x="466" y="195" label="Excluir Forma" click="{this.excluirFormaPgto()}"/>
 	<mx:DataGrid x="10" y="225" width="584" id="gridFormaPagamento" dataProvider="{this.array_gridForm}">
@@ -159,7 +160,7 @@
 		<botoes:GerarButton x="352" y="35" id="bt_finalizar" click="{this.gerarVenda()}"/>
 		<botoes:CancelarButton x="445" y="35" id="bt_cancelar" click="{this.cancelar()}"/>
 	</mx:Panel>
-	<mx:Button x="408" y="158" label="Módulo Confia" click="{this.callModuloConfia()}" width="117"/>
+	
 	
 	
 	

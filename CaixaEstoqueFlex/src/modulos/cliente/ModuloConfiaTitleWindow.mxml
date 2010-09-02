@@ -100,6 +100,18 @@
 			
 		]]>
 	</mx:Script>
+	<mx:Panel x="10" y="10" width="690" height="83" layout="absolute" title="Pesquisa">
+		<mx:Label x="25" y="12" text="Campo:"/>
+		<mx:TextInput x="101" y="10" id="ti_pesquisCliente" width="247"/>
+		
+		<mx:RadioButton x="524" y="10" label="Nome" id="rb_nome" groupName="grupo"/>
+		
+		<mx:RadioButton x="452" y="10" label="Código" id="rb_codigo" groupName="grupo" selected="true"/>
+		
+		<mx:RadioButton x="589" y="10" label="Telefone" id="rb_telefone" groupName="grupo"/>
+		
+		<botoes:BuscarButton  x="356" y="3" click="{this.pesquisarCliente()}"/>
+	</mx:Panel>
 		
 	<mx:DataGrid x="12" y="101" id="grid_listCliente" editable="false" dataProvider="{this.array_cliente}" width="690" height="166">
 		<mx:columns>
@@ -110,14 +122,7 @@
 			<mx:DataGridColumn headerText="Lim. Credito" dataField="limCredito" width="100"/>
 		</mx:columns>
 	</mx:DataGrid>
-	<mx:Panel x="10" y="10" width="690" height="83" layout="absolute" title="Pesquisa">
-		<mx:TextInput x="101" y="10" id="ti_pesquisCliente" width="247"/>
-		<mx:RadioButton x="524" y="10" label="Nome" id="rb_nome" groupName="grupo"/>
-		<mx:RadioButton x="452" y="10" label="Código" id="rb_codigo" groupName="grupo" selected="true"/>
-		<mx:RadioButton x="589" y="10" label="Telefone" id="rb_telefone" groupName="grupo"/>
-		<mx:Label x="25" y="12" text="Campo:"/>
-		<botoes:BuscarButton  x="356" y="3" click="{this.pesquisarCliente()}"/>
-	</mx:Panel>
+	
 	<mx:Panel x="10" y="275" width="366" height="120" layout="absolute" title="Informações Cliente">
 		<mx:Label x="10" y="14" text="Código:"/>
 		<mx:Label x="98" y="14" id="lb_codigo"/>

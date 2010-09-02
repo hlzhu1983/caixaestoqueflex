@@ -214,8 +214,9 @@
 		</mx:VBox>	
 		<mx:Panel width="100%" title="Fechamento" layout="absolute"  height="20%">
 			<mx:Label x="10" y="10" text="Desconto:" fontSize="18" fontWeight="bold"/>
-			<mx:Button id="bt_cancelarOrcamento" label="Cancelar Orçamento" toolTip="Clique para cancelar Orçamento"  x="639" y="23"  click="{this.cancelarOrcamento()}"/>
 			<mx:Button id="bt_gerarOrcamento" label="Gerar Orçamento" toolTip="Clique para gerar Orçamento"  click="{this.fecharOrcamento()}" x="493" y="23"/>
+			<mx:Button id="bt_cancelarOrcamento" label="Cancelar Orçamento" toolTip="Clique para cancelar Orçamento"  x="639" y="23"  click="{this.cancelarOrcamento()}"/>
+			
 		</mx:Panel>
 	</mx:VBox>
 </mx:Window>

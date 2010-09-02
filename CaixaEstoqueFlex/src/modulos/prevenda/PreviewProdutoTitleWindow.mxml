@@ -68,10 +68,7 @@
 	<mx:Label x="81" y="52" id="lb_descricaoProduto" text="{this.produto.descricao}"/>
 	<mx:Label x="289" y="26" text="Quant. Estoque"/>
 	<mx:Label x="289" y="52" id="lb_quantEstoque" text="{this.produto.qtdEmEstoque}"/>
-	<mx:FormItem direction="horizontal" horizontalAlign="center" width="100%" x="10" y="212">
-           <mx:Button x="80" y="218" label="Adicionar Produto" id="bt_ok" click="{inserirInsercaoProduto()}"/>
-			<mx:Button x="217" y="218" label="Cancelar" id="bt_cancelar" click="{cancelarInsercaoProduto()}" />
-        </mx:FormItem>
+	
 	<mx:FormItem defaultButton="{this.bt_ok}" id="fi_quant" label="Quantidade:" fontSize="16" x="10" y="130" width="282" required="true">
 		<inputs:NumberInput id="quantProduto" width="144" x="158" y="108"  change="{this.valorTotal()}"/>
 	</mx:FormItem>
@@ -79,4 +76,8 @@
 	<mx:Label x="161" y="173" id="lb_valoTotal" fontWeight="bold" color="#000000" fontSize="20" text="{this.valor}"/>
 	<mx:Label x="19" y="95" text="Valor Unitário:"/>
 	<mx:Label x="118" y="95" id="lb_valorProduto" text="{this.produto.precoVenda}"/>
+	<mx:FormItem direction="horizontal" horizontalAlign="center" width="100%" x="10" y="212">
+           <mx:Button x="80" y="218" label="Adicionar Produto" id="bt_ok" click="{inserirInsercaoProduto()}"/>
+			<mx:Button x="217" y="218" label="Cancelar" id="bt_cancelar" click="{cancelarInsercaoProduto()}" />
+        </mx:FormItem>
 </mx:TitleWindow>
