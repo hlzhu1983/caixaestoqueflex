@@ -1,7 +1,7 @@
 package negocio.vo
 {
 	[Bindable]
-	[RemoteClass(alias="FornecedorVO")]
+	[RemoteClass(alias="vo.FornecedorVO")]
 	
 
 	public class FornecedorVO

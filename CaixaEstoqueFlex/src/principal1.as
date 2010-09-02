@@ -68,21 +68,47 @@
 		this.logou = false;	
 		Application.application.systemManager.addEventListener(AutenticacaoUsuarioEvent.SUCESSO,usuarioAutenticado);
 		Util.abrePopUp(this,ComponenteAutenticacao,true);
+		/* var glow:GlowFilter = new GlowFilter();
+		glow.color = 0x009922;
+		glow.alpha = 1;
+		glow.blurX = 25;
+		glow.blurY = 25;
+		glow.quality = BitmapFilterQuality.MEDIUM;
+		
+		var blur:BlurFilter = new BlurFilter();
+		blur.blurX = 10;
+		blur.blurY = 10;
+		blur.quality = BitmapFilterQuality.MEDIUM
+		
+		var bevel:BevelFilter = new BevelFilter();
+
+		bevel.distance = 100;
+		bevel.angle = 0;
+		bevel.highlightColor = 0xFFFF00;
+		bevel.highlightAlpha = 0.8;
+		bevel.shadowColor = 0x666666;
+		bevel.shadowAlpha = 0.8;
+		bevel.blurX = 10;
+		bevel.blurY = 10;
+		bevel.strength = 5;
+		bevel.quality = BitmapFilterQuality.HIGH;
+		bevel.type = BitmapFilterType.INNER;
+		bevel.knockout = false;
+		
+		var gradientBevel:GradientBevelFilter = new GradientBevelFilter();
+
+		gradientBevel.distance = 8;
+		gradientBevel.angle = 225; // opposite of 45 degrees
+		gradientBevel.colors = [0xFFFFCC, 0xFEFE78, 0x8F8E01];
+		gradientBevel.alphas = [1, 0, 1];
+		gradientBevel.ratios = [0, 128, 255];
+		gradientBevel.blurX = 8;
+		gradientBevel.blurY = 8;
+		gradientBevel.quality = BitmapFilterQuality.HIGH;
+		
+		this.bTarefas.filters = [gradientBevel]; */
 	}	
 	
-	 private function doPrint():void {
-                // Create an instance of the FlexPrintJob class.
-                var printJob:FlexPrintJob = new FlexPrintJob();                
-
-                // Start the print job.
-                if (printJob.start() != true) return;
-
-                // Add the object to print. Do not scale it.
-                printJob.addObject(this.tl_itens, FlexPrintJobScaleType.NONE);
-				
-                // Send the job to the printer.
-                printJob.send();
-            }
 	
 	private function logoff():void{
 		this.tl_itens.visible = false;
@@ -135,15 +161,21 @@
     	m.xBy = Application.application.width/4;
     	m.play();
     	
-    	var g:Glow = new Glow(this.tl_itens);
+    	this.glowEfeito(this.tl_itens);
+    	
+    }
+    
+    
+    private function glowEfeito(o:Object=null):void{
+    	var g:Glow = new Glow(o);
     	g.duration = 1000; 
 	    g.alphaFrom=1.0; 
-	    g.alphaTo=0.3; 
+	    g.alphaTo=0.9; 
 	    g.blurXFrom=0.0; 
 	    g.blurXTo=1000.0; 
 	    g.blurYFrom=0.0; 
 	    g.blurYTo=1000.0; 
-	    g.color=0x009dff;
+	    g.color=0x000000;
 	    g.play();
     }
 	

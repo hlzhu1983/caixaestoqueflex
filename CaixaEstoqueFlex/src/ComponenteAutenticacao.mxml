@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" close="applicationExit()" 
-	title="Autenticação de Usuário" creationComplete="{PopUpManager.centerPopUp(this)}"
-	 horizontalCenter="0" verticalCenter="0" width="306" height="270" fontSize="12" backgroundAlpha="1.0" alpha="1.0" backgroundColor="#FFFFFF" xmlns:inputs="utilidades.inputs.*">
+	title="Autenticação de Usuário" creationComplete="{this.init()}"
+	 width="306" height="270" fontSize="12" xmlns:inputs="utilidades.inputs.*" >
 	 
 	 <mx:Metadata>
 	 	
@@ -25,6 +25,11 @@
 			
 			private var ro:Remote = Remote.getInstance();
 			
+			private function init():void{
+				PopUpManager.centerPopUp(this);
+				this.ro.parent = this;
+			}
+			
 			public function autenticar():void{
 				if(this.txt_login.validador.validate().type == ValidationResultEvent.VALID){
 					if(this.validador.validate().type == ValidationResultEvent.VALID){
@@ -34,32 +39,16 @@
 						usuario.nome = "";
 						usuario.login = this.txt_login.text;
 						usuario.senha = this.txt_senha.text
-						ro.logar(resultPesquisarUsuario,usuario);
+						ro.autenticacaoUsuario(resultPesquisarUsuario,usuario);
 					}
 				}
 			}	
 			
 			private function resultPesquisarUsuario(event:ResultEvent):void{
-				
-			this.usuario = event.result as UsuarioVO;
-				
-				
-			//	for(var  i:int=0; i < array.length;i++){
-				//	if(array[i].codigo == Number(this.txt_login.text)){
-				//		this.usuario = array[i];
-				//	}
-				//}
-				
-				//if(this.usuario!=null){
-				//	if(this.usuario.senha == this.txt_senha.text){
-						Alert.show("Autenticação Realizada com sucesso!","Sucesso");
-						this.dispatchEvent(new AutenticacaoUsuarioEvent(this.usuario,AutenticacaoUsuarioEvent.SUCESSO));
-						PopUpManager.removePopUp(this);
-			//		}
-			//	}else{
-			//		Alert.show("Autenticação não foi realizada!","Ops!");
-			//	}
-					
+				this.usuario = event.result as UsuarioVO;
+				Alert.show("Autenticação Realizada com sucesso!","Sucesso");
+				this.dispatchEvent(new AutenticacaoUsuarioEvent(this.usuario,AutenticacaoUsuarioEvent.SUCESSO));
+				PopUpManager.removePopUp(this);
 			}		
 			public function applicationExit():void {				
     			var exitingEvent:Event = new Event(Event.EXITING, false, true);
