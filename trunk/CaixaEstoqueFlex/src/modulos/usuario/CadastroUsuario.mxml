@@ -26,6 +26,7 @@
 	
 	<mx:Script>
 		<![CDATA[
+			import org.idmedia.as3commons.util.AbstractCollection;
 			import mx.events.ValidationResultEvent;
 			import mx.validators.ValidationResult;
 			import negocio.vo.UsuarioVO;
@@ -47,7 +48,18 @@
 			private var ro:Remote = Remote.getInstance();
 			
 			private function init():void{
+				ro.parent = this;
 				this.listarAllUsuarios();
+			}
+			
+			private function isPossivelAlterarSenha():void{
+				
+				if(this.lb_codInput.text == ""){
+					Alert.show("Usuário nao existe!","Ops!",4,this);
+				}else{
+					this.currentState = 'st_alterarSenha';
+				}
+				
 			}
 			
 			private function alterarSenha():void{
@@ -104,7 +116,7 @@
 									this.usuario.login = this.ti_nome.text;
 									this.usuario.senha = this.ti_senha.text;
 									this.usuario.permissao = this.cb_permissao.selectedIndex;
-									this.ro.addUsuario(resultadoAddUsuario,this.usuario);
+									this.ro.salvarUsuario(resultadoAddUsuario,this.usuario);
 								}else{
 									Alert.show("Senha e Conf. Senha não são iguais!","Ops!",4,this);
 									this.ti_confSenha.text = "";
@@ -137,8 +149,7 @@
 			}
 			
 			private function resultListarUsuarios(event:ResultEvent):void{
-								
-				this.usuariosArray = new ArrayCollection(event.result as Array); 
+				this.usuariosArray = event.result as ArrayCollection; 
 				
 			}
 			
@@ -152,9 +163,6 @@
                 this.currentState = '';
                 this.hb_senhas.visible = false;
 			}
-			
-			
-			
 			
 			private function removerUsuario():void{
 				if(this.grid_usuario.selectedIndex == -1){
@@ -233,7 +241,7 @@
 	<mx:VBox id="body" width="100%" height="70%">
 		
 		<mx:HBox id="hb_botoes" width="100%" horizontalAlign="right">
-			<mx:LinkButton label="Alterar Senha?" id="lk_alterarSenha" click="this.currentState = 'st_alterarSenha'"/>
+			<mx:LinkButton label="Alterar Senha?" id="lk_alterarSenha" click="{this.isPossivelAlterarSenha()}"/>
 			<botoes:SalvarButton id="bt_salvar" click="addUsuario()"/>
 			<botoes:ExcluirButton id="bt_remover" click="removerUsuario()"  enabled="false"/>
 			<botoes:LimparButton  id="bt_clean" click="{this.limparCampos()}"/>
