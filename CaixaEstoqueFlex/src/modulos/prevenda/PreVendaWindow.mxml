@@ -3,7 +3,7 @@
 	width="1024" height="700" title="Pré-Venda"
 	xmlns:utilidades="utilidades.*" fontSize="12" closing="{this.onCloseCommand(event)}"
 	keyDown="keyEvento(event)"  backgroundAlpha="1.0" xmlns:inputs="utilidades.inputs.*" 
-	xmlns:botoes="utilidades.botoes.*" xmlns:local="*" creationComplete="init()" alpha="1.0" borderColor="#009DFF">
+	xmlns:botoes="utilidades.botoes.*" xmlns:local="*" creationComplete="init()" alpha="1.0" borderColor="#009DFF" xmlns:prevenda="modulos.prevenda.*">
 	
 	<mx:Script>
 		<![CDATA[
@@ -151,6 +151,9 @@
 					this.preVenda.valorTotal = this.valorTotal;
 					this.preVenda.itemPreVenda = this.array_itensPrevenda.toArray();
 					this.ro.fecharPreVenda(result_fecharPreVenda,this.preVenda);
+					Util.abrePopUp(this,Impressao,true);
+					
+					new PrintPreVenda(this.i);
 				}else{
 					Alert.show("Não ha produtos inseridos!","Ops!",4,this);
 				}
@@ -220,4 +223,5 @@
 			
 		</mx:Panel>
 	</mx:VBox>
+	<prevenda:Impressao id="i" pVenda="{this.preVenda}" visible="false"/>
 </mx:Window>
