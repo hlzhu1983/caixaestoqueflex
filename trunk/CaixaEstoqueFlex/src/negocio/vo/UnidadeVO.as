@@ -2,7 +2,7 @@ package negocio.vo
 {
 	
 	[Bindable]
-	[RemoteClass(alias="UnidadeVO")]
+	[RemoteClass(alias="vo.UnidadeVO")]
 	public class UnidadeVO
 	{
 		public var codigo:int;

@@ -89,7 +89,7 @@ package negocio.remote{
 		}
 		
 		public function addFormadePagto(result:Function,forma:FormadePagtoVO):void{
-			var async:AsyncToken = _remote.addFormadePagto(forma);
+			var async:AsyncToken = _remote.salvarFormadePagto(forma);
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
 		

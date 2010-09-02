@@ -67,22 +67,9 @@
 	public function init():void{
 		this.logou = false;	
 		Application.application.systemManager.addEventListener(AutenticacaoUsuarioEvent.SUCESSO,usuarioAutenticado);
-		Util.abrePopUp(this,ComponenteAutenticacao,true);
+		//Util.abrePopUp(this,ComponenteAutenticacao,true);
 	}	
 	
-	 private function doPrint():void {
-                // Create an instance of the FlexPrintJob class.
-                var printJob:FlexPrintJob = new FlexPrintJob();                
-
-                // Start the print job.
-                if (printJob.start() != true) return;
-
-                // Add the object to print. Do not scale it.
-                printJob.addObject(this.tl_itens, FlexPrintJobScaleType.NONE);
-				
-                // Send the job to the printer.
-                printJob.send();
-            }
 	
 	private function logoff():void{
 		this.tl_itens.visible = false;

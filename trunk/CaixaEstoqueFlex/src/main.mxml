@@ -2,10 +2,11 @@
 <mx:WindowedApplication width="1024" height="700" creationComplete="init()"
 	 xmlns:mx="http://www.adobe.com/2006/mxml"  
 	layout="absolute" borderThickness="0" fontSize="12" cornerRadius="0"
-	 xmlns:local="*" verticalAlign="top" horizontalAlign="center" backgroundImage="icons/fundo.jpg" xmlns:botoes="utilidades.botoes.*">
+	 xmlns:local="*" verticalAlign="top" horizontalAlign="center" 
+	  xmlns:botoes="utilidades.botoes.*" backgroundImage="icons/fundo.jpg">
 	 <mx:Script source="principal1.as"/>
 		
-	<mx:ApplicationControlBar  x="0" dock="true" y="0" width="1024" horizontalAlign="center" fillAlphas="[1.0, 1.0]" 
+	<mx:ApplicationControlBar dock="true"  width="1024" horizontalAlign="center" fillAlphas="[1.0, 1.0]" 
 		height="46" color="#FFFFFF" fillColors="[#FFFFFF, #D2D2D2]" cornerRadius="11">
 		<botoes:UsuarioButton id="bt_usuario" click="{this.logoff()}"/>
 		<mx:Label id="nomeUsuario" text="{this.usuario.nome}" fontWeight="bold" fontSize="12" color="#000000"/>
@@ -16,5 +17,7 @@
 			 alternatingItemColors="[#000000, #000000]" 
 			itemClick="itemClickTile(event)" fontWeight="bold" 
 			visible="false"  borderStyle="none" borderThickness="0" columnWidth="150"/>
+		
+		
 	</mx:VBox>
 </mx:WindowedApplication>

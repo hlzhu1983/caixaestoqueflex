@@ -24,6 +24,7 @@
 			private var ro:Remote = Remote.getInstance();
 			
 			private function init():void{
+				this.ro.parent = this;
 				this.listarAllFormadePagtos();
 			}
 			
@@ -33,10 +34,21 @@
 					Alert.show("Campo descrição obrigatorio!","Ops!");
 				}else{
 					u.descricao = this.descInput.text;
-					this.ro.addFormadePagto(resultadoAddFormadePagto,u);
+					if(this.codInput.text == ""){
+						this.ro.addFormadePagto(resultadoAddFormadePagto,u);
+					}else{
+						u.codigo = Number(this.codInput.text);
+						this.ro.addFormadePagto(resultadoAddFormadePagto,u);
+					}
 				}
 				
 				
+			}
+			
+			private function result_atualizarFormaPgto(event:ResultEvent):void{
+				this.formadepagtosArray.setItemAt(event.result,this.formadepagtoGrid.selectedIndex);
+				Alert.show("O item foi atualizado!","Sucesso!");
+				this.limparCampos();
 			}
 			
 			private function resultadoAddFormadePagto(event:ResultEvent):void{
@@ -51,9 +63,7 @@
 			}
 			
 			private function resultListarFormadePagtos(event:ResultEvent):void{
-								
-				this.formadepagtosArray = new ArrayCollection(event.result as Array);
-				
+				this.formadepagtosArray = event.result as ArrayCollection;
 			}
 			
 			public function formadepagtoSelecionado(event:Event):void{
@@ -101,10 +111,8 @@
 			}
 			
 			private function resultadoPesquisaItem(event:ResultEvent):void{
-				this.formadepagtosArray = new ArrayCollection(event.result as Array);
+				this.formadepagtosArray = event.result as ArrayCollection;
 			}
-			
-			
 			
 			private function fechar():void{
 				PopUpManager.removePopUp(this);
