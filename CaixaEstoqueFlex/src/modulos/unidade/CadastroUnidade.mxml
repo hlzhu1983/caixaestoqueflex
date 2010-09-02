@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" close="fechar()" creationComplete="init()" showCloseButton="true" layout="absolute" title="Gerenciamento Unidades" xmlns:utilidades="utilidades.*" xmlns:botoes="utilidades.botoes.*" xmlns:inputs="utilidades.inputs.*" borderColor="#D2D2D2" width="442">
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" close="fechar()" 
+	creationComplete="init()" showCloseButton="true"
+	 layout="absolute" title="Gerenciamento Unidades" 
+	 xmlns:utilidades="utilidades.*" xmlns:botoes="utilidades.botoes.*" 
+	 xmlns:inputs="utilidades.inputs.*" borderColor="#D2D2D2" width="100%" height="100%">
 	
 	<mx:Script>
 		<![CDATA[
@@ -24,19 +28,30 @@
 			private var ro:Remote = Remote.getInstance();
 			
 			private function init():void{
+				this.ro.parent = this;
 				this.listarAllUnidades();
 			}
 			
-			private function addUnidade():void{
+			private function salvarUnidade():void{
 				var u:UnidadeVO = new UnidadeVO();
 				if(this.descInput.validador.validate().type == ValidationResultEvent.INVALID){
 					Alert.show("Campo descrição obrigatorio!","Ops!");
 				}else{
 					u.descricao = this.descInput.text;
-					this.ro.addUnidade(resultadoAddUnidade,u);
+					if(this.codInput.text == ""){
+						this.ro.addUnidade(resultadoAddUnidade,u);
+					}else{
+						u.codigo = Number(this.codInput.text);
+						this.ro.addUnidade(result_atualizarUnidade,u);
+					}
 				}
-				
-				
+			}
+			
+			
+			private function result_atualizarUnidade(event:ResultEvent):void{
+				this.unidadesArray.setItemAt(event.result,this.unidadeGrid.selectedIndex);
+				Alert.show("O item foi atualizado!","Sucesso!");
+				this.limparCampos();
 			}
 			
 			private function resultadoAddUnidade(event:ResultEvent):void{
@@ -51,9 +66,7 @@
 			}
 			
 			private function resultListarUnidades(event:ResultEvent):void{
-								
-				this.unidadesArray = new ArrayCollection(event.result as Array);
-				
+				this.unidadesArray = event.result as ArrayCollection;
 			}
 			
 			public function unidadeSelecionado(event:Event):void{
@@ -64,12 +77,13 @@
                 						
 			}
 			
-			
-			
-			
 			private function removerUnidade():void{
-				this.unidade = this.unidadeGrid.selectedItem as UnidadeVO;
-				this.ro.removerUnidade(resultadoRemoverUnidade, this.unidade);
+				if(this.unidadeGrid.selectable!=-1){
+					this.unidade = this.unidadeGrid.selectedItem as UnidadeVO;
+					this.ro.removerUnidade(resultadoRemoverUnidade, this.unidade);
+				}else{
+					Alert.show("Nenhum item selecionado!","Ops!",4,this);
+				}
 				
 				
 			}
@@ -101,10 +115,8 @@
 			}
 			
 			private function resultadoPesquisaItem(event:ResultEvent):void{
-				this.unidadesArray = new ArrayCollection(event.result as Array);
+				this.unidadesArray = event.result as ArrayCollection;
 			}
-			
-			
 			
 			private function fechar():void{
 				PopUpManager.removePopUp(this);
@@ -139,7 +151,7 @@
 			<inputs:TextoInput id="descInput" requerido="true"/>
 		</mx:FormItem>
 		
-		<botoes:SalvarButton id="add" click="addUnidade()" x="121" y="68"/>
+		<botoes:SalvarButton id="add" click="salvarUnidade()" x="121" y="68"/>
 		<botoes:ExcluirButton id="remover" click="removerUnidade()"  enabled="false" x="221" y="68"/>
 		<botoes:LimparButton  x="320" y="68" click="{this.limparCampos()}"/>
 		
