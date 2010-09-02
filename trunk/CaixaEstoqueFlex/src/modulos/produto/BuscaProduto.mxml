@@ -182,6 +182,8 @@
 			<mx:ComboBox  id="cb_unidade" editable="true" change="{this.filtarUN()}" dataProvider="{this.itensUnidade}" labelField="descricao" x="102" y="53"/>
 		</mx:Panel>
 		
+		<botoes:BuscarButton  id="bt_pesquisar" x="604" y="14" click="{this.pesquisarProduto()}"/>
+	
 		<mx:DataGrid x="10" y="245" id="grid_produtos" dataProvider="{this.itensProduto}"
 			 width="682" height="204" doubleClickEnabled="true" itemDoubleClick="{this.selecionarItem(event)}">
 				<mx:columns>
@@ -190,5 +192,5 @@
 					<mx:DataGridColumn headerText="Referência" dataField="referencia"/>
 				</mx:columns>
 			</mx:DataGrid>
-		<botoes:BuscarButton  id="bt_pesquisar" x="604" y="14" click="{this.pesquisarProduto()}"/>
+	
 </mx:TitleWindow>
