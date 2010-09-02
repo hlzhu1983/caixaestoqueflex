@@ -1,0 +1,1 @@
+select *, date_format(datacadastro, '%m/%d/%Y') as dCadastro, date_format(datanascimento, '%m/%d/%Y') as dNascimento from cliente where fone like '%F%'

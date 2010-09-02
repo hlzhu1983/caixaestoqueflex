@@ -47,8 +47,12 @@ class ServicosCliente {
 	}
 	
 	public function pesquisarCliente($texto,$coluna){
+		$f = fopen('log0.txt','w+');
+		
 		$sql = "select *, date_format(datacadastro, '%m/%d/%Y') as dCadastro, date_format(datanascimento, '%m/%d/%Y') as dNascimento from cliente where $coluna like '%$texto%'";
+		fwrite($f,$sql);
 		$resultado = $this->conn->Execute($sql);
+		$retorna_dados_item = null;
 		while($registro = $resultado->FetchNextObject()){			
 			$dados_item = new ClienteVO();
 			$dados_item->codigo = $registro->CODIGO;
