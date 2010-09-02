@@ -1,6 +1,8 @@
 package negocio.remote{
 
 	
+	import flash.display.Sprite;
+	
 	import mx.controls.Alert;
 	import mx.rpc.AsyncToken;
 	import mx.rpc.Responder;
@@ -12,6 +14,8 @@ package negocio.remote{
 	public class Remote {
 		
 		//Servicos Cliente
+		
+		public var parent:Sprite;
 		
  		public function listarCliente(result:Function):void{
  			_remote.source = "ServicosCliente";
@@ -192,26 +196,22 @@ package negocio.remote{
 		// Servicos Usuario
  		
  		public function listarUsuario(result:Function):void{
- 			_remote.source = "ServicosUsuario";
 			var async:AsyncToken = _remote.getUsuarios();
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
 		
 		public function atualizarUsuario(result:Function,usuario:UsuarioVO):void{
-			_remote.source = "ServicosUsuario";
-			var async:AsyncToken = _remote.atualizarUsuario(usuario);
+			var async:AsyncToken = _remote.salvarUsuario(usuario);
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
 		
-		public function addUsuario(result:Function,usuario:UsuarioVO):void{
-			_remote.source = "ServicosUsuario";
-			var async:AsyncToken = _remote.addUsuario(usuario);
+		public function salvarUsuario(result:Function,usuario:UsuarioVO):void{
+			var async:AsyncToken = _remote.salvarUsuario(usuario);
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
 		
-		public function logar(result:Function,usuario:UsuarioVO):void{
-			_remote.source = "ServicosUsuario";
-			var async:AsyncToken = _remote.logar(usuario);
+		public function autenticacaoUsuario(result:Function,usuario:UsuarioVO):void{
+			var async:AsyncToken = _remote.autenticacaoUsuario(usuario);
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
 		public function removerUsuario(result:Function,usuario:UsuarioVO):void{
@@ -376,13 +376,15 @@ package negocio.remote{
 			
 			_remote = new RemoteObject();
 			_remote.showBusyCursor = true;
-			_remote.destination = 'zend';			
-			_remote.endpoint = "http://localhost/Zendamf/bridge.php";
+			_remote.destination = 'servicos';				
+			_remote.endpoint = "http://localhost:8080/blazeds/messagebroker/amf";
+			/* _remote.destination = 'zend';	
+			_remote.endpoint = "http://localhost/Zendamf/bridge.php"; */
 			
 		}
 		
 		private function defaultFaultHandler(e:FaultEvent):void{
-			Alert.show("Erro: "+e.fault.faultCode+": "+e.fault.faultString,"Ops!");
+			Alert.show("Erro: "+e.fault.faultString,"Ops!",4,parent);
 		}
 		
 		private static var _instance:Remote;
