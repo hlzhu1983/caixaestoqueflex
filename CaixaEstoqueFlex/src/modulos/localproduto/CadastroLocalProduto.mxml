@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" close="fechar()" creationComplete="init()" showCloseButton="true" layout="absolute" title="Gerenciamento LocalProdutos" xmlns:utilidades="utilidades.*" xmlns:botoes="utilidades.botoes.*" xmlns:inputs="utilidades.inputs.*" borderColor="#D2D2D2" width="436">
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" close="fechar()" creationComplete="init()" showCloseButton="true" layout="absolute" title="Gerenciamento LocalProdutos" xmlns:utilidades="utilidades.*" xmlns:botoes="utilidades.botoes.*" xmlns:inputs="utilidades.inputs.*" borderColor="#D2D2D2" width="448" height="358">
 	
 	<mx:Script>
 		<![CDATA[
@@ -26,6 +26,7 @@
 			private var ro:Remote = Remote.getInstance();
 			
 			private function init():void{
+				this.ro.parent = this;
 				this.listarAllLocalProdutos();
 			}
 			
@@ -34,13 +35,12 @@
 				if(this.descInput.validador.validate().type == ValidationResultEvent.INVALID){
 					Alert.show("Campo descrição obrigatorio!","Ops!");
 				}else{
+					u.descricao = this.descInput.text;
 					if(this.codInput.text == ""){
-						u.descricao = this.descInput.text;
 						this.ro.addLocalProduto(resultadoAddLocalProduto,u);
 					}else{
 						u.codigo = int(this.codInput.text);
-						u.descricao = this.descInput.text;
-						this.ro.atualizarLocalProduto(resultado_atualizarLocalProduto,u);
+						this.ro.addLocalProduto(resultado_atualizarLocalProduto,u);
 					}
 					
 				}
@@ -55,6 +55,7 @@
 			
 			private function resultado_atualizarLocalProduto(event:ResultEvent):void{
 				this.localProdutosArray.setItemAt(event.result, this.index);
+				Alert.show("O item foi atualizado!","Sucesso!");
 				this.limparCampos();
 			}
 			
@@ -77,9 +78,12 @@
 			}
 			
 			private function removerLocalProduto():void{
-				this.localProduto = this.localProdutoGrid.selectedItem as LocalProdutoVO;
-				this.ro.removerLocalProduto(resultadoRemoverLocalProduto, this.localProduto);
-				
+				if(this.localProdutoGrid.selectedIndex == -1){
+					Alert.show("Não há item selecionado!","Ops!",4,this)
+				}else{
+					this.localProduto = this.localProdutoGrid.selectedItem as LocalProdutoVO;
+					this.ro.removerLocalProduto(resultadoRemoverLocalProduto, this.localProduto);
+				}
 				
 			}
 			
@@ -152,7 +156,7 @@
 		
 		<botoes:SalvarButton id="add" click="addLocalProduto()" x="119" y="68"/>
 		<botoes:ExcluirButton id="remover" click="removerLocalProduto()"  enabled="false" x="219" y="68"/>
-		<botoes:LimparButton  x="318" y="68" click="{this.limparCampos()}"/>
+		<botoes:LimparButton  x="314" y="68" click="{this.limparCampos()}"/>
 	
 		
 		<mx:DataGrid x="10" y="140" width="396" id="localProdutoGrid" change="{localProdutoSelecionado(event)}" dataProvider="{this.localProdutosArray}">

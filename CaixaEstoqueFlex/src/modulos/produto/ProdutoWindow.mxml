@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Window xmlns:mx="http://www.adobe.com/2006/mxml" 
-	creationComplete="{this.listarALLItens()}" 
-	layout="absolute"  width="874" height="556" 
-	title="Gerênciador Produto"
-	fontSize="12" xmlns:ns1="utilidades.botoes.*" xmlns:ns2="utilidades.inputs.*" borderColor="#009DFF" backgroundColor="#FFFFFF">
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
+	creationComplete="{this.init()}" 
+	layout="absolute"  width="874" height="430" showCloseButton="true" close="{this.fechar(event)}" 
+	title="Gerênciador Produto" 
+	fontSize="12" xmlns:ns1="utilidades.botoes.*" xmlns:ns2="utilidades.inputs.*" borderColor="#E2E2E2" backgroundColor="#FFFFFF">
 	
 	<mx:Script>
 		<![CDATA[
+			import events.FornecedorEvent;
+			import modulos.fornecedor.BuscaFornecedor;
+			import mx.managers.PopUpManager;
+			import events.ProdutoEvent;
+			import utilidades.Util;
 			import flash.sampler.NewObjectSample;
 			import mx.events.ValidationResultEvent;
 			import mx.controls.Alert;
@@ -20,8 +25,221 @@
 			[Bindable]
 			public var source:File;
 			
+			private var titleWindow_BuscaProduto:BuscaProduto;
+			private var titleWindow_BuscaFornecedor:BuscaFornecedor;
+			
+			
+			private var produto:ProdutoVO;
+			private var fornecedor:FornecedorVO;
+			
 			private var load:Boolean = false; 
+			
+			private function init():void{
+				this.ro.parent = this;
+				this.listarALLItens();
+			}
 
+			
+			
+			[Bindable]
+			private var itensUnidade:ArrayCollection;
+			[Bindable]
+			private var itensLocal:ArrayCollection;
+			[Bindable]
+			private var itensGrupo:ArrayCollection;
+			
+			private var modificado:Number;
+			
+			[Bindable]
+			private var item:ProdutoVO;
+			private var ro:Remote = Remote.getInstance();
+			
+			private function listarALLItens():void{
+				this.ro.listarUnidade(preencheCBUnidade);
+				this.ro.listarGrupoProduto(preencheCBGrupo);
+				this.ro.listarLocalProduto(preencheCBLocal);
+			}
+			
+			private function preencheCBUnidade(event:ResultEvent):void{
+			 this.itensUnidade = event.result as ArrayCollection;
+			
+			}
+			private function preencheCBGrupo(event:ResultEvent):void{
+			 this.itensGrupo = event.result as ArrayCollection;
+			}
+			private function preencheCBLocal(event:ResultEvent):void{
+			 this.itensLocal = event.result as ArrayCollection;
+			}
+			
+			private function adicionar():void{
+				var u:ProdutoVO = new ProdutoVO();
+				if(this.ti_descricao.text!=""){
+					if(this.fornecedor != null){
+					 	if(this.cb_grupo.selectedIndex!=-1){
+							if(this.cb_local.selectedIndex!=-1){
+								if(this.cb_unidade.selectedIndex!=-1){
+									u.codBarra = this.ti_codBarra.text;
+									u.codFornecedor = this.fornecedor.codigo;	
+									u.codGrupo = this.itensGrupo[this.cb_grupo.selectedIndex].codigo;
+									u.codLocal = this.itensLocal[this.cb_local.selectedIndex].codigo;
+									u.codUnidade = this.itensUnidade[this.cb_unidade.selectedIndex].codigo;
+									u.descricao = this.ti_descricao.text;
+									u.precoCompra = this.ti_pCompra.getValor();
+									u.precoVenda = this.ti_pVenda.getValor();
+									u.qtdPorUnidade = Number(this.ti_qtdUnidade.text);
+									u.referencia = this.ti_referencia.text;
+									u.foto = "";
+									if(this.ti_codigo.text!=""){
+										u.codigo = Number(this.ti_codigo.text);
+										this.ro.atualizarProduto(resultadoAtualizarItem,u);	
+									}else{
+										this.ro.addProduto(resultadoAddItem,u);
+									}						
+								}else{
+									Alert.show("O campo Unidade é requerido","Ops!",4,this);
+								}
+							}else{
+								Alert.show("O campo Local é requerido","Ops!",4,this);
+							}
+						}else{
+							Alert.show("O campo Grupo é requerido","Ops!",4,this);
+						}
+					}else{
+						Alert.show("O campo fornecedor é requerido","Ops!",4,this);
+					}
+				}else{
+					Alert.show("O campo descrição é requerido","Ops!",4,this);
+				}
+						
+			}
+			
+			private function resultadoAddItem(event:ResultEvent):void{
+				this.enviar_arquivo(event.result.codigo+"");
+				Alert.show("O item foi adicionado!","Sucesso!",4,this);
+				this.limpar();
+			}
+			
+			private function resultadoAtualizarItem(event:ResultEvent):void{
+				Alert.show("O item foi Atualizado!","Sucesso!",4,this);
+				this.limpar();
+			}
+			
+			
+			private function removerItem():void{
+				this.ro.removerProduto(resultadoRemover, this.item);
+				
+				
+			}
+			private function resultadoRemover(event:ResultEvent):void{
+				if(event.result){
+					Alert.show("O item foi removido!","Sucesso",4,this);
+				}else{
+					Alert.show("O item não pôde ser removido!","Ops!",4,this);					
+				}
+				this.limpar();
+			}
+			
+			
+			private function limpar():void{
+				this.bt_remover.enabled = false;
+				this.ti_codigo.text = "";
+				this.cb_grupo.selectedIndex = -1;
+				this.cb_unidade.selectedIndex = -1;
+				this.cb_local.selectedIndex = -1;
+				this.ti_nomeFornecedor.text = "";
+				this.ti_codBarra.text = "";
+				this.ti_descricao.text = "";
+				this.ti_pCompra.text = "";
+				this.ti_pVenda.text = "";
+				this.ti_qtdEstoque.text = "";
+				this.ti_qtdUnidade.text = "";
+				this.ti_referencia.text = "";
+				this.ti_foto.text  ="";
+				this.img_produto.source = "icons/branco.png";
+				this.add.label = "Adicionar"
+			}
+			
+			public function selecionarGrupo(label:int):void{
+				
+				 for(var i:int = 0; i< this.itensGrupo.length;i++){
+				 	
+				 	if(this.itensGrupo[i].codigo==label){
+				 		this.cb_grupo.selectedIndex = i;
+				 	}
+				 }
+			}
+			
+			public function selecionarLocal(label:int):void{
+				
+				 for(var i:int = 0; i< this.itensLocal.length;i++){
+				 	
+				 	if(this.itensLocal[i].codigo==label){
+				 		this.cb_local.selectedIndex = i;
+				 	}
+				 }
+			}
+			
+			public function selecionarUnidade(label:int):void{
+				
+				 for(var i:int = 0; i< this.itensUnidade.length;i++){
+				 	
+				 	if(this.itensUnidade[i].codigo==label){
+				 		this.cb_unidade.selectedIndex = i;
+				 	}
+				 }
+			}
+			
+			
+			public function itemSelecionado(event:ProdutoEvent):void{
+				this.item = event.produto;
+				this.ti_codBarra.text = this.item.codBarra;
+				this.ro.pesquisarFornecedor(result_intemSelecionadoFornecedor,this.item.codFornecedor.toString(),"codigo");
+				this.ti_codigo.text = this.item.codigo.toString();
+				this.ti_descricao.text = this.item.descricao;
+				this.ti_pCompra.setValor(this.item.precoCompra.toString());
+				this.ti_pVenda.setValor(this.item.precoVenda.toString());
+				this.ti_qtdEstoque.text = this.item.qtdEmEstoque.toString();
+				this.ti_qtdUnidade.text = this.item.qtdPorUnidade.toString();
+				this.ti_referencia.text = this.item.referencia;
+				this.selecionarGrupo(this.item.codGrupo);
+				this.selecionarLocal(this.item.codLocal);
+				this.selecionarUnidade(this.item.codUnidade);
+				this.add.label = "Atualizar";
+				this.bt_remover.enabled = true;
+                						
+			} 
+			
+			private function result_intemSelecionadoFornecedor(event:ResultEvent):void{
+				var a:ArrayCollection = event.result as ArrayCollection;
+				if(a.length == 0){
+					Alert.show("Fornecedor inexistente!","Ops!",4,this);
+				}else{
+					this.fornecedor = a.getItemAt(0) as FornecedorVO;
+					this.ti_nomeFornecedor.text = this.fornecedor.nome;
+				}
+				
+			}
+			private function pesquisarItem():void{
+				this.titleWindow_BuscaProduto = BuscaProduto(Util.abrePopUp(this,BuscaProduto,true));
+				this.titleWindow_BuscaProduto.addEventListener(ProdutoEvent.PRODUTOSELECIONADO,itemSelecionado);
+			}
+			
+			
+			private function fechar(event:Event):void{
+				PopUpManager.removePopUp(this);
+			}
+			
+			private function procurarFornecedor():void{
+				this.titleWindow_BuscaFornecedor = BuscaFornecedor(Util.abrePopUp(this,BuscaFornecedor,true));
+				this.titleWindow_BuscaFornecedor.addEventListener(FornecedorEvent.FORNECEDORSELECIONADO,result_buscaFornecedor);
+			}
+			
+			
+			private function result_buscaFornecedor(event:FornecedorEvent):void{
+				this.fornecedor = event.fornecedor;
+				this.ti_nomeFornecedor.text = this.fornecedor.nome;
+			}
+			
 			public function browser():void{
 				arquivo = new File();
 				arquivo.addEventListener(Event.SELECT, fileRef_select);
@@ -68,301 +286,65 @@
 				}
 			}
 			
-			[Bindable]
-			private var itensUnidade:ArrayCollection;
-			[Bindable]
-			private var itensLocal:ArrayCollection;
-			[Bindable]
-			private var itensGrupo:ArrayCollection;
-			[Bindable]
-			private var itensArray:ArrayCollection;
-			private var modificado:Number;
-			
-			[Bindable]
-			private var item:ProdutoVO;
-			private var ro:Remote = Remote.getInstance();
-			
-			private function listarALLItens():void{
-				this.ro.listarProduto(resultListarItens);
-				this.ro.listarUnidade(preencheCBUnidade);
-				this.ro.listarGrupoProduto(preencheCBGrupo);
-				this.ro.listarLocalProduto(preencheCBLocal);
-			}
-			
-			private function preencheCBUnidade(event:ResultEvent):void{
-			 this.itensUnidade = new ArrayCollection(event.result as Array);
-			
-			}
-			private function preencheCBGrupo(event:ResultEvent):void{
-			 this.itensGrupo = new ArrayCollection(event.result as Array);
-			}
-			private function preencheCBLocal(event:ResultEvent):void{
-			 this.itensLocal = new ArrayCollection(event.result as Array);
-			}
-			private function resultListarItens(event:ResultEvent):void{
-								
-				this.itensArray = new ArrayCollection(event.result as Array);
-				
-			}
-			
-			private function adicionar():void{
-				var u:ProdutoVO = new ProdutoVO();
-				if(this.ti_descricao.text!=""){
-					if(this.ti_codFornecedor.text!=""){
-					 	if(this.cb_grupo.selectedIndex!=-1){
-							if(this.cb_local.selectedIndex!=-1){
-								if(this.cb_unidade.selectedIndex!=-1){
-									u.codBarra = this.ti_codBarra.text;
-									u.codFornecedor = Number(this.ti_codFornecedor.text);	
-									u.codGrupo = this.itensGrupo[this.cb_grupo.selectedIndex].codigo;
-									u.codLocal = this.itensLocal[this.cb_local.selectedIndex].codigo;
-									u.codUnidade = this.itensUnidade[this.cb_unidade.selectedIndex].codigo;
-									u.descricao = this.ti_descricao.text;
-									u.precoCompra = this.ti_pCompra.getValor();
-									u.precoVenda = this.ti_pVenda.getValor();
-									u.qtdEmEstoque = Number(this.ti_qtdEstoque.text);
-									u.qtdPorUnidade = Number(this.ti_qtdUnidade.text);
-									u.referencia = this.ti_referencia.text;
-									u.foto = "";
-									if(this.ti_codigo.text!=""){
-										u.codigo = Number(this.ti_codigo.text);
-										this.ro.atualizarProduto(resultadoAtualizarItem,u);	
-									}else{
-										this.ro.addProduto(resultadoAddItem,u);
-									}						
-								}else{
-									Alert.show("O campo Unidade é requerido","Ops!",4,this);
-								}
-							}else{
-								Alert.show("O campo Local é requerido","Ops!",4,this);
-							}
-						}else{
-							Alert.show("O campo Grupo é requerido","Ops!",4,this);
-						}
-					}else{
-						Alert.show("O campo fornecedor é requerido","Ops!",4,this);
-					}
-				}else{
-					Alert.show("O campo descrição é requerido","Ops!",4,this);
-				}
-						
-			}
-			
-			private function resultadoAddItem(event:ResultEvent):void{
-				this.itensArray.addItem(event.result);
-				this.enviar_arquivo(event.result.codigo+"");
-				Alert.show("O item foi adicionado!","Sucesso!",4,this);
-				this.limpar();
-			}
-			
-			private function resultadoAtualizarItem(event:ResultEvent):void{
-				this.itensArray[this.modificado] = event.result;	
-				Alert.show("O item foi Atualizado!","Sucesso!",4,this);
-				this.limpar();
-			}
-			
-			
-			private function removerItem():void{
-				this.item = this.grid_itens.selectedItem as ProdutoVO;
-				this.ro.removerProduto(resultadoRemover, this.item);
-				
-				
-			}
-			private function resultadoRemover(event:ResultEvent):void{
-				if(event.result){
-					Alert.show("O item foi removido!","Sucesso",4,this);
-					this.itensArray.removeItemAt(this.grid_itens.selectedIndex);
-				}else{
-					Alert.show("O item não pôde ser removido!","Ops!",4,this);					
-				}
-				this.limpar();
-			}
-			
-			
-			private function limpar():void{
-				this.bt_remover.enabled = false;
-				this.ti_codigo.text = "";
-				this.cb_grupo.selectedIndex = -1;
-				this.cb_unidade.selectedIndex = -1;
-				this.cb_local.selectedIndex = -1;
-				this.ti_codFornecedor.text = "";
-				this.ti_codBarra.text = "";
-				this.ti_descricao.text = "";
-				this.ti_nomeFornecedor.text = "";
-				this.ti_pCompra.text = "";
-				this.ti_pVenda.text = "";
-				this.ti_qtdEstoque.text = "";
-				this.ti_qtdUnidade.text = "";
-				this.ti_referencia.text = "";
-				this.ti_foto.text  ="";
-				this.img_produto.source = "icons/branco.png";
-				this.ti_pesquisar.text = "";
-				this.grid_itens.selectedIndex = -1;
-				this.add.label = "Adicionar"
-			}
-			
-			public function selecionarGrupo(label:int):void{
-				
-				 for(var i:int = 0; i< this.itensGrupo.length;i++){
-				 	
-				 	if(this.itensGrupo[i].codigo==label){
-				 		this.cb_grupo.selectedIndex = i;
-				 	}
-				 }
-			}
-			
-			public function selecionarLocal(label:int):void{
-				
-				 for(var i:int = 0; i< this.itensLocal.length;i++){
-				 	
-				 	if(this.itensLocal[i].codigo==label){
-				 		this.cb_local.selectedIndex = i;
-				 	}
-				 }
-			}
-			
-			public function selecionarUnidade(label:int):void{
-				
-				 for(var i:int = 0; i< this.itensUnidade.length;i++){
-				 	
-				 	if(this.itensUnidade[i].codigo==label){
-				 		this.cb_unidade.selectedIndex = i;
-				 	}
-				 }
-			}
-			
-			
-			public function itemSelecionado(event:Event):void{
-				this.item = event.currentTarget.selectedItem as ProdutoVO;
-				this.modificado = this.grid_itens.selectedIndex;
-				this.ti_codBarra.text = this.item.codBarra;
-				this.ti_codFornecedor.text = this.item.codFornecedor.toString();
-				this.ti_codigo.text = this.item.codigo.toString();
-				this.ti_descricao.text = this.item.descricao;
-				this.ti_pCompra.setValor(this.item.precoCompra.toString());
-				this.ti_pVenda.setValor(this.item.precoVenda.toString());
-				this.ti_qtdEstoque.text = this.item.qtdEmEstoque.toString();
-				this.ti_qtdUnidade.text = this.item.qtdPorUnidade.toString();
-				this.ti_referencia.text = this.item.referencia;
-				this.selecionarGrupo(this.item.codGrupo);
-				this.selecionarLocal(this.item.codLocal);
-				this.selecionarUnidade(this.item.codUnidade);
-				this.add.label = "Atualizar";
-				this.bt_remover.enabled = true;
-                						
-			} 
-			private function pesquisarItem():void{
-				if(this.ti_pesquisar.text == ""){
-					this.listarALLItens();
-				}else if(this.ti_pesquisar.validador.validate().type == ValidationResultEvent.VALID ){
-					
-					if(this.rd_codigo.selected){
-						this.ro.pesquisarProduto(resultadoPesquisaItem,this.ti_pesquisar.text,"codigo");
-					}else if(this.rd_descricao.selected){
-						this.ro.pesquisarProduto(resultadoPesquisaItem,this.ti_pesquisar.text,"descricao");
-					}else {
-						this.ro.pesquisarProduto(resultadoPesquisaItem,this.ti_pesquisar.text,"referencia");
-					}
-					
-				}else{
-					Alert.show("Campo Vazio!","Ops!",4,this);
-				}
-			}
-			private function resultadoPesquisaItem(event:ResultEvent):void{
-				this.itensArray = new ArrayCollection(event.result as Array);
-			}
-			
-			private function procurarFornecedor():void{
-				 if(this.ti_codFornecedor.text!=""){
-				 	this.ro.pesquisarFornecedor(pegouF,this.ti_codFornecedor.text,"codigo")
-				 }else{
-					 Alert.show("O campo Codigo Fornecedor é requerido","Ops!",4,this);
-				 }			
-			}
-			private function pegouF(event:ResultEvent):void{
-				var array:ArrayCollection;
-				array = new ArrayCollection(event.result as Array);
-				if(array.length>0){
-					if(array[0].codigo==Number(this.ti_codFornecedor.text)){
-						this.ti_nomeFornecedor.text =array[0].nome;
-					}
-				}
-			}
 		]]>
 	</mx:Script>
 	
-	<ns1:BuscarButton x="372" y="10" click="{this.pesquisarItem()}" height="23"/>
-	<ns2:TextoInput x="10" y="10" width="339" id="ti_pesquisar"/>
-	<mx:RadioButton x="110" y="40" label="descricao" id="rd_descricao"/>
-	<mx:RadioButton x="36" y="40" label="código" id="rd_codigo"/>
-	<mx:RadioButton x="208" y="40" label="referência" id="rd_referencia"/>
+	<ns1:BuscarButton x="10" y="22" click="{this.pesquisarItem()}" height="32" label="Buscar Produto"/>
 	
+	<mx:Label x="10" y="66" text="Código:"/>
+	<mx:Label x="72" y="64" width="94" id="ti_codigo" />
 	
-	
-	<mx:Label x="10" y="111" text="Código:"/>
-	<mx:Label x="72" y="109" width="94" id="ti_codigo" />
-	
-	<mx:Label x="190" y="109" text="Cód. Barra:"/>
-	<mx:TextInput x="271" y="107" maxChars="20" width="166" id="ti_codBarra"/>
+	<mx:Label x="190" y="64" text="Cód. Barra:"/>
+	<mx:TextInput x="271" y="62" maxChars="20" width="166" id="ti_codBarra"/>
 
 	
-	<mx:Label x="10" y="142" text="Grupo:"/>
-	<mx:ComboBox x="99" selectedIndex="-1" y="139" width="166" dataProvider="{this.itensGrupo}" labelField="descricao" id="cb_grupo"></mx:ComboBox>
+	<mx:Label x="10" y="97" text="Grupo:"/>
+	<mx:ComboBox x="99" selectedIndex="-1" y="94" width="166" dataProvider="{this.itensGrupo}" labelField="descricao" id="cb_grupo"></mx:ComboBox>
 
 
-	<mx:Label x="273" y="142" text="Referência:"/>
-	<ns2:TextoInput x="357" y="140" width="192" maxChars="250" id="ti_referencia"/>
+	<mx:Label x="273" y="97" text="Referência:"/>
+	<ns2:TextoInput x="357" y="95" width="192" maxChars="250" id="ti_referencia"/>
 	
-	<mx:Label x="10" y="172" text="Descrição:"/>
-	<ns2:TextoInput x="99" y="170" width="450" id="ti_descricao"/>
+	<mx:Label x="10" y="127" text="Descrição:"/>
+	<ns2:TextoInput x="99" y="125" width="450" id="ti_descricao"/>
 	
-	<mx:Label x="10" y="205" text="Local:"/>
-	<mx:ComboBox x="99" selectedIndex="-1" y="202" width="166" dataProvider="{this.itensLocal}" labelField="descricao" id="cb_local"></mx:ComboBox>
-	
-	
-	<mx:ComboBox x="335" selectedIndex="-1" dataProvider="{this.itensUnidade}" labelField="descricao" y="202" width="64" id="cb_unidade"/>
-	<mx:Label x="273" y="205" text="Unidade:"/>
-	
-	<mx:Label x="407" y="205" text="Itens por UN:"/>
-	<ns2:InteiroInput x="505" y="203" width="44" id="ti_qtdUnidade"/>
-	
-	<mx:Label x="10" y="235" text="Fornecedor:"/>
-	<ns2:InteiroInput x="99" y="233" width="94" id="ti_codFornecedor"/>
-	<ns1:BuscarButton x="201" y="234" click="{this.procurarFornecedor()}" height="21"/>
-	<mx:Label x="319" y="235" width="230" id="ti_nomeFornecedor"/>
+	<mx:Label x="10" y="160" text="Local:"/>
+	<mx:ComboBox x="99" selectedIndex="-1" y="157" width="166" dataProvider="{this.itensLocal}" labelField="descricao" id="cb_local"></mx:ComboBox>
 	
 	
-	<mx:Label x="10" y="281" text="Qtd. Estoque:"/>
-	<ns2:InteiroInput x="110" y="279" width="49" id="ti_qtdEstoque"/>
+	<mx:ComboBox x="335" selectedIndex="-1" dataProvider="{this.itensUnidade}" labelField="descricao" y="157" width="64" id="cb_unidade"/>
+	<mx:Label x="273" y="160" text="Unidade:"/>
 	
-	<mx:Label x="178" y="281" text="Preco de Compra:"/>
-	<ns2:NumberInput x="304" y="279" width="60" id="ti_pCompra"/>
+	<mx:Label x="407" y="160" text="Itens por UN:"/>
+	<ns2:InteiroInput x="505" y="158" width="44" id="ti_qtdUnidade"/>
 	
-	<mx:Label x="372" y="281" text="Preco de Venda:"/>
-	
-	<ns2:NumberInput x="489" y="279" width="60" id="ti_pVenda"/>
-	
-	
-	<ns1:SalvarButton id="add" x="10" y="311" click="{this.adicionar()}"/>
-	<ns1:ExcluirButton id ="bt_remover"  x="136" y="311" click="{this.removerItem()}" enabled="false"/>
-	<ns1:LimparButton x="257" y="311" click="{this.limpar()}"/>
+	<mx:Label x="10" y="204" text="Fornecedor:"/>
+	<mx:Label x="99" y="202" width="272" id="ti_nomeFornecedor"/>
+	<ns1:BuscarButton x="379" y="200" click="{this.procurarFornecedor()}" height="24" label="Buscar Fornecedor"/>
 	
 	
+	<mx:Label x="335" y="236" text="Qtd. Estoque:" height="18" width="142" color="#000000" fontSize="12" fontWeight="bold"/>
+	<mx:Label x="335" y="262" width="142" id="ti_qtdEstoque" height="24" color="#FF0000" fontSize="12"/>
 	
-	<mx:Panel title="Imagem Produto" x="563" y="10" layout="absolute" height="325" width="280">
+	<mx:Label x="10" y="234" text="Preco de Compra:"/>
+	<ns2:NumberInput x="10" y="262" width="118" id="ti_pCompra"/>
+	
+	<mx:Label x="171" y="236" text="Preco de Venda:"/>
+	
+	<ns2:NumberInput x="171" y="262" width="109" id="ti_pVenda"/>
+	
+	
+	<ns1:SalvarButton id="add" x="3" y="311" click="{this.adicionar()}"/>
+	<ns1:ExcluirButton id ="bt_remover"  x="129" y="311" click="{this.removerItem()}" enabled="false"/>
+	<ns1:LimparButton x="250" y="311" click="{this.limpar()}"/>
+	
+	
+	
+	<mx:Panel title="Imagem Produto" x="563" y="10" layout="absolute" height="331" width="280">
 		<mx:Image x="10" y="10" id="img_produto" width="239" height="189" source="icons/branco.png"/>	
 		<mx:Label width="239" id="ti_foto" x="10" y="207"/>
 		<ns1:BuscarButton click="{this.browser()}" height="23" x="34" y="235"/>
 	</mx:Panel>
-
-
-	<mx:DataGrid x="10" y="358" id = "grid_itens" dataProvider="{this.itensArray}" change="{this.itemSelecionado(event)}" width="833" height="172">
-		<mx:columns>
-			<mx:DataGridColumn headerText="Código" dataField="codigo"/>
-			<mx:DataGridColumn headerText="Descrição" dataField="descricao"/>
-			<mx:DataGridColumn headerText="Referência" dataField="referencia"/>
-		</mx:columns>
-	</mx:DataGrid>
 	
 	
-</mx:Window>
+</mx:TitleWindow>

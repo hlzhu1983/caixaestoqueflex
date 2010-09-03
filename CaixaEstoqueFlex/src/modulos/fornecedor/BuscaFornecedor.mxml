@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
+	width="612" height="366" xmlns:inputs="utilidades.inputs.*" 
+	xmlns:botoes="utilidades.botoes.*" title="Busca Fornecedores" showCloseButton="true" close="{this.fechar(event)}">
+	
+	<mx:Metadata>
+		[Event(name='fornecedorSelecionadoEvent',type='events.FornecedorEvent')]
+	</mx:Metadata>
+
+	
+	<mx:Script>
+		<![CDATA[
+			import events.FornecedorEvent;
+			import negocio.vo.FornecedorVO;
+			import mx.events.ListEvent;
+			import mx.managers.PopUpManager;
+			import mx.controls.Alert;
+			import mx.rpc.events.ResultEvent;
+			import mx.collections.ArrayCollection;
+			import negocio.remote.Remote;
+			
+			[Bindable]
+			private var array_fornecedor:ArrayCollection;
+			
+			
+			private var ro:Remote = Remote.getInstance();
+			
+			
+			private function filtrarFornecedor():void{
+				var array_String:ArrayCollection = new ArrayCollection();
+				if(this.ti_nome.text !=""){
+					array_String.addItem("nome like '%"+this.ti_nome.text+"%'");
+				}
+				if(this.ti_codigo.text !=""){
+					array_String.addItem("codigo like '%"+this.ti_codigo.text+"%'");
+				}
+				if(this.ti_CPFCNPJ.text !=""){
+					array_String.addItem("CPFCNPJ like '%"+this.ti_CPFCNPJ.text+"%'");
+				}
+				if(this.ti_telefone.text !=""){
+					array_String.addItem("fone like '%"+this.ti_telefone.text+"%'");
+				}
+				
+				if(array_String.length == 0){
+					this.ro.listarFornecedor(result_filtrarFornecedor);
+				}else{
+					this.ro.filtrarFornecedores(result_filtrarFornecedor,array_String);
+				}
+				
+			}
+			
+			
+			private function result_filtrarFornecedor(event:ResultEvent):void{
+				this.array_fornecedor = event.result as ArrayCollection;
+				if(this.array_fornecedor.length == 0){
+					Alert.show("A pesquisa não retornou resultado!","Ops!",4,this);
+				}								
+			}
+			
+			private function selecionarItem(event:ListEvent):void{
+				if(event.rowIndex == -1){
+					Alert.show("Fornecedor não selecinado!","Ops!",4,this);					
+				}else{
+					this.dispatchEvent(new FornecedorEvent(event.itemRenderer.data as FornecedorVO,FornecedorEvent.FORNECEDORSELECIONADO));
+					PopUpManager.removePopUp(this);	
+				}				
+				
+			}
+			
+			private function fechar(event:Event):void{
+				PopUpManager.removePopUp(this);	
+			}
+			
+		]]>
+	</mx:Script>
+	
+	
+	
+	<inputs:TextoInput x="11" y="36" width="281" id="ti_nome" maxChars="255"/>
+	<inputs:InteiroInput x="10" y="89" width="84" id="ti_codigo" maxChars="8"/>
+	<inputs:InteiroInput x="310" y="91" id="ti_telefone" maxChars="10"/>
+	<inputs:InteiroInput x="116" y="89" width="176" id="ti_CPFCNPJ" maxChars="14"/>
+	<botoes:BuscarButton x="437" y="32" click="{this.filtrarFornecedor()}"/>
+	<mx:Label x="10" y="10" text="Nome:"/>
+	<mx:Label x="10" y="63" text="Código:"/>
+	<mx:Label x="116" y="63" text="CPF/CNPJ:"/>
+	<mx:Label x="310" y="65" text="Telefone:"/>
+	
+	<mx:DataGrid id="grid_fornecedor" x="10" y="132" height="168" width="572" 
+		dataProvider="{this.array_fornecedor}" doubleClickEnabled="true" itemDoubleClick="{this.selecionarItem(event)}">
+		<mx:columns>
+			<mx:DataGridColumn headerText="Código" dataField="codigo"/>
+			<mx:DataGridColumn headerText="Nome" dataField="nome"/>
+			<mx:DataGridColumn headerText="CPF/CNPJ" dataField="cpf_cnpj"/>
+			<mx:DataGridColumn headerText="Telefone" dataField="fone"/>
+		</mx:columns>
+	</mx:DataGrid>
+	
+</mx:TitleWindow>

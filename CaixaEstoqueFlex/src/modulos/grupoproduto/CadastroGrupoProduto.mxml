@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" close="fechar()" creationComplete="init()" showCloseButton="true" layout="absolute" title="Gerenciamento Grupo de Produtos" xmlns:utilidades="utilidades.*" xmlns:botoes="utilidades.botoes.*" xmlns:inputs="utilidades.inputs.*" borderColor="#D2D2D2" width="442">
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" close="fechar()" 
+	creationComplete="init()" showCloseButton="true"
+	 layout="absolute" title="Gerenciamento Grupo de Produtos" 
+	 xmlns:utilidades="utilidades.*" xmlns:botoes="utilidades.botoes.*" 
+	 xmlns:inputs="utilidades.inputs.*" borderColor="#D2D2D2" paddingBottom="10" width="100%" height="381">
 	
 	<mx:Script>
 		<![CDATA[
@@ -24,6 +28,7 @@
 			private var ro:Remote = Remote.getInstance();
 			
 			private function init():void{
+				this.ro.parent = this;
 				this.listarAllGrupoProdutos();
 			}
 			
@@ -33,10 +38,19 @@
 					Alert.show("Campo descrição obrigatorio!","Ops!");
 				}else{
 					u.descricao = this.descInput.text;
-					this.ro.addGrupoProduto(resultadoAddGrupoProduto,u);
+					if(this.codInput.text == ""){
+						this.ro.addGrupoProduto(resultadoAddGrupoProduto,u);
+					}else{
+						u.codigo = Number(this.codInput.text);
+						this.ro.addGrupoProduto(result_atualizarGrupoProduto,u);
+					}
 				}
-				
-				
+			}
+			
+			private function result_atualizarGrupoProduto(event:ResultEvent):void{
+				this.grupoProdutosArray.setItemAt(event.result,this.grupoProdutoGrid.selectedIndex);
+				Alert.show("O item foi atualizado!","Sucesso!");
+				this.limparCampos();
 			}
 			
 			private function resultadoAddGrupoProduto(event:ResultEvent):void{
@@ -51,9 +65,7 @@
 			}
 			
 			private function resultListarGrupoProdutos(event:ResultEvent):void{
-								
-				this.grupoProdutosArray = new ArrayCollection(event.result as Array);
-				
+				this.grupoProdutosArray = event.result as ArrayCollection;
 			}
 			
 			public function grupoProdutoSelecionado(event:Event):void{
@@ -68,10 +80,12 @@
 			
 			
 			private function removerGrupoProduto():void{
-				this.grupoProduto = this.grupoProdutoGrid.selectedItem as GrupoProdutoVO;
-				this.ro.removerGrupoProduto(resultadoRemoverGrupoProduto, this.grupoProduto);
-				
-				
+				if(this.grupoProdutoGrid.selectedIndex == -1){
+					Alert.show("Não há item selecionado!","Ops!",4,this)
+				}else{
+					this.grupoProduto = this.grupoProdutoGrid.selectedItem as GrupoProdutoVO;
+					this.ro.removerGrupoProduto(resultadoRemoverGrupoProduto, this.grupoProduto);
+				}
 			}
 			
 			private function resultadoRemoverGrupoProduto(event:ResultEvent):void{
@@ -101,7 +115,7 @@
 			}
 			
 			private function resultadoPesquisaItem(event:ResultEvent):void{
-				this.grupoProdutosArray = new ArrayCollection(event.result as Array);
+				this.grupoProdutosArray = event.result as ArrayCollection;
 			}
 			
 			
@@ -131,7 +145,7 @@
 		</mx:HBox>
 			
 	</mx:FormItem>	
-	<botoes:BuscarButton id="bt_buscar" x="324" y="10" click="{this.pesquisarItem()}"/>		
+	<botoes:BuscarButton id="bt_buscar" x="328" y="10" click="{this.pesquisarItem()}"/>		
 	
 		<mx:FormItem label="Código" x="10" y="80" >		
 			<mx:Label id="codInput"/>
@@ -141,12 +155,12 @@
 			<inputs:TextoInput id="descInput" requerido="true"/>
 		</mx:FormItem>
 	
-		<botoes:SalvarButton id="add" click="addGrupoProduto()" x="136" y="68"/>
-		<botoes:ExcluirButton id="remover" click="removerGrupoProduto()"  enabled="false" x="231" y="68"/>
+		<botoes:SalvarButton id="add" click="addGrupoProduto()" x="131" y="68"/>
+		<botoes:ExcluirButton id="remover" click="removerGrupoProduto()"  enabled="false" x="228" y="68"/>
 		<botoes:LimparButton  x="324" y="68" click="{this.limparCampos()}"/>
 	
 	
-		<mx:DataGrid x="0" y="169" width="388" id="grupoProdutoGrid" change="{grupoProdutoSelecionado(event)}" dataProvider="{this.grupoProdutosArray}">
+		<mx:DataGrid x="10" y="150" width="406" id="grupoProdutoGrid" change="{grupoProdutoSelecionado(event)}" dataProvider="{this.grupoProdutosArray}" height="179">
 			<mx:columns>
 				<mx:DataGridColumn headerText="Código" dataField="codigo"/>
 				<mx:DataGridColumn headerText="Descrição" dataField="descricao"/>			

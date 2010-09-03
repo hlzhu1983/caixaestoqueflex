@@ -53,48 +53,14 @@
 			}
 			
 			private function preencheFornecedor(event:ResultEvent):void{
-			 	var a:ArrayCollection = new ArrayCollection(event.result as Array);
+			 	var a:ArrayCollection = event.result as ArrayCollection;
 				var l:FornecedorVO = new FornecedorVO();
 			 	l.nome = "";
 			 	a.addItemAt(l,0);
 			 	this.itensFornecedor = a;
 			}
 			
-			public function filtarFornecedor():void{
-				if(this.cb_fornecedor.selectedIndex == 0){
-					this.sql[3] = "";
-				}else{
-					this.sql[3] = "codFornecedor = '"+this.itensFornecedor.getItemAt(this.cb_fornecedor.selectedIndex).codigo+"'";
-					this.pesquisarProduto();
-				}
-			}
 			
-			public function filtarUN():void{
-				if(this.cb_unidade.selectedIndex == 0){
-					this.sql[4] = "";
-				}else{
-					this.sql[4] = "codUnidade = '"+this.itensUnidade.getItemAt(this.cb_unidade.selectedIndex).codigo+"'";
-					this.pesquisarProduto();
-				}
-			}
-			
-			public function filtarGrupo():void{
-				if(this.cb_grupo.selectedIndex == 0){
-					this.sql[5] = "";
-				}else{
-					this.sql[5] = "codGrupo = '"+this.itensGrupo.getItemAt(this.cb_grupo.selectedIndex).codigo+"'";
-					this.pesquisarProduto();
-				}
-			}
-			
-			public function filtarLocal():void{
-				if(this.cb_local.selectedIndex == 0){
-					this.sql[6] = "";
-				}else{
-					this.sql[6] = "codLocal = '"+this.itensLocal.getItemAt(this.cb_local.selectedIndex).codigo+"'";
-					this.pesquisarProduto();
-				}
-			}
 			
 			
 			public function resultListaProduto(e:ResultEvent):void{
@@ -102,12 +68,12 @@
 					this.itensProduto = new ArrayCollection();
 					Alert.show("A pesquisa não retornou resultado!","Ops!",4,this);
 				}else{
-					this.itensProduto = new ArrayCollection(e.result as Array);
+					this.itensProduto = e.result as ArrayCollection;
 				}
 			}
 			
 			private function preencheCBUnidade(event:ResultEvent):void{
-				 var a:ArrayCollection = new ArrayCollection(event.result as Array);
+				 var a:ArrayCollection = event.result as ArrayCollection;
 				var l:UnidadeVO = new UnidadeVO();
 			 	l.descricao = "";
 			 	a.addItemAt(l,0);
@@ -115,14 +81,14 @@
 			
 			}
 			private function preencheCBGrupo(event:ResultEvent):void{
-			  	var a:ArrayCollection = new ArrayCollection(event.result as Array);
+			  	var a:ArrayCollection = event.result as ArrayCollection;
 				var l:GrupoProdutoVO = new GrupoProdutoVO();
 			 	l.descricao = "";
 			 	a.addItemAt(l,0);
 			 	this.itensGrupo = a;
 			}
 			private function preencheCBLocal(event:ResultEvent):void{
-			 var a:ArrayCollection = new ArrayCollection(event.result as Array);
+			 var a:ArrayCollection = event.result as ArrayCollection;
 			 var l:LocalProdutoVO = new LocalProdutoVO();
 			 l.descricao = "";
 			 a.addItemAt(l,0);
@@ -139,24 +105,38 @@
 				
 			}
 			
+			
+			
 			public function pesquisarProduto():void{
 				
+				var sql:ArrayCollection = new ArrayCollection();
+				
 				if(this.ti_descricao.text !=""){
-					this.sql[0] = "descricao like '%"+this.ti_descricao.text+"%'";
-				}else{
-					this.sql[0] = "";
+					sql.addItem("descricao like '%"+this.ti_descricao.text+"%'");
 				}
 				if(this.ti_precoVenda.text !="0,00"){
-					this.sql[1] = "precoVenda = "+this.ti_precoVenda.getValor();
-				}else{
-					this.sql[1] = "";
+					sql.addItem("precoVenda = "+this.ti_precoVenda.getValor());
 				}
 				if(this.ti_referencia.text !=""){
-					this.sql[2] = "referencia like '%"+this.ti_referencia.text+"%'";
-				}else{
-					this.sql[2] = "";
+					sql.addItem("referencia like '%"+this.ti_referencia.text+"%'");
 				}
-					this.ro.filtroProduto(resultListaProduto,this.sql);
+				if(this.cb_fornecedor.selectedIndex != 0){					
+					sql.addItem("codFornecedor = '"+this.itensFornecedor.getItemAt(this.cb_fornecedor.selectedIndex).codigo+"'");
+				}
+				if(this.cb_unidade.selectedIndex != 0){					
+					sql.addItem("codUnidade = '"+this.itensUnidade.getItemAt(this.cb_unidade.selectedIndex).codigo+"'");
+				}
+				if(this.cb_grupo.selectedIndex != 0){					
+					sql.addItem("codGrupo = '"+this.itensGrupo.getItemAt(this.cb_grupo.selectedIndex).codigo+"'");
+				}
+				if(this.cb_local.selectedIndex != 0){
+					sql.addItem("codLocal = '"+this.itensLocal.getItemAt(this.cb_local.selectedIndex).codigo+"'");
+				}
+				if(sql.length == 0){
+					this.ro.listarProduto(resultListaProduto);
+				}else{
+					this.ro.filtrarProdutos(resultListaProduto,sql);
+				}
 			}
 			
 		]]>
@@ -173,13 +153,13 @@
 		</mx:FormItem>
 		<mx:Panel x="0" y="82" width="100%" height="155" layout="absolute" title="Filtros">
 			<mx:Label text="Fornecedor: " y="12" x="19"/>
-			<mx:ComboBox id="cb_fornecedor"  change="{this.filtarFornecedor()}" editable="false"  dataProvider="{this.itensFornecedor}" labelField="nome" x="102" y="10"/>
+			<mx:ComboBox id="cb_fornecedor"  change="{this.pesquisarProduto()}" editable="false"  dataProvider="{this.itensFornecedor}" labelField="nome" x="102" y="10"/>
 			<mx:Label text="Local:" x="468.5" y="14"/>
-			<mx:ComboBox id="cb_local"  editable="true" change="{this.filtarLocal()}" dataProvider="{this.itensLocal}" labelField="descricao" x="514.5" y="12"/>
+			<mx:ComboBox id="cb_local"  editable="true" change="{this.pesquisarProduto()}" dataProvider="{this.itensLocal}" labelField="descricao" x="514.5" y="12"/>
 			<mx:Label text="Grupo:" x="463.5" y="57"/>
-			<mx:ComboBox  id="cb_grupo" editable="true" change="{this.filtarGrupo()}" dataProvider="{this.itensGrupo}" labelField="descricao" x="514.5" y="53"/>
+			<mx:ComboBox  id="cb_grupo" editable="true" change="{this.pesquisarProduto()}" dataProvider="{this.itensGrupo}" labelField="descricao" x="514.5" y="53"/>
 			<mx:Label text="Unidade:" x="19" y="55"/>
-			<mx:ComboBox  id="cb_unidade" editable="true" change="{this.filtarUN()}" dataProvider="{this.itensUnidade}" labelField="descricao" x="102" y="53"/>
+			<mx:ComboBox  id="cb_unidade" editable="true" change="{this.pesquisarProduto()}" dataProvider="{this.itensUnidade}" labelField="descricao" x="102" y="53"/>
 		</mx:Panel>
 		
 		<botoes:BuscarButton  id="bt_pesquisar" x="604" y="14" click="{this.pesquisarProduto()}"/>
