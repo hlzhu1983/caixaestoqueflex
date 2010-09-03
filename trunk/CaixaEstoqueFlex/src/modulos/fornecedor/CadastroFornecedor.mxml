@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
 	 layout="absolute" xmlns:ns1="utilidades.inputs.*" 
-	 creationComplete="{this.listarAllItems()}"
+	 creationComplete="{this.init()}"
 	 title="Gerenciador Fornecedores" 
 	 showCloseButton="true"
 	 close="{this.fechar()}"
-	 xmlns:botoes="utilidades.botoes.*" fontSize="12" width="890" height="560" xmlns:utilidades="utilidades.*" borderColor="#D2D2D2">
+	 xmlns:botoes="utilidades.botoes.*" fontSize="12" width="890" height="598" xmlns:utilidades="utilidades.*" borderColor="#D2D2D2">
 	
 		<mx:Script>
 		<![CDATA[
@@ -63,6 +63,7 @@
 			private var ro:Remote = Remote.getInstance();
 			
 			private function init():void{
+				this.ro.parent = this;
 				this.listarAllItems();
 			}
 			
@@ -71,41 +72,25 @@
 				if(this.ti_nome.validador.validate().type == ValidationResultEvent.INVALID){
 					Alert.show("Campo nome obrigatorio!","Ops!");
 				}else{
-					if(this.ti_codigo.text==""){
-						u.nome = this.ti_nome.text;
-						u.bairro = this.ti_bairro.text;
-						u.cep = this.ti_cep.text;
-						u.cidade = this.ti_cidade.text;
-						u.contato = this.ti_contato.text;
-						u.cpf_cnpj = this.ti_cpf_cnpj.text;
-						u.email = this.ti_email.text;
-						u.endereco = this.ti_endereco.text;
-						u.fone = this.ti_fone.text;
-						u.insc_estadual = this.ti_inscEstadual.text;
-						u.obs = this.obs.text;
-						u.UF = this.estado.selectedItem.data;
-						u.url = this.ti_url.text;
-						u.avaliacao = this.avaliacao.text;
+					u.nome = this.ti_nome.text;
+					u.bairro = this.ti_bairro.text;
+					u.cep = this.ti_cep.text;
+					u.cidade = this.ti_cidade.text;
+					u.contato = this.ti_contato.text;
+					u.cpf_cnpj = this.ti_cpf_cnpj.text;
+					u.email = this.ti_email.text;
+					u.endereco = this.ti_endereco.text;
+					u.fone = this.ti_fone.text;
+					u.insc_estadual = this.ti_inscEstadual.text;
+					u.obs = this.obs.text;
+					u.UF = this.estado.selectedItem.data;
+					u.url = this.ti_url.text;
+					u.avaliacao = this.avaliacao.text;
+					if(this.ti_codigo.text == ""){
 						this.ro.addFornecedor(resultadoAddItem,u);
-					}
-					if(this.ti_codigo.text!=""){
-						u.nome = this.ti_nome.text;
-						u.bairro = this.ti_bairro.text;
-						u.cep = this.ti_cep.text;
-						u.cidade = this.ti_cidade.text;
-						u.contato = this.ti_contato.text;
-						u.cpf_cnpj = this.ti_cpf_cnpj.text;
-						u.email = this.ti_email.text;
-						u.endereco = this.ti_endereco.text;
-						u.fone = this.ti_fone.text;
-						u.insc_estadual = this.ti_inscEstadual.text;
-						u.obs = this.obs.text;
-						u.UF = this.estado.selectedItem.data;
-						u.url = this.ti_url.text;
-						u.codigo = Number(this.ti_codigo.text);
-						u.avaliacao = this.avaliacao.text;
-						this.itensArray.setItemAt(u,grid_itens.selectedIndex)
-						this.ro.atualizarFornecedor(resultadoAtualizarItem,u);
+					}else{		
+						u.codigo = int(this.ti_codigo.text);
+						this.ro.addFornecedor(resultadoAtualizarItem,u);
 					}
 				}
 			}
@@ -137,7 +122,7 @@
 			
 			private function resultListarItens(event:ResultEvent):void{
 								
-				this.itensArray = new ArrayCollection(event.result as Array);
+				this.itensArray = event.result as ArrayCollection;
 				
 			}
 			
@@ -189,7 +174,6 @@
 				if(this.ti_pesquisa.text == ""){
 					this.listarAllItems();
 				}else if(this.ti_pesquisa.validador.validate().type == ValidationResultEvent.VALID ){
-					
 					if(this.radio_codigo.selected){
 						this.ro.pesquisarFornecedor(resultadoPesquisaItem,this.ti_pesquisa.text,"codigo");
 					}else if(this.radio_nome.selected){
@@ -206,7 +190,7 @@
 			}
 			
 			private function resultadoPesquisaItem(event:ResultEvent):void{
-				this.itensArray = new ArrayCollection(event.result as Array);
+				this.itensArray = event.result as ArrayCollection;
 			}
 			
 			
@@ -247,7 +231,7 @@
 		]]>
 	</mx:Script>
 		
-	<mx:FormItem defaultButton="{this.bt_buscar}" label="Pesquisa" x="10" y="10"  width="624">
+	<mx:FormItem defaultButton="{this.bt_buscar}" label="Pesquisa" x="10" y="10"  width="411">
 		<ns1:TextoInput x="10" y="10" requerido="true" width="225" id="ti_pesquisa"  isEnter="false"/>
 		<mx:HBox width="100%" height="100%">
 			<mx:RadioButtonGroup id="grupo_pesquisa"/>
@@ -258,7 +242,7 @@
 		</mx:HBox>
 			
 	</mx:FormItem>	
-	<botoes:BuscarButton id="bt_buscar" x="312" y="10" click="{this.pesquisarItem()}"/>		
+	<botoes:BuscarButton id="bt_buscar" x="429" y="10" click="{this.pesquisarItem()}" height="27"/>		
 	
 	<mx:Label x="10" y="74" text="Codigo:"/>
 	<mx:Label id="ti_codigo" width="81" x="10" y="94" height="20" fontWeight="bold"/>
@@ -314,11 +298,11 @@
 	
 	
 	<botoes:SalvarButton id="add" x="707" y="20" click="{this.addItem()}" width="125"/>
-<botoes:ExcluirButton id="remover" enabled="false" x="707" y="50" click="{this.removerItem()}"  width="125"/>	
-	<botoes:LimparButton  x="707" label="Limpar" y="80" click="{this.limparCampos()}" width="125"  textAlign="left"/>			
+<botoes:ExcluirButton id="remover" enabled="false" x="707" y="53" click="{this.removerItem()}"  width="125"/>	
+	<botoes:LimparButton  x="707" label="Limpar" y="89" click="{this.limparCampos()}" width="125"  textAlign="left"/>			
 	
 	
-	<mx:DataGrid id="grid_itens" x="13" y="368" width="847" dataProvider="{this.itensArray}" change="{this.itemSelecionado(event)}">
+	<mx:DataGrid id="grid_itens" x="13" y="368" width="838" dataProvider="{this.itensArray}" change="{this.itemSelecionado(event)}">
 		<mx:columns>
 			<mx:DataGridColumn headerText="Código: " dataField="codigo"/>
 			<mx:DataGridColumn headerText="Nome: " dataField="nome"/>

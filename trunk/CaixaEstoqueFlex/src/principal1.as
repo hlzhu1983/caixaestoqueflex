@@ -21,8 +21,6 @@
 	import mx.effects.Move;
 	import mx.events.ItemClickEvent;
 	import mx.events.ListEvent;
-	import mx.printing.FlexPrintJob;
-	import mx.printing.FlexPrintJobScaleType;
 	
 	import negocio.vo.UsuarioVO;
 	
@@ -245,14 +243,8 @@
 	}
 	
 	public function gerProduto():void{
-		
-		var newWindow:Window = new ProdutoWindow();
-		newWindow.maximizable=false;
-		newWindow.minimizable = false;
-		newWindow.resizable = false;		
-		newWindow.open(false);
-		newWindow.activate();
-		}
+		Util.abrePopUp(this,ProdutoWindow,true);
+	}
 		
 	public function gerUsuario():void{		
 		Util.abrePopUp(this,CadastroUsuario,true);

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" close="fechar()" creationComplete="init()" showCloseButton="true" layout="absolute" title="Gerenciamento Forma de Pagamentos" xmlns:utilidades="utilidades.*" xmlns:botoes="utilidades.botoes.*" xmlns:inputs="utilidades.inputs.*" borderColor="#D2D2D2" width="452">
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" close="fechar()" creationComplete="init()" showCloseButton="true" layout="absolute" title="Gerenciamento Forma de Pagamentos" xmlns:utilidades="utilidades.*" xmlns:botoes="utilidades.botoes.*" xmlns:inputs="utilidades.inputs.*" borderColor="#D2D2D2" width="452" height="342">
 	
 	<mx:Script>
 		<![CDATA[
@@ -38,11 +38,21 @@
 						this.ro.addFormadePagto(resultadoAddFormadePagto,u);
 					}else{
 						u.codigo = Number(this.codInput.text);
-						this.ro.addFormadePagto(resultadoAddFormadePagto,u);
+						if(this.codInput.text == ""){
+							this.ro.addFormadePagto(resultadoAddFormadePagto,u);
+						}else{
+							u.codigo = Number(this.codInput.text);
+							this.ro.atualizarFormadePagto(result_atualizarFormadePagto,u);
+						}
 					}
 				}
 				
-				
+			}
+			
+			private function result_atualizarFormadePagto(event:ResultEvent):void{
+				this.formadepagtosArray.setItemAt(event.result,this.formadepagtoGrid.selectedIndex);
+				Alert.show("O item foi atualizado!","Sucesso!");
+				this.limparCampos();
 			}
 			
 			private function result_atualizarFormaPgto(event:ResultEvent):void{
@@ -155,7 +165,7 @@
 		<botoes:LimparButton  x="330" y="68" click="{this.limparCampos()}"/>
 		
 		
-		<mx:DataGrid x="10" y="140" width="412" id="formadepagtoGrid" change="{formadepagtoSelecionado(event)}" dataProvider="{this.formadepagtosArray}">
+		<mx:DataGrid x="10" y="140" width="412" id="formadepagtoGrid" change="{formadepagtoSelecionado(event)}" dataProvider="{this.formadepagtosArray}" height="152">
 			<mx:columns>
 				<mx:DataGridColumn headerText="Código" dataField="codigo" width="50"/>
 				<mx:DataGridColumn headerText="Descrição" dataField="descricao"/>			
