@@ -13,9 +13,6 @@ public class ServicosUnidade {
 				+ unidade.descricao + "')";
 
 		Statement st;
-		if (this.isExiste(unidade)) {
-			throw new RuntimeException("Unidade ja existe!");
-		}
 		this.banco.conectar();
 		this.banco.getConexao().setAutoCommit(false);
 		st = this.banco.getConexao().createStatement();
@@ -46,9 +43,6 @@ public class ServicosUnidade {
 		String sql = "UPDATE unidade SET descricao = '"
 				+ unidade.descricao + "' wher codigo = "
 				+ unidade.codigo + "";
-		if (!this.isExiste(unidade)) {
-			throw new RuntimeException("Unidade não existe!");
-		}
 		if (banco.executarNoQuery(sql) == 0) {
 			throw new RuntimeException("Erro ao atualizar unidade!");
 		}

@@ -3,7 +3,7 @@ import arquitetura.BancoDeDados;
 
 
 
-class ServicosOrcamento {
+public class ServicosOrcamento {
 	
 	private BancoDeDados banco;
 	
