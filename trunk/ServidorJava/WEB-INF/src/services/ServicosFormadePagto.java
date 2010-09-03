@@ -14,9 +14,6 @@ public class ServicosFormadePagto {
 				+ formadepgto.descricao + "')";
 		Statement st;
 		this.banco.conectar();
-		if (this.isExiste(formadepgto)) {
-			throw new RuntimeException("Forma de pagamento ja existe!");
-		}
 		this.banco.getConexao().setAutoCommit(false);
 		st = this.banco.getConexao().createStatement();
 		if (st.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS) == 0) {
@@ -32,20 +29,6 @@ public class ServicosFormadePagto {
 
 	}
 
-	public FormadePagtoVO atualizarFormadePagto(FormadePagtoVO formaPagamento) {
-		String sql = "UPDATE formadepgto SET descricao = '"
-				+ formaPagamento.descricao + "' wher codigo = "
-				+ formaPagamento.codigo + "";
-		if (!this.isExiste(formaPagamento)) {
-			throw new RuntimeException("Forma de pagamento não existe!");
-		}
-		if (banco.executarNoQuery(sql) == 0) {
-			throw new RuntimeException("Erro ao atualizar forma de pagamento!");
-		}
-		return formaPagamento;
-
-	}
-
 	public boolean removerFormadePagto(FormadePagtoVO formadepgto) {
 		String sql = "delete from formadepgto  where codigo = "
 				+ formadepgto.codigo + "";
@@ -53,6 +36,17 @@ public class ServicosFormadePagto {
 			return false;
 		}
 		return true;
+	}
+
+	public FormadePagtoVO atualizarFormadePagto(FormadePagtoVO formaPagamento) {
+		String sql = "UPDATE formadepgto SET descricao = '"
+				+ formaPagamento.descricao + "' where codigo = "
+				+ formaPagamento.codigo + "";
+		if (banco.executarNoQuery(sql) == 0) {
+			throw new RuntimeException("Erro ao atualizar forma de pagamento!");
+		}
+		return formaPagamento;
+
 	}
 
 	public ArrayList<FormadePagtoVO> pesquisarFormadePagto(String texto,
@@ -73,20 +67,18 @@ public class ServicosFormadePagto {
 			throws SQLException {
 		ArrayList<FormadePagtoVO> fp = new ArrayList<FormadePagtoVO>();
 		while (rs.next()) {
-			if (rs.getInt("codigo") != 0) {
-				FormadePagtoVO dados_item = new FormadePagtoVO();
-				dados_item.codigo = rs.getInt("codigo");
-				dados_item.descricao = rs.getString("descricao");
-				fp.add(dados_item);
-			}
+			FormadePagtoVO dados_item = new FormadePagtoVO();
+			dados_item.codigo = rs.getInt("codigo");
+			dados_item.descricao = rs.getString("descricao");
+			fp.add(dados_item);
 		}
 		return fp;
 
 	}
 
 	public boolean isExiste(FormadePagtoVO formadepgto) {
-		String sql = "select * from formadepgto where descricao = '"
-				+ formadepgto.descricao + "'";
+		String sql = "select * from formadepgto where codigo = '"
+				+ formadepgto.codigo + "'";
 		ResultSet rs;
 		rs = this.banco.executar(sql);
 		if (rs.next())

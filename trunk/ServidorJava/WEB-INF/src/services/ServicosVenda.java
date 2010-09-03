@@ -1,19 +1,9 @@
-<?php
+package services;
 
-//include 'app/db/BaseDados.php';
-include 'app/vo/VendaVO.php';
-
-class ServicosVenda {
+public  class ServicosVenda {
 		
-	function ServicosVenda(){
-		$db = new BaseDados();
-		$this->conn = $db->conn;
-	}
-	
 	
 	public function abrirVenda(VendaVO $item){
-		$f = fopen('log.txt','w+');
-		fwrite($f,'inicio');
 		$sql = "insert into venda (codUsuario,codPreVenda,status,dataVenda) values ('$item->codUsuario', '$item->codPreVenda','0' ,now())";
 		fwrite($f,$sql);
 		$this->conn->StartTrans();

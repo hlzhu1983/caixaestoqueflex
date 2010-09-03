@@ -2,7 +2,7 @@ import vo.PreVendaVO;
 import arquitetura.BancoDeDados;
 
 
-class ServicosPreVenda {
+public class ServicosPreVenda {
 	
 	
 private BancoDeDados banco;

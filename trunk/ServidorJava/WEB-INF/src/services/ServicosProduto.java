@@ -1,201 +1,51 @@
 package services;
+
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Map;
+import java.sql.Statement;
+import java.util.ArrayList;
 
+import vo.FormadePagtoVO;
 import vo.ProdutoVO;
-import arquitetura.BancoDeDados;
 
 
-class ServicosProduto {
-	
-	
-	private BancoDeDados banco;
-	
+public class ServicosProduto {
 	
 	
 	public ProdutoVO addProduto(ProdutoVO item){
-		
 		String sql = "insert into produto (codBarra,codGrupo,descricao ,referencia ,codLocal ,codUnidade ,qtdPorUnidade ,qtdEmEstoque ,codFornecedor ,precoCompra ,precoVenda,foto) values ('"+item.codBarra+"' ,"+item.codGrupo+" ,'"+item.descricao+"'"+
 	 ",'"+item.referencia+"' ,"+item.codLocal+""+
 		" ,"+item.codUnidade+" ,"+item.qtdPorUnidade+""+
 		 ","+item.qtdEmEstoque+" ,"+item.codFornecedor+""+
 		 ","+item.precoCompra+" ,"+item.precoVenda+""+
 		 ",'"+item.foto+"')";
-		
-		if(this.banco.executarNoQuery(sql)==0){
-			throw new RuntimeException("Erro ao Adicionar Produto");
+		Statement st;
+		this.banco.conectar();
+		this.banco.getConexao().setAutoCommit(false);
+		st = this.banco.getConexao().createStatement();
+		if (st.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS) == 0) {
+			throw new RuntimeException("Erro ao salvar Produto!");
 		}
+		ResultSet rs = st.getGeneratedKeys();
+		if (rs.next())
+			item.codigo = rs.getInt(1);
+		else
+			throw new RuntimeException("Erro ao salvar Produto!");
+		this.banco.getConexao().commit();
 		return item;
 		
 	}
 	
 	public boolean removerProduto(ProdutoVO item){
-		if(item.codigo==0){
-			throw new RuntimeException("Produto não pode ser resolvido!");
-		}
 		String sql = "delete from produto  where codigo = "+item.codigo+"";
-		
 		if(this.banco.executarNoQuery(sql)==0){
 			return false;
 		}
 		return true;
 	}
 	
-	public Map<Integer, ProdutoVO> pesquisarProduto(String texto,String coluna){
-		String sql = "select * from produto where "+coluna+" like '%"+texto+"%'";
-		ResultSet rs =  banco.executar(sql);
-		Map<Integer,ProdutoVO> produtos = null;
-		int i=0;
-		try{
-		while(rs.next()){
-			
-			ProdutoVO dados_item = new ProdutoVO();
-			dados_item.codigo = rs.getInt("codigo");
-			dados_item.codBarra = rs.getString("codBarra");
-			dados_item.codGrupo = rs.getInt("codGrupo");
-			dados_item.descricao = rs.getString("descricao");
-			dados_item.referencia = rs.getString("referencia");
-			dados_item.codLocal = rs.getInt("codLocal");
-			dados_item.codUnidade = rs.getInt("codUnidade");
-			dados_item.qtdPorUnidade = rs.getInt("qtdPorEstoque");
-			dados_item.qtdEmEstoque = rs.getInt("qtdEmEstoque");
-			dados_item.codFornecedor = rs.getInt("codFornecedor");
-			dados_item.precoCompra = rs.getDouble("precoCompra");
-			dados_item.precoVenda = rs.getDouble("precoVenda");
-			dados_item.foto = rs.getString("foto");
-			produtos.put(i, dados_item);
-		i++;
-		}
-		}catch (SQLException e) {
-			System.out.println("erro");
-		}
-		
-		
-		return produtos;
-	}
-	
-	public Map<Integer, ProdutoVO> getProduto(String texto,String coluna){
-		String sql = "select * from produto where "+coluna+" like '%"+texto+"%'";
-		ResultSet rs =  banco.executar(sql);
-		Map<Integer,ProdutoVO> produtos = null;
-		int i=0;
-		try{
-		while(rs.next()){
-			
-			ProdutoVO dados_item = new ProdutoVO();
-			dados_item.codigo = rs.getInt("codigo");
-			dados_item.codBarra = rs.getString("codBarra");
-			dados_item.codGrupo = rs.getInt("codGrupo");
-			dados_item.descricao = rs.getString("descricao");
-			dados_item.referencia = rs.getString("referencia");
-			dados_item.codLocal = rs.getInt("codLocal");
-			dados_item.codUnidade = rs.getInt("codUnidade");
-			dados_item.qtdPorUnidade = rs.getInt("qtdPorEstoque");
-			dados_item.qtdEmEstoque = rs.getInt("qtdEmEstoque");
-			dados_item.codFornecedor = rs.getInt("codFornecedor");
-			dados_item.precoCompra = rs.getDouble("precoCompra");
-			dados_item.precoVenda = rs.getDouble("precoVenda");
-			dados_item.foto = rs.getString("foto");
-			produtos.put(i, dados_item);
-		i++;
-		}
-		}catch (SQLException e) {
-			System.out.println("erro");
-		}
-		
-		
-		return produtos;
-	}
-	
-	public Map<Integer, ProdutoVO> getProdutos(){
-		String sql = "select * from produto";
-		ResultSet rs =  banco.executar(sql);
-		Map<Integer,ProdutoVO> produtos = null;
-		int i=0;
-		try{
-		while(rs.next()){
-			
-			ProdutoVO dados_item = new ProdutoVO();
-			dados_item.codigo = rs.getInt("codigo");
-			dados_item.codBarra = rs.getString("codBarra");
-			dados_item.codGrupo = rs.getInt("codGrupo");
-			dados_item.descricao = rs.getString("descricao");
-			dados_item.referencia = rs.getString("referencia");
-			dados_item.codLocal = rs.getInt("codLocal");
-			dados_item.codUnidade = rs.getInt("codUnidade");
-			dados_item.qtdPorUnidade = rs.getInt("qtdPorEstoque");
-			dados_item.qtdEmEstoque = rs.getInt("qtdEmEstoque");
-			dados_item.codFornecedor = rs.getInt("codFornecedor");
-			dados_item.precoCompra = rs.getDouble("precoCompra");
-			dados_item.precoVenda = rs.getDouble("precoVenda");
-			dados_item.foto = rs.getString("foto");
-			produtos.put(i, dados_item);
-		i++;
-		}
-		}catch (SQLException e) {
-			System.out.println("erro");
-		}
-		
-		
-		return produtos;
-	}
-
-	
-	public Map<Integer, ProdutoVO> filtroProduto(String[] sqlArray){
-		String sql = "select * from produto where ";
-		boolean entrou = false;
-		for (String string : sqlArray) {
-			if(string != ""){
-				if(entrou){
-					sql = ""+sql+" and "+string+" ";
-				}else{
-					sql = ""+sql+" "+string+" ";
-					entrou = true;
-				}
-			}
-		}
-		
-		return this.toProdutos(this.banco.executar(sql));	
-	}
-	
-	private Map<Integer, ProdutoVO> toProdutos(ResultSet rs){
-		
-		Map<Integer,ProdutoVO> produtos = null;
-		int i=0;
-		try{
-		while(rs.next()){
-			
-			ProdutoVO dados_item = new ProdutoVO();
-			dados_item.codigo = rs.getInt("codigo");
-			dados_item.codBarra = rs.getString("codBarra");
-			dados_item.codGrupo = rs.getInt("codGrupo");
-			dados_item.descricao = rs.getString("descricao");
-			dados_item.referencia = rs.getString("referencia");
-			dados_item.codLocal = rs.getInt("codLocal");
-			dados_item.codUnidade = rs.getInt("codUnidade");
-			dados_item.qtdPorUnidade = rs.getInt("qtdPorEstoque");
-			dados_item.qtdEmEstoque = rs.getInt("qtdEmEstoque");
-			dados_item.codFornecedor = rs.getInt("codFornecedor");
-			dados_item.precoCompra = rs.getDouble("precoCompra");
-			dados_item.precoVenda = rs.getDouble("precoVenda");
-			dados_item.foto = rs.getString("foto");
-			produtos.put(i, dados_item);
-		i++;
-		}
-		}catch (SQLException e) {
-			System.out.println("erro");
-		}
-		
-		
-		return produtos;
-	}	
-
-
 	public ProdutoVO atualizarProduto(ProdutoVO produto) {
-		if(produto.codigo == 0){
-			throw new RuntimeException("Produto não pôde ser atualizado!");
-		}
 		String sql = "UPDATE produto SET codBarra = '"+produto.codBarra+"', codGrupo = "+produto.codGrupo+", descricao = '"+produto.descricao+"', referencia = '"+produto.referencia+"',codLocal = "+produto.codLocal+",codUnidade="+produto.codUnidade+",qtdPorUnidade="+produto.qtdPorUnidade+",qtdEmEstoque="+produto.qtdEmEstoque+",codFornecedor="+produto.codFornecedor+",precoCompra="+produto.precoCompra+","+
 		"precoVenda="+produto.precoVenda+",foto='"+produto.foto+"' where codigo="+produto.codigo+"";
 		if(this.banco.executarNoQuery(sql)==0){
@@ -204,5 +54,66 @@ class ServicosProduto {
 		return produto;	
 		
 	}
+	
+	public ArrayList<ProdutoVO> pesquisarProduto(String texto,String coluna){
+		String sql = "select * from produto where "+coluna+" like '%"+texto+"%'";
+		ResultSet rs =  banco.executar(sql);
+		return this.toProdutos(rs);
+	}
+	
+	public ArrayList<ProdutoVO> getProduto(String texto,String coluna){
+		String sql = "select * from produto where "+coluna+" = '"+texto+"'";
+		ResultSet rs =  banco.executar(sql);
+		return this.toProdutos(rs);
+	}
+	
+	public ArrayList<ProdutoVO> getProdutos(){
+		String sql = "select * from produto";
+		ResultSet rs =  banco.executar(sql);
+		return this.toProdutos(rs);
+	}
+
+	public ArrayList<ProdutoVO> getProdutos(String sql){
+		ResultSet rs =  banco.executar(sql);
+		return this.toProdutos(rs);
+	}
+	
+	public boolean isExiste(ProdutoVO produto) {
+		String sql = "select * from produto where codigo = '"
+				+ produto.codigo + "'";
+		ResultSet rs;
+		rs = this.banco.executar(sql);
+		if (rs.next())
+			return true;
+		else
+			return false;
+
+	}
+	
+	private ArrayList<ProdutoVO> toProdutos(ResultSet rs) throws SQLException{
+		
+		ArrayList<ProdutoVO> produtos = new ArrayList<ProdutoVO>();
+		while(rs.next()){
+			ProdutoVO dados_item = new ProdutoVO();
+			dados_item.codigo = rs.getInt("codigo");
+			dados_item.codBarra = rs.getString("codBarra");
+			dados_item.codGrupo = rs.getInt("codGrupo");
+			dados_item.descricao = rs.getString("descricao");
+			dados_item.referencia = rs.getString("referencia");
+			dados_item.codLocal = rs.getInt("codLocal");
+			dados_item.codUnidade = rs.getInt("codUnidade");
+			dados_item.qtdPorUnidade = rs.getInt("qtdPorUnidade");
+			dados_item.qtdEmEstoque = rs.getInt("qtdEmEstoque");
+			dados_item.codFornecedor = rs.getInt("codFornecedor");
+			dados_item.precoCompra = rs.getDouble("precoCompra");
+			dados_item.precoVenda = rs.getDouble("precoVenda");
+			dados_item.foto = rs.getString("foto");
+			produtos.add(dados_item);
+		}
+		return produtos;
+	}	
+
+
+	
 }
 
