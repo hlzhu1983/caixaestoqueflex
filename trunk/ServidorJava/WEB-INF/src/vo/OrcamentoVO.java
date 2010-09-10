@@ -1,4 +1,5 @@
 package vo;
+import java.util.ArrayList;
 import java.util.Date;
 
 
@@ -10,7 +11,7 @@ public class OrcamentoVO {
 	public int codUsuario;
 	public int status;
 	public String obs;
-	public int itemOrcamento;
+	public ArrayList<ItemPreVendaVO> itemPreVenda;
 	public Date dataAbertura;
 	public double valorTotal;
 }
