@@ -1,6 +1,6 @@
 package vo;
 
-public class ItensPreVendaVO {
+public class ItemPreVendaVO {
 	public int codigo;
 	public int codigoPrevenda;
 	public int codProduto;

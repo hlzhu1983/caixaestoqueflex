@@ -1,3 +1,6 @@
+import java.sql.ResultSet;
+
+import vo.ItemPreVendaVO;
 import vo.PreVendaVO;
 import arquitetura.BancoDeDados;
 
@@ -5,7 +8,7 @@ import arquitetura.BancoDeDados;
 public class ServicosPreVenda {
 	
 	
-private BancoDeDados banco;
+
 	
 	
 
@@ -13,29 +16,22 @@ private BancoDeDados banco;
 	
 	public PreVendaVO abrirPreVenda(PreVendaVO item){
 	//	f = fopen('log2.txt',"w+");
-		sql = "insert into prevenda (codUsuario,status,dataAbertura) values ('item.codUsuario'		 
-		 ,'0' ,now())";
-		fwrite(f,sql);
-		this.conn.StartTrans();
-		resultado = this.conn.Execute(sql);
-		item.codigo = this.conn.insert_Id();
+	String sql = "insert into prevenda (codUsuario,status,dataAbertura) values ("+item.codUsuario+",0 ,now())";
 		
-		if(this.conn.HasFailedTrans()){
-			throw new Exception("Erro ao abrir pré-Venda",16);
+		
+		if(banco.executarNoQuery(sql)==0){
+			throw new RuntimeException("Erro ao Adicionar Cliente");
 		}	
 		
-		this.conn.CompleteTrans();
-		item.status = 0;
 		
 		return item;
 	}
 	
 	public PreVendaVO addItemPreVenda(ItemPreVendaVO item){
-			sql ="select * from produto where codigo = item.codProduto";
-			this.conn.StartTrans();
-			result = this.conn.Execute(sql);	
-			if(!result){
-				throw new Exception("Produto não existe",4);
+			sql ="select * from produto where codigo = "+item.codProduto;
+			
+			if(banco.executarNoQuery(sql)==0){
+				throw new RuntimeException("Produto não existe");
 			}
 			registro = result.FetchNextObject();
 			if(registro.QTDEMESTOQUE < item.quantidade){
@@ -75,8 +71,8 @@ private BancoDeDados banco;
 //		}
 	
 	public PreVendaVO fecharPreVenda(PreVendaVO item){
-		sql = "UPDATE prevenda SET codUsuario = 'item.codUsuario' , status = '1', obs = 'item.obs', valorTotal = 'item.valorTotal' where codigo = item.codigo";		
-		this.conn.Execute(sql);
+String sql = "UPDATE prevenda SET codUsuario = '"+item.codUsuario+"' , status = '1', obs = '"+item.obs+"', valorTotal = '"+item.valorTotal+"' where codigo = "+item.codigo+"";		
+		banco.executarNoQuery(sql);
 		return item;
 	}
 	
