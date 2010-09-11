@@ -1,4 +1,5 @@
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 import vo.ItemPreVendaVO;
 import vo.PreVendaVO;
@@ -27,35 +28,28 @@ public class ServicosPreVenda {
 		return item;
 	}
 	
-	public PreVendaVO addItemPreVenda(ItemPreVendaVO item){
-			sql ="select * from produto where codigo = "+item.codProduto;
+	public ItemPreVendaVO addItemPreVenda(ItemPreVendaVO item){
+		String	sql ="select * from produto where codigo = "+item.codProduto;
 			
-			if(banco.executarNoQuery(sql)==0){
+		ResultSet result = banco.executar(sql);	
+		ArrayList<ItemPreVendaVO> itens  = this.toItemPreVenda(result);
+		if(itens.size()==0){
 				throw new RuntimeException("Produto não existe");
 			}
-			registro = result.FetchNextObject();
-			if(registro.QTDEMESTOQUE < item.quantidade){
-				throw new Exception("Quantidade de produtos maior que disponível!",15);
+			ItemPreVendaVO registro = itens.get(0);
+			if(registro.quantidade < item.quantidade){
+				throw new RuntimeException("Quantidade de produtos maior que disponível!");
 			}
-			sql = "insert into itensprevenda (codPrevenda, codProduto, descricao, quantidade,valor) 
-			      values ('item.codigoPrevenda','item.codProduto','item.descricao','item.quantidade','item.valor')";
-			this.conn.Execute(sql);
-			
+			sql = "insert into itensprevenda (codPrevenda, codProduto, descricao, quantidade,valor)"+ 
+			      "values ('"+item.codigoPrevenda+"','"+item.codProduto+"','"+item.descricao+"','"+item.quantidade+"','"+item.valor+"')";
+			if(banco.executarNoQuery(sql)==0){
+				throw new RuntimeException("Erro ao Adicionar ItemPrevenda");
+			}
 					
-			sql = "UPDATE produto SET qtdEmEstoque = (qtdEmEstoque - item.quantidade) where codigo = item.codProduto";
+			sql = "UPDATE produto SET qtdEmEstoque = (qtdEmEstoque - "+item.quantidade+") where codigo = "+item.codProduto;
 			
-			result = this.conn.Execute(sql);
-			
-			falhou = false;	
-			if(this.conn.HasFailedTrans()){
-				falhou = true;
-			}
-			
-			item.codigo = this.conn.insert_Id();
-			this.conn.CompleteTrans();
-			
-			if(falhou){
-				throw new Exception("Erro ao inserir item!",16);
+			if(banco.executarNoQuery(sql)==0){
+				throw new RuntimeException("Erro ao atualizar itemprevenda");
 			}
 			
 			
@@ -72,140 +66,139 @@ public class ServicosPreVenda {
 	
 	public PreVendaVO fecharPreVenda(PreVendaVO item){
 String sql = "UPDATE prevenda SET codUsuario = '"+item.codUsuario+"' , status = '1', obs = '"+item.obs+"', valorTotal = '"+item.valorTotal+"' where codigo = "+item.codigo+"";		
-		banco.executarNoQuery(sql);
+if(banco.executarNoQuery(sql)==0){
+	throw new RuntimeException("Erro ao fechar Prevenda");
+}
 		return item;
 	}
 	
-	public PreVendaVO removerItemPreVenda(ItemPreVendaVO item){
+	public void removerItemPreVenda(ItemPreVendaVO item){
 		
-		sql = "UPDATE produto SET qtdEmEstoque = (qtdEmEstoque + item.quantidade)  WHERE codigo = item.codProduto";
-		this.conn.StartTrans();
-		this.conn.Execute(sql);
-		sql = "DELETE FROM itensprevenda WHERE codigo = item.codigo";
-		this.conn.Execute(sql);
-		if(this.conn.HasFailedTrans()){
-			falhou = true;
+		String sql = "UPDATE produto SET qtdEmEstoque = (qtdEmEstoque + "+item.quantidade+")  WHERE codigo = "+item.codProduto;
+		if(banco.executarNoQuery(sql)==0){
+			throw new RuntimeException("Erro ao atualizar ItemPrevenda");
 		}
-		this.conn.CompleteTrans();
-		if(falhou){
-			throw new Exception("Erro ao remover item pré-venda!",101);
+		sql = "DELETE FROM itensprevenda WHERE codigo = "+item.codigo;
+		if(banco.executarNoQuery(sql)==0){
+			throw new RuntimeException("Erro ao Deletar ItemPrevenda");
 		}
 	}
 	
 	public PreVendaVO cancelarPreVenda(PreVendaVO item){	
-		sql = "select * FROM itensprevenda WHERE codPrevenda = item.codigo";
+		String sql = "select * FROM itensprevenda WHERE codPrevenda = item.codigo";
 		this.conn.StartTrans();
-		resultado = this.conn.Execute(sql);
-		while(registro = resultado.FetchNextObject()){
-			sql = "UPDATE produto SET qtdEmEstoque = (qtdEmEstoque + registro.QUANTIDADE)  WHERE codigo = registro.CODPRODUTO";
-			this.conn.Execute(sql);			
+		ResultSet resultado = banco.executar(sql);
+		ArrayList<ItemPreVendaVO> itens= this.toItemPreVenda(resultado);
+		for (int i = 0; i < itens.size(); i++) {
+			ItemPreVendaVO registro;
+		
+			sql = "UPDATE produto SET qtdEmEstoque = (qtdEmEstoque + "+registro.quantidade+")  WHERE codigo = "+registro.codProduto;
+			if(banco.executarNoQuery(sql)==0){
+				throw new RuntimeException("Erro ao atualizar produto");
+			}		
 		}
-		sql = "DELETE FROM itensprevenda WHERE codPrevenda = item.codigo";
-		this.conn.Execute(sql);
-		sql = "UPDATE prevenda SET codUsuario = 'item.codUsuario' , status = '2', obs = 'item.obs' where codigo = item.codigo";
-		this.conn.Execute(sql);
-		falhou = false;
-		falhou = false;	
-		if(this.conn.HasFailedTrans()){
-			falhou = true;
+		sql = "DELETE FROM itensprevenda WHERE codPrevenda = "+item.codigo;
+		if(banco.executarNoQuery(sql)==0){
+			throw new RuntimeException("Erro ao Deletar Prevenda");
 		}
-		this.conn.CompleteTrans();
-		if(falhou){
-			throw new Exception("Erro ao cancelar pré-venda. Pré-venda não cancelada!",100);
+		sql = "UPDATE prevenda SET codUsuario = '"+item.codUsuario+"' , status = '2', obs = '"+item.obs+"' where codigo = "+item.codigo;
+		if(banco.executarNoQuery(sql)==0){
+			throw new RuntimeException("Erro ao Atualizar Prevenda");
 		}
 		return item;
 	}
 	
 	
-	public PreVendaVO removerItem(PreVendaVO item){
+	public boolean removerItem(PreVendaVO item){
 		
-		sql = "delete from prevenda  where codigo = item.codigo";
-		resultado = this.conn.Execute(sql);
-		if(this.conn.Affected_Rows()==0){
+		String sql = "delete from prevenda  where codigo = item.codigo";
+		
+		if(banco.executarNoQuery(sql)==0){
 			return false;
+		}else{
+			return true;
 		}
-		return true;
 	}
 	
-	public PreVendaVO filtraData(data,coluna){
-		sql = "select * from prevenda where DATE(coluna) = 'data' and status = 1";
-		resultado = this.conn.Execute(sql);
-		while(registro = resultado.FetchNextObject()){			
-			retorna_dados_item [] = this.toPreVenda(registro);
-		}
-		return retorna_dados_item;
+	public ArrayList<PreVendaVO> filtraData(String data,String coluna){
+		String sql = "select * from prevenda where DATE("+coluna+") = '"+data+"' and status = 1";
+		ResultSet result = banco.executar(sql);
+		return this.toPreVenda(result);
 	}
 	
-	private PreVendaVO getItensPrevenda(codigo){
-		sql = "select * from itensprevenda where codPrevenda  = codigo";
-		resultado = this.conn.Execute(sql);
-		retorna_dados_item = null;
-		while(registro = resultado.FetchNextObject()){
-			dados_item = new ItemPreVendaVO();
-			dados_item.codigo = registro.CODIGO;
-			dados_item.codigoPrevenda = registro.CODPREVENDA;
-			dados_item.descricao = registro.DESCRICAO;
-			dados_item.codProduto = registro.CODPRODUTO;
-			dados_item.quantidade = registro.QUANTIDADE;
-			dados_item.valor = registro.VALOR;
-			retorna_dados_item [] = dados_item;
-		}
-		return retorna_dados_item;
+	private ArrayList<PreVendaVO> getItensPrevenda(String codigo){
+		String sql = "select * from itensprevenda where codPrevenda  = "+codigo;
+		ResultSet resultado = banco.executa(sql);
+		
+		return this.toPreVenda(resultado);
 	}
 	
 	
 	
-	public PreVendaVO pesquisarItens(texto,coluna){
-		sql = "select * from prevenda where coluna like '%texto%'";
-		resultado = this.conn.Execute(sql);
-		while(registro = resultado.FetchNextObject()){			
-			retorna_dados_item [] = this.toPreVenda(registro);
-		}
-		return retorna_dados_item;
+	public ArrayList<PreVendaVO> pesquisarItens(String texto,String coluna){
+      String sql = "select * from prevenda where "+coluna+" like '%"+texto+"%'";
+		ResultSet resultado = banco.executar(sql);
+		
+		return this.toPreVenda(resultado);
 	}
 	
-	public PreVendaVO getItens(){
-		f = fopen('log.txt','w+');
-		fwrite(f,'Entrou aki');
-		sql = "select * from prevenda";
-		fwrite(f,'Entrou aki');
-		resultado = this.conn.Execute(sql);
-		retorna_dados_item = null;
-		while(registro = resultado.FetchNextObject()){			
-			retorna_dados_item [] = this.toPreVenda(registro);
-		}
-		return retorna_dados_item;	
+	public ArrayList<PreVendaVO> getItens(){
+		String sql = "select * from prevenda";
+	
+	ResultSet rs = banco.executar(sql);
+		return this.toPreVenda(rs);	
 	}
 	
-	public PreVendaVO getItensValidos(){
-		sql = "select * from prevenda where status = 1";
-		resultado = this.conn.Execute(sql);
-		retorna_dados_item = null;
-		while(registro = resultado.FetchNextObject()){			
-			retorna_dados_item [] = this.toPreVenda(registro);
-		}
-		return retorna_dados_item;	
+	public ArrayList<PreVendaVO> getItensValidos(){
+		String sql = "select * from prevenda where status = 1";
+		ResultSet rs = banco.executar(sql);
+		return this.toPreVenda(rs);	
 	}
 	
-	public PreVendaVO pesquisarItensValidos(texto,coluna){
-		sql = "select * from prevenda where coluna like '%texto%' and status = 1";
-		resultado = this.conn.Execute(sql);
-		while(registro = resultado.FetchNextObject()){			
-			retorna_dados_item [] = this.toPreVenda(registro);
-		}
-		return retorna_dados_item;
+	public ArrayList<PreVendaVO> pesquisarItensValidos(String texto,String coluna){
+		String sql = "select * from prevenda where "+coluna+" like '%"+texto+"%' and status = 1";
+		ResultSet rs = banco.executar(sql);
+		return this.toPreVenda(rs);
 	}
 	
 	
-	private PreVendaVO toPreVenda(registro){
-		dados_item = new PreVendaVO();
-		dados_item.codigo = registro.CODIGO;
-		dados_item.codUsuario = registro.CODUSUARIO;
-		dados_item.obs = registro.OBS;
-		dados_item.status = registro.STATUS;
-		dados_item.dataAbertura = registro.DATAABERTURA;
-		dados_item.valorTotal = registro.VALORTOTAL;
-		dados_item.itemPreVenda = this.getItensPrevenda(registro.CODIGO);
-		return dados_item;
+	private ArrayList<PreVendaVO> toPreVenda(ResultSet rs){
+		  ArrayList<PreVendaVO> gp = new ArrayList<PreVendaVO>();
+		while (rs.next()) {
+			PreVendaVO dados_item = new PreVendaVO();
+			dados_item.codigo = rs.getInt("codigo");
+			dados_item.codUsuario = rs.getInt("codUsuario");
+			dados_item.dataAbertura = rs.getDate("dataAbertura");
+			dados_item.obs = rs.getString("obs");
+			dados_item.status = rs.getInt("status");
+			dados_item.valorTotal = rs.getInt("valorTotal");
+			
+			
+			
+			
+
+			gp.add(dados_item);
+		}
+		return gp;
+		}
+	
+	
+	private ArrayList<ItemPreVendaVO> toItemPreVenda(ResultSet rs) {
+		
+	      ArrayList<ItemPreVendaVO> gp = new ArrayList<ItemPreVendaVO>();
+	    while (rs.next()) {
+	    	ItemPreVendaVO dados_item = new ItemPreVendaVO();
+		dados_item.codigo = rs.getInt("codigo");
+		dados_item.codigoPrevenda = rs.getInt("codPrevenda");
+		dados_item.codProduto = rs.getInt("codProduto");
+		dados_item.descricao = rs.getString("descricao");
+		dados_item.quantidade = rs.getInt("quantidade");
+		dados_item.valor = rs.getDouble("valor");
+		
+		
+
+		gp.add(dados_item);
+	}
+	return gp;
 	}
 }
