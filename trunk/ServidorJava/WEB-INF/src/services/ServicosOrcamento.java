@@ -2,7 +2,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import vo.GrupoProdutoVO;
+import util.UtilData;
+import vo.ItemPreVendaVO;
 import vo.OrcamentoVO;
 
 
@@ -29,99 +30,101 @@ public class ServicosOrcamento {
 	
 	
 	
-	/*public OrcamentoVO fecharPreVenda(OrcamentoVO item){
-		foreach (item->itemPreVenda as temp) {
-			sql = "insert into itensprevenda (codPrevenda, codProduto, quantidade,valor) 
-			      values ('item->codigo','temp->codProduto','temp->quantidade','temp->valor')";
-			this->conn->Execute(sql);
+	public OrcamentoVO fecharPreVenda(OrcamentoVO item){
+		String sql="";
+		for (int i = 0; i < item.itemPreVenda.size(); i++) 
+		 {ItemPreVendaVO temp = item.itemPreVenda.get(i);
+			sql = "insert into itensprevenda (codPrevenda, codProduto, quantidade,valor) "+
+			     " values ('"+item.codigo+"','"+temp.codProduto+"','"+temp.quantidade+"','"+temp.valor+"')";
+			      if(banco.executarNoQuery(sql)==0){
+						throw new RuntimeException("Erro ao Adicionar ItemPrevenda");
+					}
 		}
-		if(item->codCliente==0){
-			sql = "UPDATE prevenda SET codUsuario = 'item->codUsuario' , status = '1', obs = 'item->obs', desconto = 'item->desconto', valorTotal = 'item->valorTotal' where codigo = item->codigo";
+		if(item.codCliente==0){
+			sql = "UPDATE prevenda SET codUsuario = '"+item.codUsuario+"' , status = '1', obs = '"+item.obs+"',dataAbertura ='"+UtilData.formatar(item.dataAbertura)+"',  valorTotal = '"+item.valorTotal+"' where codigo = item->codigo";
 		}else{
-			sql = "UPDATE prevenda SET codUsuario = 'item->codUsuario' , codCliente = 'item->codCliente', status = '1', obs = 'item->obs', desconto = 'item->desconto', valorTotal = 'item->valorTotal' where codigo = item->codigo";	
+			sql = "UPDATE prevenda SET codUsuario = '"+item.codUsuario+"' , codCliente = '"+item.codCliente+"', status = '1', obs = '"+item.obs+"',  valorTotal = '"+item.valorTotal+"' where codigo = "+item.codigo;	
 		}
-		this->conn->Execute(sql);
+		  if(banco.executarNoQuery(sql)==0){
+				throw new RuntimeException("Erro ao fechar PreVenda");
+			}
 		return item;
-	}*/
+	}
 	
 		
 	public OrcamentoVO cancelarOrcamento(OrcamentoVO item){	
 		String sql = "select * FROM itensprevenda WHERE codPrevenda = "+item.codigo+"";
 		
-		ResultSet resultado = banco.execute(sql);
-		ArrayList<OrcamentoVO> orc= new ArrayList<OrcamentoVO>();
-			orc =this.toOrcamento(resultado);
+		ResultSet resultado = banco.executar(sql);
+		ArrayList<ItemPreVendaVO> orc= new ArrayList<ItemPreVendaVO>();
+			orc =this.toItemPreVenda(resultado);
 		
 		for (int i = 0; i < orc.size(); i++) {
-			OrcamentoVO orcamento = orc.get(i);
-			sql = "UPDATE produto SET qtdEmEstoque = (qtdEmEstoque + "+ orcamento. +")  WHERE codigo = registro->CODPRODUTO";	
+			ItemPreVendaVO orcamento = orc.get(i);
+			sql = "UPDATE produto SET qtdEmEstoque = (qtdEmEstoque + "+ orcamento.quantidade +")  WHERE codigo = "+orcamento.codProduto;	
+			 if(banco.executarNoQuery(sql)==0){
+					throw new RuntimeException("Erro ao atualizar ItemPreVenda");
+				}
 		}
 		
-		while(registro = resultado->FetchNextObject()){
-			sql = "UPDATE produto SET qtdEmEstoque = (qtdEmEstoque + registro->QUANTIDADE)  WHERE codigo = registro->CODPRODUTO";
-			this->conn->Execute(sql);			
+		
+		sql = "DELETE FROM itensprevenda WHERE codPrevenda = "+item.codigo;
+		if(banco.executarNoQuery(sql)==0){
+			throw new RuntimeException("Erro ao remover ItemPreVenda");
 		}
-		sql = "DELETE FROM itensprevenda WHERE codPrevenda = item->codigo";
-		this->conn->Execute(sql);
-		sql = "UPDATE prevenda SET codUsuario = 'item->codUsuario' , status = '2', obs = 'item->obs' where codigo = item->codigo";
-		this->conn->Execute(sql);
-		falhou = false;
-		falhou = false;	
-		if(this->conn->HasFailedTrans()){
-			falhou = true;
-		}
-		this->conn->CompleteTrans();
-		if(falhou){
-			throw new Exception("Erro ao cancelar pré-venda. Pré-venda não cancelada!",100);
+		sql = "UPDATE prevenda SET codUsuario = '"+item.codUsuario+"' , status = '2', obs = '"+item.obs+"' where codigo = "+item.codigo;
+		if(banco.executarNoQuery(sql)==0){
+			throw new RuntimeException("Erro ao Atualizar PreVenda");
 		}
 		return item;
 	}
 	
 	
-	public OrcamentoVO removerItem(PreVendaVO item){
+	private ArrayList<ItemPreVendaVO> toItemPreVenda(ResultSet rs) {
 		
-		sql = "delete from prevenda  where codigo = item->codigo";
-		resultado = this->conn->Execute(sql);
-		if(this->conn->Affected_Rows()==0){
+	      ArrayList<ItemPreVendaVO> gp = new ArrayList<ItemPreVendaVO>();
+	    while (rs.next()) {
+	    	ItemPreVendaVO dados_item = new ItemPreVendaVO();
+		dados_item.codigo = rs.getInt("codigo");
+		dados_item.codigoPrevenda = rs.getInt("codPrevenda");
+		dados_item.codProduto = rs.getInt("codProduto");
+		dados_item.descricao = rs.getString("descricao");
+		dados_item.quantidade = rs.getInt("quantidade");
+		dados_item.valor = rs.getDouble("valor");
+		
+		
+
+		gp.add(dados_item);
+	}
+	return gp;
+	}
+	
+
+
+
+
+
+
+	public boolean removerItem(OrcamentoVO item){
+		
+		String sql = "delete from orcamento  where codigo = "+item.codigo;
+		
+		if(banco.executarNoQuery(sql)==0){
 			return false;
-		}
-		return true;
+		}else{return true;}
 	}
 	
-	public OrcamentoVO pesquisarItens(texto,coluna){
-		sql = "select * from prevenda where coluna like '%texto%'";
-		resultado = this->conn->Execute(sql);
-		while(registro = resultado->FetchNextObject()){			
-			dados_item = new PreVendaVO();
-			dados_item->codigo = registro->CODIGO;
-			dados_item->codCliente = registro->CODCLIENTE;
-			dados_item->codUsuario = registro->CODUSUARIO;
-			dados_item->obs = registro->OBS;
-			dados_item->status = registro->STATUS;
-			dados_item->dataAbertura = registro->DATAABERTURA;
-			dados_item->desconto = registro->DESCONTO;
-			dados_item->valorTotal = registro->VALORTOTAL;
-			retorna_dados_item [] = dados_item;
-		}
-		return retorna_dados_item;
+	public ArrayList<OrcamentoVO> pesquisarItens(String texto,String coluna){
+		String sql = "select * from orcamento where "+coluna+" like '%"+texto+"%'";
+		ResultSet resultado = banco.executar(sql);
+		
+		return this.toOrcamento(resultado);
 	}
 	
-	public OrcamentoVO getItens(){
-		sql = "select * from projeto";
-		resultado = this->conn->Execute(sql);
-		while(registro = resultado->FetchNextObject()){			
-			dados_item = new PreVendaVO();
-			dados_item->codigo = registro->CODIGO;
-			dados_item->codCliente = registro->CODCLIENTE;
-			dados_item->codUsuario = registro->CODUSUARIO;
-			dados_item->obs = registro->OBS;
-			dados_item->status = registro->STATUS;
-			dados_item->dataAbertura = registro->DATAABERTURA;
-			dados_item->desconto = registro->DESCONTO;
-			dados_item->valorTotal = registro->VALORTOTAL;
-			retorna_dados_item [] = dados_item;
-		}
-		return retorna_dados_item;	
+	public ArrayList<OrcamentoVO> getItens(){
+		String sql = "select * from orcamento";
+		ResultSet resultado = banco.executar(sql);
+	 	return this.toOrcamento(resultado);	
 	}
 
 
@@ -134,7 +137,6 @@ public class ServicosOrcamento {
 	dados_item.codCliente = rs.getInt("codCliente");
 	dados_item.codUsuario = rs.getInt("codUsuario");
 	dados_item.dataAbertura = rs.getDate("dataAbertura");
-	dados_item.itemOrcamento = rs.getInt("itemOrcamento");
 	dados_item.obs = rs.getString("obs");
 	dados_item.status = rs.getInt("status");
 	dados_item.valorTotal = rs.getInt("valorTotal");
