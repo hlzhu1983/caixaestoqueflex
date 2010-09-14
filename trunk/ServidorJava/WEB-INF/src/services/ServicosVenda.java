@@ -116,7 +116,7 @@ public class ServicosVenda {
 	}
 
 	public ArrayList<VendaVO> getItens() {
-		String sql = "select * from venda and status = 1";
+		String sql = "select * from venda";
 		ResultSet rs = banco.executar(sql);
 		return this.toVenda(rs);
 
@@ -238,7 +238,7 @@ public class ServicosVenda {
 	}
 	
 	public ArrayList<RankingFormaPagamentoVO> getRankingFormaPagamento(){
-		String sql = "select fv.codigo as codigo,f.descricao as descricao, sum(fv.valor) as quantidade from venda v , formadepgto f, formapagamentovenda fv where v.status = 1 and v.codprevenda = i.codprevenda and i.codproduto = p.codigo group by p.codigo ,p.descricao";
+		String sql = "select fv.codigo as codigo,f.descricao as descricao, sum(fv.valor) as valor from venda v , formadepgto f, formapagamentovenda fv where v.status = 1 and v.codigo = fv.codVenda and f.codigo = fv.codFormaPagamento group by fv.codFormaPagamento , f.descricao";
 		ResultSet rs = banco.executar(sql);
 		ArrayList<RankingFormaPagamentoVO> gp = new ArrayList<RankingFormaPagamentoVO>();
 		RankingFormaPagamentoVO dados_item;
