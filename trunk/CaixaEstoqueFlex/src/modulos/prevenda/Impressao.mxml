@@ -13,7 +13,7 @@
 			private var array_itens:ArrayCollection;
 			
 			public function preencher():void{
-				this.array_itens = new ArrayCollection(this.pVenda.itemPreVenda);
+				this.array_itens = this.pVenda.itemPreVenda;
 			} 
 			
 			

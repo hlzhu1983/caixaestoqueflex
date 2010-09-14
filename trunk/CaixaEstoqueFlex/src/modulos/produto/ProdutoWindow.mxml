@@ -2,7 +2,7 @@
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
 	creationComplete="{this.init()}" 
 	layout="absolute"  width="874" height="430" showCloseButton="true" close="{this.fechar(event)}" 
-	title="Gerênciador Produto" 
+	title="Gerenciador Produto" 
 	fontSize="12" xmlns:ns1="utilidades.botoes.*" xmlns:ns2="utilidades.inputs.*" borderColor="#E2E2E2" backgroundColor="#FFFFFF">
 	
 	<mx:Script>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:TextInput xmlns:mx="http://www.adobe.com/2006/mxml" 
 	enter="{enterTab()}" focusIn="{this.focoIn()}"
-	xmlns:utilidades="utilidades.*" creationComplete="init()" change="{upper()}">
+	xmlns:utilidades="utilidades.*" creationComplete="init()" change="{upper()}" maxChars="255">
 
 	
 	<mx:Script>

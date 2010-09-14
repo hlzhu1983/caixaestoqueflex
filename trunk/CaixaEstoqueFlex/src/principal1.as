@@ -9,6 +9,7 @@
 	import modulos.orcamento.Orcamento;
 	import modulos.prevenda.PreVendaWindow;
 	import modulos.produto.ProdutoWindow;
+	import modulos.receitas.ReceitaTitleWindow;
 	import modulos.unidade.CadastroUnidade;
 	import modulos.usuario.CadastroUsuario;
 	import modulos.venda.VendaWindow;
@@ -23,6 +24,8 @@
 	import mx.events.ListEvent;
 	
 	import negocio.vo.UsuarioVO;
+	
+	import relatorios.ResumoVendas;
 	
 	import utilidades.Util;
 	import utilidades.calculadora.Calculadora;
@@ -54,9 +57,9 @@
          {label: "Cad. Fornecedor", funcao: gerFornecedor}, {label: "Cad. Unidades", funcao: gerUnidade},
          {label: "Cad. Forma Pagamento", funcao: gerFormadePagto }],
          [{label: "Pré-Venda", funcao: preVendaWindow},{label: "Janela de Venda", funcao: abreCaixaWindow},
-         {label: "Pedido de Compra"},{label: "Orçamento", funcao: orcamentoWindow},
+         {label: "Pedido de Compra"},{label: "Receitas", funcao: gerReceita},{label: "Orçamento", funcao: orcamentoWindow},
          {label: "Transf Filiais"},{label: "Devolução"}],
-         [{label: "Ainda Falta Fazer"}],
+         [{label: "Resumo Vendas", funcao: resumoVendaWindow}],
          [{label: "Calculadora", funcao:gerCalculadora},{label: "Cálculo de Dias"}],
          [{label: "Ajuda"},{label: "Sobre o Sistema"},{label: "Tópicos de Ajuda"},
          {label: "Versão"}]];
@@ -250,8 +253,23 @@
 		Util.abrePopUp(this,CadastroUsuario,true);
 	}
 	
+	public function gerReceita():void{		
+		Util.abrePopUp(this,ReceitaTitleWindow,true);
+	}
+	
 	public function testImage():void{		
 		Util.abrePopUp(this,TesteImage,true);
+	}
+	
+	public function resumoVendaWindow():void{		
+		var newWindow:Window = new ResumoVendas();
+		newWindow.maximizable=false;
+		newWindow.minimizable = false;
+		newWindow.resizable = false;
+		newWindow.open(false);
+		newWindow.nativeWindow.x = 0;
+		newWindow.nativeWindow.y = 0;
+		newWindow.activate();
 	}
 
 	

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml"
 	 layout="absolute" xmlns:ns1="utilidades.inputs.*" 
-	 creationComplete="{this.listarAllItems()}"
+	 creationComplete="{this.init()}"
 	 title="Gerenciador Clientes" 
 	 showCloseButton="true"
 	 backgroundAlpha="1.0"
 	 close="{this.fechar()}"
 	 xmlns:botoes="utilidades.botoes.*" 
-	 fontSize="12" width="890" height="100%" xmlns:utilidades="utilidades.*" borderColor="#000000">
+	 fontSize="12" width="890" height="684" xmlns:utilidades="utilidades.*" borderColor="#E2E2E2">
 	
 		<mx:Script>
 		<![CDATA[
@@ -66,6 +66,7 @@
 			private var ro:Remote = Remote.getInstance();
 			
 			private function init():void{
+				this.ro.parent = this;
 				this.listarAllItems();
 			}
 			
@@ -115,7 +116,6 @@
 						u.url = this.ti_url.text;
 						u.codigo = Number(this.ti_codigo.text);
 						u.limCredito = this.ti_limCredito.getValor();
-						this.itensArray.setItemAt(u,grid_itens.selectedIndex)
 						this.ro.atualizarCliente(resultadoAtualizarItem,u);
 					}
 				}
@@ -127,15 +127,27 @@
 	            }
 				return date.getFullYear() + "-"+ (date.getMonth() + 1) +"-"+date.date;
        		 }
+       		 
+       		 private function toDate(str:String):String{
+       		 	var a:Array = str.split("-");
+       		 	return a[1]+"/"+a[2]+"/"+a[0];
+       		 }
 			
 			private function resultadoAddItem(event:ResultEvent):void{
+				var c:ClienteVO = event.result as ClienteVO;
+				c.dataCadastro = this.toDate(c.dataCadastro);
+				c.dataNascimento = this.toDate(c.dataNascimento);
 				this.itensArray.addItem(event.result);
 				Alert.show("O item foi adicionado!","Sucesso!");
 				this.limparCampos();
 			}
 			
 			private function resultadoAtualizarItem(event:ResultEvent):void{
-				this.itensArray[this.modificado] = event.result;	
+				var c:ClienteVO = event.result as ClienteVO;
+				c.dataCadastro = this.toDate(c.dataCadastro);
+				c.dataNascimento = this.toDate(c.dataNascimento);
+				this.itensArray[this.modificado] = c;
+				this.itensArray.setItemAt(c,grid_itens.selectedIndex);	
 				Alert.show("O item foi Atualizado!","Sucesso!");
 				this.limparCampos();
 			}
@@ -147,9 +159,7 @@
 			}
 			
 			private function resultListarItens(event:ResultEvent):void{
-								
-				this.itensArray = new ArrayCollection(event.result as Array);
-				
+				this.itensArray = event.result as ArrayCollection;
 			}
 			
 			public function itemSelecionado(event:Event):void{
@@ -213,7 +223,12 @@
 					}else if(this.radio_cpf_cnpj.selected){
 						this.ro.pesquisarCliente(resultadoPesquisaItem,this.ti_pesquisa.text,"cpf_cnpj");
 					}else {
-						this.ro.pesquisarCliente(resultadoPesquisaItem,this.ti_pesquisa.text,"endereco");
+						if(this.radio_telefone.selected){
+							this.ro.pesquisarCliente(resultadoPesquisaItem,this.ti_pesquisa.text,"fone");
+						}else {
+							this.ro.pesquisarCliente(resultadoPesquisaItem,this.ti_pesquisa.text,"endereco");
+						}						
+						
 					}
 					
 				}else{
@@ -222,7 +237,7 @@
 			}
 			
 			private function resultadoPesquisaItem(event:ResultEvent):void{
-				this.itensArray = new ArrayCollection(event.result as Array);
+				this.itensArray = event.result as ArrayCollection;
 			}
 			
 			
@@ -269,102 +284,86 @@
 		]]>
 	</mx:Script>
 		
-	<mx:FormItem defaultButton="{this.bt_buscar}" label="Pesquisa" x="10" y="10"  width="488">
-		<ns1:TextoInput x="10" y="10" requerido="true" width="225" id="ti_pesquisa"  isEnter="false"/>
-		<mx:HBox width="325" height="100%">
+	<mx:FormItem defaultButton="{this.bt_buscar}" label="Pesquisa" x="10" y="10"  width="550">
+		<ns1:TextoInput x="10" y="10" requerido="true" width="219" id="ti_pesquisa"  isEnter="false"/>
+		<mx:HBox width="468" height="100%">
 			<mx:RadioButtonGroup id="grupo_pesquisa"/>
+			<mx:RadioButton label="Telefone" id="radio_telefone" groupName="grupo_pesquisa" selected="true"/>
 			<mx:RadioButton label="Código" id="radio_codigo" groupName="grupo_pesquisa"/>
-			<mx:RadioButton label="Nome" id="radio_nome" groupName="grupo_pesquisa" selected="true"/>
+			<mx:RadioButton label="Nome" id="radio_nome" groupName="grupo_pesquisa" />
 			<mx:RadioButton label="CPF/CNPJ" id="radio_cpf_cnpj" groupName="grupo_pesquisa" />
 			<mx:RadioButton label="Endereço" id="radio_endereco" groupName="grupo_pesquisa" />
+			
 		</mx:HBox>
 			
 	</mx:FormItem>	
 	<botoes:BuscarButton id="bt_buscar" x="312" y="10" click="{this.pesquisarItem()}"/>	
 	
-	<mx:Label x="10" y="77" text="Tipo Usuário:"/>
-	<mx:ComboBox x="98" y="75" id="tipoUsuario" selectedIndex="0" editable="false">
+	<mx:Label x="10" y="137" text="Tipo Usuário:"/>
+	<mx:ComboBox x="98" y="135" id="tipoUsuario" selectedIndex="0" editable="false">
 		<mx:ArrayCollection>
          <mx:Object label="Fisica" data="0"/>
          <mx:Object label="Jurídica" data="1"/>
       </mx:ArrayCollection>
 	</mx:ComboBox>
 	
-	<mx:Label x="271" y="77" text="Data Cadastro:"/>
-	<utilidades:DateInput x="369" y="75" id="dataCadastro" showToday="true"/>
+	<mx:Label x="271" y="137" text="Data Cadastro:"/>
+	<utilidades:DateInput x="369" y="135" id="dataCadastro" showToday="true"/>
 	
-	<mx:Label x="475" y="77" text="Lim. Crédito:"/>
-	<ns1:NumberInput id="ti_limCredito" x="568" y="75" width="131" />
+	<mx:Label x="475" y="137" text="Lim. Crédito:"/>
+	<ns1:NumberInput id="ti_limCredito" x="568" y="135" width="131" />
 	
-	<mx:Label x="10" y="107" text="Codigo:"/>
-	<mx:Label id="ti_codigo" width="81" x="10" y="125" height="20" fontWeight="bold"/>
+	<mx:Label x="10" y="167" text="Codigo:"/>
+	<mx:Label id="ti_codigo" width="81" x="10" y="185" height="20" fontWeight="bold"/>
 	
-	<mx:Label x="99" y="105" text="Nome:"/>
-	<ns1:TextoInput id="ti_nome" width="399" requerido="true" x="99" y="123"/>	
+	<mx:Label x="99" y="165" text="Nome:"/>
+	<ns1:TextoInput id="ti_nome" width="399" requerido="true" x="99" y="183"/>	
 	
-	<mx:Label x="506" y="103" text="Sexo:" id="lb_sexo"/>		
-	<mx:ComboBox x="506" y="123" width="112" id="sexo" selectedIndex="0" editable="false">
+	<mx:Label x="506" y="163" text="Sexo:" id="lb_sexo"/>		
+	<mx:ComboBox x="506" y="183" width="112" id="sexo" selectedIndex="0" editable="false">
 		<mx:ArrayCollection>
          <mx:Object label="Masculino" data="M"/>
          <mx:Object label="Feminino" data="F"/>
       </mx:ArrayCollection>
 	</mx:ComboBox>
 	
-	<mx:Label x="10" y="153" text="Fone:"/>
-	<ns1:InteiroInput id="ti_fone" width="169" x="10" y="170" maxChars="11"/>
+	<mx:Label x="10" y="213" text="Fone:"/>
+	<ns1:InteiroInput id="ti_fone" width="169" x="10" y="230" maxChars="11"/>
 	
-	<mx:Label x="187" y="153" text="Contato:"/>
-	<ns1:TextoInput id="ti_contato"  x="187" y="170" width="160"/>
+	<mx:Label x="187" y="213" text="Contato:"/>
+	<ns1:TextoInput id="ti_contato"  x="187" y="230" width="160"/>
 	
-	<mx:Label x="355" y="153" text="Data Nascimento:"/>
-	<utilidades:DateInput x="355" y="170"   showToday="true" id="dataNascimento" width="143"/>
+	<mx:Label x="355" y="213" text="Data Nascimento:"/>
+	<utilidades:DateInput x="355" y="230"   showToday="true" id="dataNascimento" width="143"/>
 	
-	<mx:Label x="10" y="202" text="Email:"/>
-	<ns1:TextoInput x="10" y="219" id="ti_email"  width="234"/>
+	<mx:Label x="10" y="262" text="Email:"/>
+	<ns1:TextoInput x="10" y="279" id="ti_email"  width="234"/>
 	
-	<mx:Label x="252" y="202" text="URL:"/>
-	<ns1:TextoInput x="252" y="219" id="ti_url" width="240"/>
+	<mx:Label x="252" y="262" text="URL:"/>
+	<ns1:TextoInput x="252" y="279" id="ti_url" width="240"/>
 	
-	<mx:Label x="10" y="249" text="CPF/CNPJ:"/>
-	<ns1:InteiroInput id="ti_cpf_cnpj"  width="185" x="11" y="266" maxChars="13"/>
+	<mx:Label x="10" y="309" text="CPF/CNPJ:"/>
+	<ns1:InteiroInput id="ti_cpf_cnpj"  width="185" x="11" y="326" maxChars="13"/>
 	
-	<mx:Label x="204" y="249" text="Insc. Estadual:"/>
-	<ns1:InteiroInput id="ti_inscEstadual" width="201" x="204" y="266" maxChars="20"/>
+	<mx:Label x="204" y="309" text="Insc. Estadual:"/>
+	<ns1:InteiroInput id="ti_inscEstadual" width="201" x="204" y="326" maxChars="20"/>
 	
-	<mx:Label x="10" y="296" text="Observações:"/>
-	<mx:TextArea x="10" y="311" width="488" height="81" id="obs"/>
+	<mx:Label x="10" y="356" text="Observações:"/>
+	<mx:TextArea x="10" y="371" width="488" height="81" id="obs"/>
 	
 	
-	<mx:Panel x="506" y="153" width="351" height="239" layout="absolute" title="Endereço">
+	<mx:Panel x="509" y="213" width="351" height="239" layout="absolute" title="Endereço">
 		
 		
-		<mx:Label x="10" y="0" text="Rua/Logradouro:"/>
-		<ns1:TextoInput id="ti_endereco" width="308" x="10" y="20"/>
-		
-		<mx:Label x="10" y="50" text="Bairro:"/>
-		<ns1:TextoInput id="ti_bairro"  x="10" y="67"/>
-		
-	
-		<mx:Label x="178" y="50" text="Cep:"/>
-		<ns1:InteiroInput id="ti_cep" x="178" y="67" width="140"/>
-		
-		<mx:Label x="10" y="97" text="UF:"/>	
-	<mx:ComboBox x="10" y="113" id="estado" selectedIndex="0" editable="false" dataProvider="{this.estados}">	
-		</mx:ComboBox>
-		
-		<mx:Label x="77" y="97" text="Cidade:"/>	
-		<ns1:TextoInput id="ti_cidade"  x="77" y="113" width="244"/>
-	
-	
 	</mx:Panel>
 	
-	<botoes:SalvarButton id="add" click="{this.addItem()}" x="504" y="9"/>
-	<botoes:ExcluirButton id="remover"  label="Remover"  enabled="true" x="612" y="9" click="{this.removerItem()}"  width="114"/>
-	<botoes:LimparButton  x="734" label="Limpar" y="9" click="{this.limparCampos()}" width="108"  textAlign="left"/>
+	<botoes:SalvarButton id="add" click="{this.addItem()}" x="10" y="84"/>
+	<botoes:ExcluirButton id="remover"  label="Remover"  enabled="true" x="118" y="84" click="{this.removerItem()}"  width="114"/>
+	<botoes:LimparButton  x="240" label="Limpar" y="84" click="{this.limparCampos()}" width="108"  textAlign="left"/>
 	
 	
 	
-	<mx:DataGrid id="grid_itens" x="10" y="400" width="847" dataProvider="{this.itensArray}" change="{this.itemSelecionado(event)}">
+	<mx:DataGrid id="grid_itens" x="10" y="460" width="847" dataProvider="{this.itensArray}" change="{this.itemSelecionado(event)}">
 		<mx:columns>
 			<mx:DataGridColumn headerText="Código: " dataField="codigo"/>
 			<mx:DataGridColumn headerText="Nome: " dataField="nome"/>
@@ -372,6 +371,17 @@
 			<mx:DataGridColumn headerText="Contato: " dataField="contato"/>
 		</mx:columns>
 	</mx:DataGrid>
+	<mx:Label x="526" y="245" text="Rua/Logradouro:"/>
+	<ns1:TextoInput id="ti_endereco" width="308" x="526" y="265"/>
+	<mx:Label x="526" y="295" text="Bairro:"/>
+	<ns1:TextoInput id="ti_bairro"  x="526" y="312"/>
+	<mx:Label x="694" y="295" text="Cep:"/>
+	<ns1:InteiroInput id="ti_cep" x="694" y="312" width="140"/>
+	<mx:Label x="526" y="342" text="UF:"/>
+	<mx:ComboBox x="526" y="358" id="estado" selectedIndex="0" editable="false" dataProvider="{this.estados}">	
+		</mx:ComboBox>
+	<mx:Label x="593" y="342" text="Cidade:"/>
+	<ns1:TextoInput id="ti_cidade"  x="593" y="358" width="244"/>
 	
 		
 </mx:TitleWindow>

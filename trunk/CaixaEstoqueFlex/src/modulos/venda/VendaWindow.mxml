@@ -45,7 +45,9 @@
 			[Bindable]
 			public var preVenda:PreVendaVO;
 			
-			public var ro:Remote = Remote.getInstance();			
+			public var ro:Remote = Remote.getInstance();
+			
+			private var isFechada:Boolean = false;			
 					
 			private function init():void{
 				this.venda = new VendaVO();
@@ -55,7 +57,7 @@
 					this.getPreVenda();
 				}else {
 					this.venda.codPreVenda = this.preVenda.codigo;
-					this.array_itensVenda = new ArrayCollection(this.preVenda.itemPreVenda);
+					this.array_itensVenda = this.preVenda.itemPreVenda;
 					this.ro.abrirVenda(result_abrirVenda,this.venda);
 				}
 			}
@@ -68,7 +70,10 @@
 			private function result_getPrevenda(event:PreVendaEvent):void{
 				this.venda.codPreVenda = event.preVenda.codigo;
 				this.venda.valorTotal = event.preVenda.valorTotal;
-				this.array_itensVenda = new ArrayCollection(event.preVenda.itemPreVenda);
+				this.ti_valorTotal.text = Number(this.venda.valorTotal).toFixed(2);
+				this.lb_codigoPreVenda.text = event.preVenda.codigo.toString();
+				this.lb_dataAberturaPreVenda.text = event.preVenda.dataAbertura;
+				this.array_itensVenda = event.preVenda.itemPreVenda;
 				this.ro.abrirVenda(result_abrirVenda,this.venda);
 				this.isPreVenda = true;				
 			}
@@ -87,10 +92,12 @@
         	
 			
 			public function onCloseCommand(event:Event):void{
-				if(!isFecharVenda){
-					event.preventDefault();
-					this.cancelarVenda();
-				}				
+				if(!this.isFechada){
+					if(!isFecharVenda){
+						event.preventDefault();
+						this.cancelarVenda();
+					}				
+				}
    			}	
    			
    			private function finalizarVenda():void{
@@ -108,6 +115,7 @@
 			}
 			
 			private function result_fecharVenda(e:ResultEvent):void{
+				this.isFechada = true;
 				this.close();
 				
 			}
@@ -121,8 +129,11 @@
 			}
 			
 			private function resposta_cancelarPreVenda(event:CloseEvent):void{
-				if(event.detail == Alert.YES){					
-					this.ro.cancelarVenda(result_cancelarPreVenda,this.venda);					
+				if(event.detail == Alert.YES){	
+					if(this.venda.codigo != 0)				
+						this.ro.cancelarVenda(result_cancelarPreVenda,this.venda);
+					else
+						result_cancelarPreVenda(null);					
 				}
 				
 			}
@@ -149,7 +160,7 @@
 					Alert.show("Desconto maior que o valor total.","Ops!",4,this);
 				}else{
 					this.venda.desconto = desc;
-					this.venda.valorTotal -= desc;
+					this.ti_valorTotal.text = Number(this.venda.valorTotal - desc).toFixed(2);
 					this.bt_addDesconto.visible = false;
 					this.bt_removerDesconto.visible = true;
 				}
@@ -158,7 +169,7 @@
 			
 			private function removerDesconto():void{
 				if(this.venda.desconto>0){
-					this.venda.valorTotal += this.venda.desconto;
+					this.ti_valorTotal.text = Number(this.venda.valorTotal).toFixed(2) 
 					this.venda.desconto = 0;
 					this.ti_desconto.text = this.ti_desconto.valorDefault;
 					this.bt_addDesconto.visible = true;
@@ -182,14 +193,14 @@
 			<mx:HBox width="100%" height="20%" horizontalAlign="center">
 				<mx:Panel title="Dados Pré-Venda" layout="absolute" height="104" width="573">
 					<mx:Label text="Código:" x="10" y="10" />
-					<mx:Label id="lb_codigoPreVenda" x="10" y="32" text="{this.preVenda.codigo}" />
+					<mx:Label id="lb_codigoPreVenda" x="10" y="32" />
 					<mx:Label text="Data Abertura:" x="114" y="10" />
-					<mx:Label id="lb_dataAberturaPreVenda" x="114" y="32" text="{this.preVenda.dataAbertura}"/>
+					<mx:Label id="lb_dataAberturaPreVenda" x="114" y="32" />
 					<mx:Text id="tx_obsPreVenda" x="246" y="10" width="297" height="42" />
 					<mx:Button x="315" y="-30" label="Button"/>
 				</mx:Panel>
 				<mx:Panel title="Valor Total" horizontalAlign="right" height="30%" width="395">
-					<mx:Label id="ti_valorTotal" text="{Number(this.venda.valorTotal).toFixed(2) }" fontSize="50"  x="23" y="26"/>
+					<mx:Label id="ti_valorTotal" text="0,00" fontSize="50"  x="23" y="26"/>
 				</mx:Panel>
 			</mx:HBox>
 			<mx:DataGrid id="produtos"  width="100%"  height="100%" rowCount="10" dataProvider="{array_itensVenda}">

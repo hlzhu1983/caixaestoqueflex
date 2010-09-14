@@ -325,15 +325,27 @@ package negocio.remote{
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
 		
+		public function pesquisarPreVendasValidas(result:Function,texto:String,coluna:String):void{
+			_remote.source = "ServicosPreVenda";
+			var async:AsyncToken = _remote.pesquisarItensValidos(texto,coluna);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
 		public function filtraDataPreVenda(result:Function,data:String,coluna:String):void{
 			_remote.source = "ServicosPreVenda";
-			var async:AsyncToken = _remote.filtraData(data,coluna);
+			var async:AsyncToken = _remote.filtrarData(data,coluna);
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
 		
 		public function listarPreVenda(result:Function):void{
  			_remote.source = "ServicosPreVenda";
-			var async:AsyncToken = _remote.getItens();
+			var async:AsyncToken = _remote.getPreVendas();
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
+		public function listarPreVendasValidas(result:Function):void{
+ 			_remote.source = "ServicosPreVenda";
+			var async:AsyncToken = _remote.getItensValidos();
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
 		
@@ -348,6 +360,8 @@ package negocio.remote{
 			var async:AsyncToken = _remote.cancelarPreVenda(preVenda);
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
+		
+		
 		//**********************************************************************************//
 				
 		//Servicos Venda	
@@ -363,6 +377,68 @@ package negocio.remote{
 			var async:AsyncToken = _remote.fecharVenda(venda);
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
+		
+		public function geraGraficoVendaTotal(result:Function):void{
+ 			_remote.source = "ServicosVenda";
+			var async:AsyncToken = _remote.geraGraficoVendaTotal();
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
+		public function geraGraficoVendaIntervalo(result:Function, str:String ):void{
+ 			_remote.source = "ServicosVenda";
+			var async:AsyncToken = _remote.geraGraficoVendaIntervalo(str);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
+		public function geraGraficoVendaMes(result:Function,str:String):void{
+ 			_remote.source = "ServicosVenda";
+			var async:AsyncToken = _remote.geraGraficoVendaMes(str);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
+		public function geraGraficoVendaAno(result:Function,str:String):void{
+ 			_remote.source = "ServicosVenda";
+			var async:AsyncToken = _remote.geraGraficoVendaAno(str);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
+		public function geraGraficoVendaMesAno(result:Function,mes:String,ano:String):void{
+ 			_remote.source = "ServicosVenda";
+			var async:AsyncToken = _remote.geraGraficoVendaMesAno(mes,ano);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
+		public function getRankingCliente(result:Function):void{
+ 			_remote.source = "ServicosVenda";
+			var async:AsyncToken = _remote.getRankingCliente();
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
+		public function getRankingProduto(result:Function):void{
+ 			_remote.source = "ServicosVenda";
+			var async:AsyncToken = _remote.getRankingProduto();
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
+		public function getRankingFormaPagamento(result:Function):void{
+ 			_remote.source = "ServicosVenda";
+			var async:AsyncToken = _remote.getRankingFormaPagamento();
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
+		
+		public function filtrarVendas(result:Function,sql:ArrayCollection):void{
+ 			_remote.source = "ServicosVenda";
+			var async:AsyncToken = _remote.filtrarVendas(sql);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
+		public function getVendasHoje(result:Function):void{
+ 			_remote.source = "ServicosVenda";
+			var async:AsyncToken = _remote.getVendasHoje();
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		
 		
 		public function cancelarVenda(result:Function,venda:VendaVO):void{
  			_remote.source = "ServicosVenda";

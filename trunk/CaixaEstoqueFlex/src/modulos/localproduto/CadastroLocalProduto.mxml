@@ -114,7 +114,7 @@
 			}
 			
 			private function resultadoPesquisaItem(event:ResultEvent):void{
-				this.localProdutosArray = new ArrayCollection(event.result as Array);
+				this.localProdutosArray = event.result as ArrayCollection;
 			}
 			
 			

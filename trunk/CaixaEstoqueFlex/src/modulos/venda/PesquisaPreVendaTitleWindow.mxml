@@ -32,9 +32,9 @@
 			
 			private function pesquisarPreVenda():void{
 				if(this.ti_pesquisaImport.text == ""){
-					this.ro.listarPreVenda(result_pesquisarPreVenda);
+					this.ro.listarPreVendasValidas(result_pesquisarPreVenda);
 				}else{
-					this.ro.pesquisarPreVenda(result_pesquisarPreVenda,this.ti_pesquisaImport.text,'codigo');
+					this.ro.pesquisarPreVendasValidas(result_pesquisarPreVenda,this.ti_pesquisaImport.text,'codigo');
 				}
 			}
 			
@@ -42,7 +42,7 @@
 				if(event.result == null){
 					Alert.show("A pesquisa nâo retornou resultado!","Ops!",4,this);
 				}else{
-					this.array_preVenda = new ArrayCollection(event.result as Array);
+					this.array_preVenda = event.result as ArrayCollection;
 				}
 			}
 			
@@ -80,7 +80,7 @@
 		<mx:TextInput x="106" y="10" id="ti_pesquisaImport" width="106"/>
 		<mx:Label x="10" y="12" text="Código:"/>
 		<botoes:BuscarButton  x="220" y="6" click="{this.pesquisarPreVenda()}"/>
-		<mx:DateField x="106" y="42" id="df_data" change="{this.filtrarData()}" width="106"/>
+		<mx:DateField x="120" y="42" id="df_data" change="{this.filtrarData()}" width="106"/>
 		<mx:Label x="10" y="46" text="Data Pré-Venda:"/>
 	</mx:Panel>
 	<mx:DataGrid id="grid_preVendas" doubleClickEnabled="true" 

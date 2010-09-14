@@ -41,9 +41,9 @@
 			}
 			
 			public function inserirInsercaoProduto():void{
-				if(this.produto.qtdEmEstoque < this.quantProduto.getValor()){
+				/* if(this.produto.qtdEmEstoque < this.quantProduto.getValor()){
 					Alert.show("Quantidade selecionada maior que contida no estoque!","Ops!",4,this);	
-				}else{
+				}else{ */
 					var itemPrevenda:ItemPreVendaVO = new ItemPreVendaVO();
 					itemPrevenda.codProduto = this.produto.codigo;
 					itemPrevenda.descricao = this.produto.descricao;
@@ -51,7 +51,7 @@
 					itemPrevenda.valor = Number(this.valor);
 					this.dispatchEvent(new ItemPreVendaEvent(itemPrevenda,ItemPreVendaEvent.ADICIONADOSUCEESSO));
 					PopUpManager.removePopUp(this);
-				}
+				//}
 			}
 			
 			public function cancelarInsercaoProduto():void{
