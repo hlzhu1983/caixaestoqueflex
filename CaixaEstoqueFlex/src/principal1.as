@@ -119,6 +119,7 @@
 		
 	
 	public function usuarioAutenticado(event:AutenticacaoUsuarioEvent):void{
+		Config.usuario = event.usuario;
 		this.usuario = event.usuario;
 		if(this.usuario.permissao == 1){
 			this.menuArray  = new ArrayCollection(this.menuItensVendedor);
