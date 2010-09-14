@@ -122,8 +122,9 @@
 						}
 					}
 				}else{
-					sql.addItem("Month(dataVenda) = "+this.cb_mes.selectedItem.data+" and Year(dataVenda) = "+this.cb_ano.selectedItem);
-					
+					if(this.cb_mes.selectedItem.data != 0 && this.cb_ano.selectedItem != "tudo"){
+						sql.addItem("Month(dataVenda) = "+this.cb_mes.selectedItem.data+" and Year(dataVenda) = "+this.cb_ano.selectedItem);
+					}					
 				}
 				
 				if(sql.length == 0){
@@ -149,7 +150,6 @@
 					}else{
 							this.ro.geraGraficoVendaTotal(result_geraGrafico);
 						}
-					
 				}else{
 					if(this.cb_mes.selectedItem.data == 0 && this.cb_ano.selectedItem == "Todos")
 						this.ro.geraGraficoVendaTotal(result_geraGrafico);
@@ -218,7 +218,7 @@
 					i.array_rClientes = this.array_rClientes;
 					isImpressao = true;
 				}else{
-					i.body.removeChild(i.pn_rCliente);
+					i.pn_rCliente;
 				}
 				
 				if(this.cb_rProduto.selected){
