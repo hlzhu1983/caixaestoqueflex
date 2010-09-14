@@ -1,21 +1,38 @@
+import java.sql.Date;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Map;
+
+import exception.ClienteJaexisteException;
 import services.ServicosCliente;
 import services.ServicosFormadePagto;
 import services.ServicosFornecedor;
 import services.ServicosGrupoProduto;
 import services.ServicosLocalProduto;
+import services.ServicosPreVenda;
 import services.ServicosProduto;
 import services.ServicosUnidade;
 import services.ServicosUsuario;
+import services.ServicosVenda;
+import util.UtilData;
+import vo.ClienteVO;
+import vo.FormaPgtoVendaVO;
 import vo.FormadePagtoVO;
 import vo.FornecedorVO;
 import vo.GrupoProdutoVO;
+import vo.ItemGraficoVO;
+import vo.ItemPreVendaVO;
 import vo.LocalProdutoVO;
+import vo.PreVendaVO;
 import vo.ProdutoVO;
+import vo.RankingClienteVO;
+import vo.RankingFormaPagamentoVO;
+import vo.RankingProdutoVO;
 import vo.UnidadeVO;
 import vo.UsuarioVO;
+import vo.VendaVO;
 
 public class FachadaServicos {
 
@@ -27,6 +44,8 @@ public class FachadaServicos {
 	private ServicosLocalProduto servLocalProduto;
 	private ServicosFornecedor servForncedor;
 	private ServicosProduto servProduto;
+	private ServicosPreVenda servPreVenda;
+	private ServicosVenda servVenda;
 
 	public FachadaServicos() {
 		this.servCliente = new ServicosCliente();
@@ -37,6 +56,40 @@ public class FachadaServicos {
 		this.servUnidade = new ServicosUnidade();
 		this.servForncedor = new ServicosFornecedor();
 		this.servProduto = new ServicosProduto();
+		this.servPreVenda = new ServicosPreVenda();
+		this.servVenda = new ServicosVenda();
+	}
+
+	public ClienteVO addCliente(ClienteVO item) throws SQLException {
+		if (item == null)
+			throw new RuntimeException("Parametro invalido");
+		return this.servCliente.adicionarCliente(item);
+	}
+
+	public boolean removerCliente(ClienteVO item) {
+		if (item == null)
+			throw new RuntimeException("Parametro invalido");
+
+		return this.servCliente.removerCliente(item);
+
+	}
+
+	public ArrayList<ClienteVO> pesquisarCliente(String texto, String coluna) {
+		if (texto == null || coluna == null)
+			throw new RuntimeException("Parametro invalido");
+		return this.servCliente.pesquisarCliente(texto, coluna);
+
+	}
+
+	public ArrayList<ClienteVO> getClientes() {
+		return this.servCliente.getClientes();
+
+	}
+
+	public ClienteVO atualizarCliente(ClienteVO item) {
+		if (item == null)
+			throw new RuntimeException("Parametro invalido");
+		return this.servCliente.atualizarCliente(item);
 	}
 
 	// Servicos Usuario
@@ -86,7 +139,7 @@ public class FachadaServicos {
 				.getFormadePagtos());
 	}
 
-	public FormadePagtoVO adcionarFormadePagto(FormadePagtoVO formaPagamento)
+	public FormadePagtoVO adicionarFormadePagto(FormadePagtoVO formaPagamento)
 			throws Exception {
 		return this.servFormadePagto.addFormadePagto(formaPagamento);
 	}
@@ -321,13 +374,28 @@ public class FachadaServicos {
 		if (texto == null || coluna == null) {
 			throw new RuntimeException("A pesquisa não pôde ser completada");
 		} else {
-			return this.servProduto.pesquisarProduto(texto, coluna);
+			return this.isDefaultProduto(this.servProduto.pesquisarProduto(
+					texto, coluna));
+		}
+
+	}
+
+	public ProdutoVO getProduto(String texto, String coluna) {
+		if (texto == null || coluna == null) {
+			throw new RuntimeException("A pesquisa não pôde ser completada");
+		} else {
+			ArrayList<ProdutoVO> p = this.servProduto.getProduto(texto, coluna);
+			this.isDefaultProduto(p);
+			if (p.size() == 0)
+				return null;
+			else
+				return p.get(0);
 		}
 
 	}
 
 	public ArrayList<ProdutoVO> getProdutos() {
-		return this.servProduto.getProdutos();
+		return this.isDefaultProduto(this.servProduto.getProdutos());
 	}
 
 	public ArrayList<ProdutoVO> filtrarProdutos(ArrayList<ProdutoVO> str) {
@@ -344,6 +412,198 @@ public class FachadaServicos {
 
 		return this.isDefaultProduto(this.servProduto.getProdutos(sql));
 
+	}
+
+	
+
+	// **********************************************************************************//
+
+	public PreVendaVO abrirPreVenda(PreVendaVO item) {
+		if (item == null) {
+			throw new RuntimeException("Parametro inválido exception!");
+		}
+		return this.servPreVenda.abrirPreVenda(item);
+	}
+
+	public ItemPreVendaVO addItemPreVenda(ItemPreVendaVO item) {
+		if (item == null) {
+			throw new RuntimeException("Parametro inválido exception!");
+		}
+		return this.servPreVenda.addItemPreVenda(item);
+	}
+
+	public PreVendaVO fecharPreVenda(PreVendaVO item) {
+		if (item == null) {
+			throw new RuntimeException("Parametro inválido exception!");
+		}
+		return this.servPreVenda.fecharPreVenda(item);
+
+	}
+
+	public boolean removerItemPreVenda(ItemPreVendaVO item) {
+		if (item == null) {
+			throw new RuntimeException("Parametro inválido exception!");
+		}
+		this.servPreVenda.removerItemPreVenda(item);
+		return true;
+	}
+
+	public PreVendaVO cancelarPreVenda(PreVendaVO item) {
+		if (item == null) {
+			throw new RuntimeException("Parametro inválido exception!");
+		}
+		return this.servPreVenda.cancelarPreVenda(item);
+	}
+
+	public boolean removerItem(PreVendaVO item) {
+		if (item == null) {
+			throw new RuntimeException("Parametro inválido exception!");
+		}
+		return this.servPreVenda.removerItem(item);
+	}
+
+	public ArrayList<PreVendaVO> filtrarData(String data, String coluna) {
+		if (data == null || coluna == null) {
+			throw new RuntimeException("Parametro inválido exception!");
+		}
+		return this.servPreVenda.filtrarData(data, coluna);
+	}
+
+	public ArrayList<PreVendaVO> getAllItensPrevenda(String codigo) {
+		if (codigo == null) {
+			throw new RuntimeException("Parametro inválido exception!");
+		}
+		return this.servPreVenda.getAllItensPrevenda(codigo);
+	}
+
+	public ArrayList<PreVendaVO> pesquisarItens(String texto, String coluna) {
+		if (texto == null || coluna == null) {
+			throw new RuntimeException("Parametro inválido exception!");
+		}
+		return this.servPreVenda.pesquisarItens(texto, coluna);
+	}
+
+	public ArrayList<PreVendaVO> getPreVendas() {
+		return this.servPreVenda.getItens();
+	}
+
+	public ArrayList<PreVendaVO> getItensValidos() {
+		return this.servPreVenda.getItensValidos();
+	}
+
+	public ArrayList<PreVendaVO> pesquisarItensValidos(String texto,
+			String coluna) {
+		if (texto == null || coluna == null) {
+			throw new RuntimeException("Parametro inválido exception!");
+		}
+		return this.servPreVenda.pesquisarItensValidos(texto, coluna);
+
+	}
+
+	// **********************************************************************************//
+
+	public VendaVO abrirVenda(VendaVO item) {
+		if (item == null)
+			throw new RuntimeException("Venda não pode ser aberta!");
+		return this.servVenda.abrirVenda(item);
+	}
+
+	public VendaVO fecharVenda(VendaVO item) {
+		if (item == null)
+			throw new RuntimeException("Venda não pode ser aberta!");
+		return this.servVenda.fecharVenda(item);
+	}
+
+	public VendaVO cancelarVenda(VendaVO item) {
+		if (item == null)
+			throw new RuntimeException("Venda não pode ser aberta!");
+		return this.servVenda.cancelarVenda(item);
+	}
+
+	public ArrayList<VendaVO> filtrarData(Date data, String coluna) {
+		if (data == null || coluna == null)
+			throw new RuntimeException("Venda não pode ser aberta!");
+		return this.servVenda.filtrarData(data, coluna);
+	}
+
+	public ArrayList<VendaVO> pesquisarVenda(String texto, String coluna) {
+		if (texto == null || coluna == null)
+			throw new RuntimeException("Venda não pode ser aberta!");
+		return this.servVenda.pesquisarItens(texto, coluna);
+	}
+
+	public ArrayList<VendaVO> getVendas() {
+		return this.servVenda.getItens();
+
+	}
+	
+	public ArrayList<VendaVO> getVendasHoje() {
+		return this.servVenda.getVendasHoje();
+
+	}
+	
+	public ArrayList<ItemGraficoVO> geraGraficoVendaTotal(){
+		return this.servVenda.getGraficoVendaTotal();
+		
+	}
+	
+	public ArrayList<ItemGraficoVO> geraGraficoVendaIntervalo(String str){
+		if (str == null)
+			throw new RuntimeException("Grafico não pode ser gerado!");
+		return this.servVenda.getGraficoVendaIntervalo(str);
+		
+	}
+	
+	public ArrayList<ItemGraficoVO> geraGraficoVendaMes(String str){
+		if (str == null)
+			throw new RuntimeException("Grafico não pode ser gerado!");
+		return this.servVenda.getGraficoVendaMes(str);
+		
+	}
+	
+	public ArrayList<ItemGraficoVO> geraGraficoVendaAno(String str){
+		if (str == null)
+			throw new RuntimeException("Grafico não pode ser gerado!");
+		return this.servVenda.getGraficoVendaAno(str);
+		
+	}
+	
+	public ArrayList<ItemGraficoVO> geraGraficoVendaMesAno(String mes, String ano){
+		if (mes == null || ano == null)
+			throw new RuntimeException("Grafico não pode ser gerado!");
+		return this.servVenda.getGraficoVendaMesAno(mes,ano);
+		
+	}
+	
+	public ArrayList<RankingClienteVO> getRankingCliente(){
+		return this.servVenda.getRankingCliente();
+		
+	}
+	
+	public ArrayList<RankingProdutoVO> getRankingProduto(){
+		return this.servVenda.getRankingProduto();
+		
+	}
+	
+	public ArrayList<RankingFormaPagamentoVO> getRankingFormaPagamento(){
+		return this.servVenda.getRankingFormaPagamento();
+		
+	}
+	
+	public ArrayList<VendaVO> filtrarVendas(ArrayList<String> str) {
+		if (str.size() == 0) {
+			throw new RuntimeException(
+					"Operação de filtragem não pode ser realizada!");
+		}
+
+		String sql = "select * from  venda where " + str.get(0);
+		for (int i = 1; i < str.size(); i++) {
+			sql += " and " + str.get(i);
+		}
+		// throw new RuntimeException(sql);
+//		if(1==1)
+//			throw new RuntimeException(sql+" and status = 1");
+		return this.servVenda.getVendas(sql+" and status = 1");
 	}
 
 	// **********************************************************************************//
@@ -372,12 +632,9 @@ public class FachadaServicos {
 	}
 
 	public static void main(String[] args) throws Exception {
-		UnidadeVO u = new UnidadeVO();
-		// u.codigo = 4;
-		u.descricao = "M";
+		ClienteVO p = new ClienteVO();
+		p.nome = "cliente";
 		FachadaServicos f = new FachadaServicos();
-		String[] str = { "", "", "", "", "", "", "codLocal = 2" };
-		//f.filtrarProdutos(str);
-
+		f.getVendasHoje();
 	}
 }

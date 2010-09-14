@@ -9,6 +9,6 @@ public class PreVendaVO {
 	public int status;
 	public String obs;
 	public ArrayList<ItemPreVendaVO> itemPreVenda;
-	public Date dataAbertura;
+	public String dataAbertura;
 	public double valorTotal;
 }

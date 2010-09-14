@@ -1,4 +1,5 @@
 package vo;
+import java.util.ArrayList;
 import java.util.Date;
 
 
@@ -9,10 +10,10 @@ public class VendaVO {
 	public int codPreVenda;
 	public int codUsuario;
 	public int status;
-	public Date dataVenda;
+	public String dataVenda;
 	public double desconto;
 	public  double valorTotal;
-	public int formasPagamento;
+	public ArrayList<FormaPgtoVendaVO> formasPagamento;
 	public String obs;
 	
 }
