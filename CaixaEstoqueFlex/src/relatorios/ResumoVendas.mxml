@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Window xmlns:mx="http://www.adobe.com/2006/mxml"
+	 layout="absolute" width="1024" height="768" creationComplete="{this.init()}"
+	  title="Resumo Vendas" xmlns:ns1="utilidades.botoes.*" 
+	  xmlns:ns2="utilidades.inputs.*" xmlns:utilidades="utilidades.*">
+
+
+	<mx:Script>
+		<![CDATA[
+			import mx.formatters.SwitchSymbolFormatter;
+			import mx.rpc.events.ResultEvent;
+			import mx.controls.Alert;
+			import mx.collections.ArrayCollection;
+			import negocio.remote.Remote;
+			import negocio.vo.VendaVO;
+			
+			
+			[Bindable]
+			private var array_vendas:ArrayCollection;
+			
+			[Bindable]
+			private var array_formasPgto:ArrayCollection;
+			
+			[Bindable]
+			private var array_graficoVendas:ArrayCollection;
+			
+			[Bindable]
+			private var array_rClientes:ArrayCollection;
+			
+			[Bindable]
+			private var array_rProdutos:ArrayCollection;
+			
+			[Bindable]
+			private var array_rFormasPagamento:ArrayCollection;
+			
+			private var venda:VendaVO;
+			
+			private var abaSelecionada:int = 0;
+			
+			
+			private var ro:Remote = Remote.getInstance();
+			
+			
+			private function init():void{
+				this.ro.parent = this;
+				this.array_formasPgto = new ArrayCollection();
+				this.array_vendas = new ArrayCollection();
+				this.realizarFiltro();
+			}
+			
+			
+			
+			
+			private function realizarFiltro():void{
+				switch(this.abaSelecionada){
+					case 0: 
+						this.pesquisarVenda();
+						break;
+					case 1:
+						this.prencheGraficoVenda();
+						break;
+					case 2:
+						this.getRankingCliente();
+						break;
+					case 3:
+						this.getRankingProduto();
+						break;
+					case 4:
+						this.getRankingFormaPagamento();
+						break;
+					default:
+						Alert.show("Não implementado","Ops!",4,this);
+				}
+				
+			}
+			
+			private function getRankingCliente():void{
+				this.ro.getRankingCliente(result_getRankingCliente);
+			}
+			
+			private function result_getRankingCliente(event:ResultEvent):void{
+				this.array_rClientes = event.result as ArrayCollection;
+			}
+			
+			private function getRankingProduto():void{
+				this.ro.getRankingProduto(result_getRankingProduto);
+			}
+			
+			private function result_getRankingProduto(event:ResultEvent):void{
+				this.array_rProdutos = event.result as ArrayCollection;
+			}
+			
+			private function getRankingFormaPagamento():void{
+				this.ro.getRankingFormaPagamento(result_getRankingProduto);
+			}
+			
+			private function result_getRankingFormaPagamento(event:ResultEvent):void{
+				this.array_rProdutos = event.result as ArrayCollection;
+			}
+			
+			
+			private function pesquisarVenda():void{
+				var sql:ArrayCollection = new ArrayCollection();
+				
+				if(this.ti_codigoCliente.text !=""){
+					sql.addItem("codCliente = '"+this.ti_codigoCliente.text+"'");
+				}
+				if(this.ti_codVendedor.text !=""){
+					sql.addItem("codUsuario = "+this.ti_codVendedor.text);
+				}
+				
+				if(this.ac_dataFiltro.selectedIndex == 0){
+					if(this.df_intervaloInicial.text !="" && this.df_intervaloFinal.text != "") {
+						if(this.compareDate(this.df_intervaloInicial.selectedDate,this.df_intervaloFinal.selectedDate)){
+							sql.addItem("Date(dataVenda) BETWEEN '"+this.df_intervaloInicial.getStringData()+"' AND '"+this.df_intervaloFinal.getStringData()+"'");
+						}else{
+							Alert.show("Data inicial menor que data final!","Ops!",4,this);
+						}
+					}
+				}else{
+					sql.addItem("Month(dataVenda) = "+this.cb_mes.selectedItem.data+" and Year(dataVenda) = "+this.cb_ano.selectedItem);
+					
+				}
+				
+				if(sql.length == 0){
+					this.ro.getVendasHoje(result_filtroVenda);
+				}else{
+					this.ro.filtrarVendas(result_filtroVenda,sql);
+				} 
+			}
+			
+			private function result_filtroVenda(event:ResultEvent):void{
+				this.array_vendas = event.result as ArrayCollection;
+			}
+			
+			
+			private function prencheGraficoVenda():void{
+				if(this.ac_dataFiltro.selectedIndex == 0 ){
+					if(this.df_intervaloInicial.text !="" && this.df_intervaloFinal.text != "") {
+						if(this.compareDate(this.df_intervaloInicial.selectedDate,this.df_intervaloFinal.selectedDate)){
+							this.ro.geraGraficoVendaIntervalo(result_geraGrafico,"Date(dataVenda) BETWEEN '"+this.df_intervaloInicial.getStringData()+"' AND '"+this.df_intervaloFinal.getStringData()+"'");
+						}else{
+							this.ro.geraGraficoVendaTotal(result_geraGrafico);
+						}
+					}else{
+							this.ro.geraGraficoVendaTotal(result_geraGrafico);
+						}
+					
+				}else{
+					if(this.cb_mes.selectedItem.data == 0 && this.cb_ano.selectedItem == "Todos")
+						this.ro.geraGraficoVendaTotal(result_geraGrafico);
+					else if (this.cb_mes.selectedItem.data == 0 && this.cb_ano.selectedItem != "Todos")
+						this.ro.geraGraficoVendaAno(result_geraGrafico,this.cb_ano.selectedItem.toString());
+					else if (this.cb_mes.selectedItem.data != 0 && this.cb_ano.selectedItem == "Todos")
+						this.ro.geraGraficoVendaMes(result_geraGrafico,this.cb_mes.selectedItem.data);
+					else 
+						this.ro.geraGraficoVendaMesAno(result_geraGrafico,this.cb_mes.selectedItem.data,this.cb_ano.selectedItem.toString());
+				}
+				
+			}
+			
+			private function result_geraGrafico(event:ResultEvent):void{
+				this.array_graficoVendas =  event.result as ArrayCollection;
+			}
+			
+			private function itemSelecionado(event:Event):void{
+				var v:VendaVO = event.currentTarget.selectedItem as VendaVO;
+				this.lb_codVenda.text = v.codigo.toString();
+				this.lb_codCliente.text = v.codCliente.toString();
+				this.lb_codPreVenda.text = v.codPreVenda.toString();
+				this.lb_codVendedor.text = v.codUsuario.toString();
+				this.lb_dataVenda.text = v.dataVenda;
+				this.lb_desconto.text = Number(v.desconto).toPrecision(2);
+				this.lb_valorTotal.text = Number(v.valorTotal).toPrecision(2);
+				this.array_formasPgto = v.formasPagamento;
+			}
+			
+			private function mudaAba(event:Event):void{
+				this.abaSelecionada = event.currentTarget.selectedIndex;
+				this.realizarFiltro();				
+			}
+			
+			
+			private function compareDate(inicio:Date,fim:Date):Boolean{
+				
+				if(inicio.fullYear<=fim.fullYear){
+					if(inicio.month<=fim.month){
+						if(inicio.date<=fim.date)
+						return true;
+					}
+				}
+				return false;
+				
+			}
+			
+			
+			
+		]]>
+	</mx:Script>
+	<mx:Panel x="10" y="10" width="1002" height="155" layout="absolute" title="Configuração">
+	
+		<mx:Label x="10" y="20" text="Codigo: Vendedor:"/>
+		<ns2:InteiroInput x="130" y="18" width="97" id="ti_codVendedor"/>
+		<ns1:BuscarButton x="239" y="14" label="Buscar Vendedor"/>
+		
+		<mx:Label x="10" y="58" text="Codigo Cliente:"/>
+		<ns1:BuscarButton x="239" y="52" label="Buscar Cliente" width="143"/>
+		<ns2:InteiroInput x="130" y="56" width="97" id="ti_codigoCliente"/>
+		<ns1:BuscarButton x="841" y="10" label="Filtrar" click="{this.realizarFiltro()}" width="131"/>
+		<ns1:LimparButton x="841" y="52" label="Limpar Filtros"/>
+		<mx:Accordion id="ac_dataFiltro" x="413" y="10" width="420" height="95">
+			<mx:Canvas label="Intervalo Data" width="100%" height="100%">
+				<mx:Label x="10" y="10" text="No intervalo: de -&gt;"/>
+				<utilidades:DateInput x="146" y="10" id="df_intervaloInicial" showToday="true"/>
+				<utilidades:DateInput x="318" y="10" showToday="true" id="df_intervaloFinal"/>
+				<mx:Label x="255" y="12" text="Até -&gt;"/>
+			</mx:Canvas>
+			<mx:Canvas label="Mes/Ano" width="100%" height="100%">
+				<mx:ComboBox id="cb_mes" x="67" y="10" width="114">
+					<mx:ArrayCollection>
+						<mx:Object label="Todos" data="0"/>
+						<mx:Object label="Janeiro" data="1"/>
+						<mx:Object label="Fevereiro" data="2"/>
+						<mx:Object label="Março" data="3"/>
+						<mx:Object label="Abril" data="4"/>
+						<mx:Object label="Maio" data="5"/>
+						<mx:Object label="Junho" data="6"/>
+						<mx:Object label="Julho" data="7"/>
+						<mx:Object label="Agosto" data="8"/>
+						<mx:Object label="Setembro" data="9"/>
+						<mx:Object label="Outubro" data="10"/>
+						<mx:Object label="Novembro" data="11"/>
+						<mx:Object label="Dezembro" data="12"/>
+					</mx:ArrayCollection>
+				</mx:ComboBox>
+			
+				<mx:ComboBox id="cb_ano" x="265" y="10" width="109">
+					<mx:ArrayCollection>
+						<mx:String>Todos</mx:String>
+						<mx:String>2010</mx:String>
+						<mx:String>2009</mx:String>
+						<mx:String>2008</mx:String>
+						<mx:String>2007</mx:String>
+						<mx:String>2006</mx:String>
+						<mx:String>2005</mx:String>
+					</mx:ArrayCollection>
+				</mx:ComboBox>
+				
+				<mx:Label x="10" y="12" text="Mês:"/>
+				<mx:Label x="210" y="12" text="Ano:"/>
+			</mx:Canvas>
+		</mx:Accordion>
+	</mx:Panel>
+	<mx:TabNavigator x="10" y="182" width="1002" height="504" change="{this.mudaAba(event)}">
+		<mx:Canvas label="Lista Vendas" width="100%" height="100%">
+			<mx:DataGrid x="10" y="10" width="492" height="440" dataProvider="{this.array_vendas}" change="{this.itemSelecionado(event)}">
+				<mx:columns>
+					<mx:DataGridColumn headerText="Código" dataField="codigo"/>
+					<mx:DataGridColumn headerText="Data" dataField="dataVenda"/>
+					<mx:DataGridColumn headerText="Valor Total" dataField="valorTotal"/>
+				</mx:columns>
+			</mx:DataGrid>
+			<mx:Panel x="510" y="10" width="480" height="440" layout="absolute" title="Detalhe da Venda">
+				<mx:Label x="10" y="20" text="Código:"/>
+				<mx:Label x="67" y="20" id="lb_codVenda"/>
+				<mx:Label x="190" y="20" text="Data Venda:"/>
+				<mx:Label x="273" y="20" id="lb_dataVenda"/>
+				<mx:Label x="10" y="46" text="Cliente:"/>
+				<mx:Label x="80" y="46" id="lb_codCliente"/>
+				<mx:Label x="10" y="72" text="Vendedor:"/>
+				<mx:DataGrid x="6" y="163" width="448" height="214" dataProvider="{this.array_formasPgto}">
+					<mx:columns>
+						<mx:DataGridColumn headerText="Código" dataField="codFormaPagamento"/>
+						<mx:DataGridColumn headerText="Parcelas" dataField="parcelas"/>
+						<mx:DataGridColumn headerText="Valor" dataField="valor"/>
+					</mx:columns>
+				</mx:DataGrid>
+				<mx:Label x="93" y="72" id="lb_codVendedor"/>
+				<mx:Label x="10" y="98" text="Valor Total:"/>
+				<mx:Label x="93" y="98" id="lb_valorTotal"/>
+				<mx:Label x="190" y="98" text="Desconto:"/>
+				<mx:Label x="259" y="98" id="lb_desconto"/>
+				<mx:Label x="10" y="124" text="Código Pré-venda:"/>
+				<mx:Label x="128" y="124" id="lb_codPreVenda"/>
+			</mx:Panel>
+		</mx:Canvas>
+		<mx:Canvas label="Gráficos Venda" width="100%" height="100%"  >
+			<mx:LineChart   showDataTips="true" x="19" y="92"
+				 id="ch_Vendas" width="682" height="351"  dataProvider="{this.array_graficoVendas}" >
+				<mx:horizontalAxis>
+               		 <mx:CategoryAxis categoryField="yField"/>
+            	</mx:horizontalAxis>
+				<mx:series>
+					<mx:LineSeries  yField="valor" displayName="Vendas"/>
+				</mx:series>
+			</mx:LineChart>
+			<mx:Legend dataProvider="{ch_Vendas}" x="732" y="320"/>
+		</mx:Canvas>
+		<mx:Canvas label="Ranking Clientes" width="100%" height="100%">
+			<mx:DataGrid x="10" y="32" height="370" width="351" dataProvider="{this.array_rClientes}">
+				<mx:columns>
+					<mx:DataGridColumn headerText="Código" dataField="codigo"/>
+					<mx:DataGridColumn headerText="Nome" dataField="nome"/>
+					<mx:DataGridColumn headerText="Telefone:" dataField="fone"/>
+					<mx:DataGridColumn headerText="Valor Total Compras:" dataField="valorTotal"/>
+				</mx:columns>
+			</mx:DataGrid>
+			<mx:ColumnChart x="444" y="32" id="ch_rankingCliente" height="370" width="522" dataProvider="{this.array_rClientes}">
+				<mx:horizontalAxis>
+               		 <mx:CategoryAxis categoryField="nome"/>
+            	</mx:horizontalAxis>
+				<mx:series>
+					<mx:ColumnSeries displayName="Ranking Cliente" yField="valorTotal"/>
+				</mx:series>
+			</mx:ColumnChart>
+			<mx:Legend dataProvider="{ch_rankingCliente}" x="881" y="32"/>
+		</mx:Canvas>
+		<mx:Canvas label="Ranking Produtos" width="100%" height="100%">
+			<mx:DataGrid x="10" y="10" height="436" width="405" dataProvider="{this.array_rProdutos}">
+				<mx:columns>
+					<mx:DataGridColumn headerText="Código" dataField="codigo"/>
+					<mx:DataGridColumn headerText="Descrição" dataField="descricao"/>
+					<mx:DataGridColumn headerText="Qtd." dataField="quantidade"/>
+				</mx:columns>
+			</mx:DataGrid>
+			<mx:ColumnChart x="471" y="10" id="ch_rProdutos" width="519" height="436"  dataProvider="{this.array_rProdutos}">
+				<mx:horizontalAxis>
+               		 <mx:CategoryAxis categoryField="descricao"/>
+            	</mx:horizontalAxis>
+				<mx:series>
+					<mx:ColumnSeries displayName="Ranking Produtos" yField="quantidade"/>
+				</mx:series>
+			</mx:ColumnChart>
+			<mx:Legend dataProvider="{ch_rProdutos}" x="905" y="10"/>
+		</mx:Canvas>
+		<mx:Canvas label="Resumo Formas Pagamento" width="100%" height="100%">
+			<mx:DataGrid x="10" y="27" height="312">
+				<mx:columns>
+					<mx:DataGridColumn headerText="Código" dataField="codigo"/>
+					<mx:DataGridColumn headerText="Descrição" dataField="descricao"/>
+					<mx:DataGridColumn headerText="Valor Total" dataField="valor"/>
+				</mx:columns>
+			</mx:DataGrid>
+			<mx:PieChart x="454" y="27" id="ch_formaPagamento">
+				<mx:series>
+					<mx:PieSeries displayName="Series 1" field=""/>
+				</mx:series>
+			</mx:PieChart>
+			<mx:Legend dataProvider="{ch_formaPagamento}" x="361" y="57"/>
+		</mx:Canvas>
+		
+	</mx:TabNavigator>
+	<mx:RadioButton x="364" y="716" label="Completa" groupName="grb_tipoImpressao" id="rb_tipoCompleta"/>
+	<mx:RadioButton x="248" y="716" label="Detalhada" id="rb_tipoDetalhe" groupName="grb_tipoImpressao"/>
+	
+</mx:Window>

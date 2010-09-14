@@ -200,7 +200,7 @@
 			}
 			
 			private function resultadoPesquisaItem(event:ResultEvent):void{
-				this.usuariosArray = new ArrayCollection(event.result as Array);
+				this.usuariosArray = event.result as ArrayCollection;
 			}
 			
 			

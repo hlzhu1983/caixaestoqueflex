@@ -13,7 +13,10 @@
                     'Abril', 'Maio', 'Junho', 'Julho','Agosto', 'Setembro', 'Outubro', 
                     'Novembro', 'Dezembro'];  
                 this.formatString = "DD/MM/YY";    
-                 
+			}
+			
+			public function getStringData():String{
+				return this.selectedDate.fullYear+"/"+(this.selectedDate.month+1)+"/"+this.selectedDate.date;
 			}
 		]]>
 	</mx:Script>

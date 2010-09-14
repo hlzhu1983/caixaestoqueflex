@@ -48,7 +48,7 @@
 			}
 			
 			private function result_povoarFormasPagamento(e:ResultEvent):void{
-				this.array_formasPagamento = new ArrayCollection(e.result as Array);
+				this.array_formasPagamento = e.result as ArrayCollection;
 			}
 				
 			private function addFormaPgto():void{
@@ -95,7 +95,9 @@
 				if(this.gridFormaPagamento.selectedIndex == -1){
 					Alert.show("Selecione uma forma de Pagamento válida","Ops!",4,this);
 				}else{
-					var f:FormaPgtoVendaVO = this.array_formaPgto.getItemAt(this.gridFormaPagamento.selectedIndex) as FormaPgtoVendaVO; 				
+					var indice:int = this.gridFormaPagamento.selectedIndex;
+					var f:FormaPgtoVendaVO = this.array_formaPgto.removeItemAt(indice) as FormaPgtoVendaVO;
+					this.array_gridForm.removeItemAt(indice); 				
 					this.valorTotalPago -= f.valor;
 					if(Number(this.lb_valorPagar.text) - valorTotalPago >0){
 						this.lb_troco.text = '0.00';
@@ -104,8 +106,9 @@
 			}
 			
 			private function gerarVenda():void{
-				if(this.valorTotalPago > Number(this.lb_valorPagar.text)){
-					this.venda.formasPagamento = this.array_formaPgto.toArray();
+				var valor:Number  = Number(this.lb_valorPagar.text);
+				if(this.valorTotalPago >= valor){
+					this.venda.formasPagamento = this.array_formaPgto;
 					this.dispatchEvent(new VendaEvent(this.venda,VendaEvent.FINALIZADASUCEESSO));
 					PopUpManager.removePopUp(this);
 				}else{
@@ -141,7 +144,7 @@
 	<mx:NumericStepper x="124" y="195" minimum="1" id="ns_parcelas"/>
 	<mx:Label x="188" y="170" text="Formas de  Pagamento:"/>
 	<mx:ComboBox x="188" y="195" id="cb_formasPagamento" dataProvider="{this.array_formasPagamento}" labelField="descricao" editable="false"/>
-	<mx:Button x="408" y="158" label="Módulo Confia" click="{this.callModuloConfia()}" width="117"/>
+	<mx:Button x="408" y="158" label="Módulo Confia" click="{this.callModuloConfia()}" width="117" visible="false"/>
 	<mx:Button x="356" y="195" label="Add Forma" width="104" click="{this.addFormaPgto()}"/>
 	<mx:Button x="466" y="195" label="Excluir Forma" click="{this.excluirFormaPgto()}"/>
 	<mx:DataGrid x="10" y="225" width="584" id="gridFormaPagamento" dataProvider="{this.array_gridForm}">

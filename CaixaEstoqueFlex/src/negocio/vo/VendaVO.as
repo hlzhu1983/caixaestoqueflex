@@ -1,5 +1,7 @@
 package negocio.vo
 {
+	import mx.collections.ArrayCollection;
+	
 	[Bindable]
 	[RemoteClass(alias="vo.VendaVO")]	
 	public class VendaVO {
@@ -12,7 +14,7 @@ package negocio.vo
 		public var dataVenda:String;
 		public var desconto:Number;
 		public var valorTotal:Number;
-		public var formasPagamento:Array;
+		public var formasPagamento:ArrayCollection;
 		public var obs:String;
 
 	}

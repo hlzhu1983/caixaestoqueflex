@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
+	layout="absolute" title="Gerenciador de Receitas" 
+	height="576" width="739" xmlns:botoes="utilidades.botoes.*" 
+	xmlns:inputs="utilidades.inputs.*" creationComplete="{this.init()}">
+	
+
+	<mx:Script>
+		<![CDATA[
+			import negocio.vo.ItensReceitaVO;
+			import events.ProdutoEvent;
+			import utilidades.Util;
+			import modulos.produto.BuscaProduto;
+			import mx.events.ValidationResultEvent;
+			import mx.validators.ValidationResult;
+			import mx.rpc.events.ResultEvent;
+			import negocio.vo.ReceitaVO;
+			import mx.controls.Alert;
+			import negocio.remote.Remote;
+			import mx.collections.ArrayCollection;
+			import negocio.vo.ProdutoVO;
+			
+			
+			private var receita:ReceitaVO;
+			
+			private var produtoProduzido:ProdutoVO;
+			
+			private var quantidadeProduzida:Number;
+			
+			private var tempItemReceita:ItensReceitaVO;
+			
+			[Bindable]
+			private var itensReceita:ArrayCollection;
+			
+			private var ro:Remote = Remote.getInstance();
+			
+			
+			private function init():void{
+				this.ro.parent = this;
+			}
+			
+			private function buscarProduto():void{
+				if(this.ti_codigoProduto.validador.validate().type == ValidationResultEvent.VALID){
+					this.ro.getProduto(result_buscarProduto,this.ti_codigoProduto.text,"codigo");
+				}else{
+					Alert.show("Campo código produto vazio","Ops!",4,this);
+				}
+				
+			}
+			
+			private function showBuscarProdutoTitleWindow():void{
+				var t:BuscaProduto = BuscaProduto(Util.abrePopUp(this,BuscaProduto,true));
+				t.addEventListener(ProdutoEvent.PRODUTOSELECIONADO,result_showBuscarProdutoTitleWindow);
+				
+			}
+			
+			private function result_buscarProduto(event:ResultEvent):void{
+				this.produtoProduzido = event.result as ProdutoVO;
+				this.lb_codigoProduto.text = this.produtoProduzido.codigo.toString();
+				this.lb_descricaoProduto.text = this.produtoProduzido.descricao;
+				this.lb_qtdEstoqueProduto.text = this.produtoProduzido.qtdEmEstoque.toString();
+			}
+			
+			private function result_showBuscarProdutoTitleWindow(event:ProdutoEvent):void{
+				this.produtoProduzido = event.produto;
+				this.lb_codigoProduto.text = this.produtoProduzido.codigo.toString();
+				this.lb_descricaoProduto.text = this.produtoProduzido.descricao;
+				this.lb_qtdEstoqueProduto.text = this.produtoProduzido.qtdEmEstoque.toString();
+			}
+			
+			
+			private function buscarItemReceita():void{
+				if(this.ti_codigoItemReceita.validador.validate().type == ValidationResultEvent.VALID){
+					this.ro.getProduto(result_buscarItemReceita,this.ti_codigoProduto.text,"codigo");
+				}else{
+					Alert.show("Campo código item receita vazio","Ops!",4,this);
+				}
+				
+			}
+			
+			private function showBuscarItemTitleWindow():void{
+				var t:BuscaProduto = BuscaProduto(Util.abrePopUp(this,BuscaProduto,true));
+				t.addEventListener(ProdutoEvent.PRODUTOSELECIONADO,result_showBuscarProdutoTitleWindow);
+				
+			}
+			
+			private function result_buscarItemReceita(event:ResultEvent):void{
+				var temp:ProdutoVO = event.result as ProdutoVO;
+				this.tempItemReceita = new ItensReceitaVO();
+				this.tempItemReceita.codProduto = temp.codigo;
+				this.tempItemReceita.descProduto = temp.descricao;
+				this.lb_codigoItemReceita.text = this.produtoProduzido.codigo.toString();
+				this.lb_descricaoItemReceita.text = this.produtoProduzido.descricao;
+			}
+			
+			private function resulta_showBuscarItemReceitaTitleWindow(event:ProdutoEvent):void{
+				var temp:ProdutoVO = event.produto;
+				this.tempItemReceita = new ItensReceitaVO();
+				this.tempItemReceita.codProduto = temp.codigo;
+				this.tempItemReceita.descProduto = temp.descricao;
+				this.lb_codigoItemReceita.text = this.produtoProduzido.codigo.toString();
+				this.lb_descricaoItemReceita.text = this.produtoProduzido.descricao;
+			}
+			
+			
+			
+						
+			
+			
+			
+			
+		]]>
+	</mx:Script>
+	
+		<mx:Label x="21" y="12" text="Código Receita"/>
+		<mx:Label x="115" y="12" id="lb_codigoReceita"/>
+		<mx:Panel x="10" y="44" width="699" height="155" layout="absolute" title="Informações Produto">
+				<mx:Label x="10" y="16" text="Código Produto:"/>
+				<inputs:InteiroInput isEnter="false" requerido="true" enter="{this.buscarProduto()}" id="ti_codigoProduto" x="114" y="14"/>
+				<botoes:BuscarButton x="288" y="10" id="bt_buscarProduto" click="{this.showBuscarProdutoTitleWindow()}"/>
+				<mx:Label x="10" y="50" text="Código:"/>
+				<mx:Label x="10" y="76" id="lb_codigoProduto"/>
+				<mx:Label x="110" y="50" text="Descrição:"/>
+				<mx:Label x="110" y="76" id="lb_descricaoProduto"/>
+				<mx:Label x="360" y="50" text="Qtd. Estoque:"/>
+				<mx:Label x="360" y="76" id="lb_qtdEstoqueProduto"/>
+				<mx:Label x="465" y="50" text="Qtd. a ser Produzida"/>
+				<inputs:NumberInput x="469" y="72" valorDefault="0,00" id="ti_qtdreceita"/>
+				
+		</mx:Panel>
+		<botoes:GerarButton x="441" y="6" id="bt_gerarReceita"/>
+		<botoes:CancelarButton x="534" y="6" id="bt_cancelarReceita"/>
+		<mx:Panel x="10" y="215" width="699" height="299" layout="absolute" title="Itens da Receita">
+			<mx:DataGrid x="305" y="10" height="239" width="354" editable="false" id="grid_itensReceita" textAlign="center">
+				<mx:columns >
+					<mx:DataGridColumn headerText="Código" dataField="codigo" width="90" />
+					<mx:DataGridColumn headerText="Descrição" dataField="descricao"/>
+					<mx:DataGridColumn headerText="Qtd." dataField="quantidade" width="70"/>
+				</mx:columns>
+			</mx:DataGrid>
+			<mx:Label x="10" y="28" text="Código:"/>
+			<inputs:InteiroInput x="62" y="26" width="133" id="ti_codigoItemReceita" enter="{this.buscarItemReceita()}" isEnter="false"/>
+			<botoes:BuscarButton x="199" y="22" id="bt_buscarItemReceita" click="{this.showBuscarItemTitleWindow()}"/>
+			<mx:Label x="10" y="83" text="Código:"/>
+			<mx:Label x="76" y="83" id="lb_codigoItemReceita"/>
+			<mx:Label x="10" y="109" text="Descrição:"/>
+			<mx:Label x="80" y="109" id="lb_descricaoItemReceita"/>
+			<mx:Label x="10" y="137" text="Qtd. necessária:"/>
+			<inputs:NumberInput x="115" y="135" valorDefault="0,00"/>
+			<mx:Button x="29" y="182" label="Inserir Item" id="bt_inserirItemReceita"/>
+			<mx:Button x="134" y="182" label="Remover Item" id="bt_cancelarItemReceita"/>
+		</mx:Panel>
+		
+	
+</mx:TitleWindow>
