@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
+	creationComplete="{this.listarALLItens()}" 
+	layout="absolute"  width="578" height="422" 
+	title="Produto Simple"
+	fontSize="12" xmlns:ns1="utilidades.botoes.*" xmlns:ns2="utilidades.inputs.*" borderColor="#009DFF" backgroundColor="#FFFFFF">
+	
+	<mx:Script>
+		<![CDATA[
+			import flash.sampler.NewObjectSample;
+			import mx.events.ValidationResultEvent;
+			import mx.controls.Alert;
+			import mx.collections.ArrayCollection;
+			import mx.rpc.events.ResultEvent;
+			import negocio.vo.*;
+			import negocio.remote.*;
+			
+			
+			private var load:Boolean = false; 
+
+	
+			
+			
+			
+			
+			
+			
+			
+			[Bindable]
+			private var itensArray:ArrayCollection;
+			private var modificado:Number;
+			
+			[Bindable]
+			private var item:ProdutoVO;
+			private var ro:Remote = Remote.getInstance();
+			
+			private function listarALLItens():void{
+				this.ro.listarProduto(resultListarItens);
+			}
+			
+			
+			private function resultListarItens(event:ResultEvent):void{
+								
+				this.itensArray = new ArrayCollection(event.result as Array);
+				
+			}
+			
+			private function adicionar():void{
+				var u:ProdutoVO = this.item;
+									u.precoCompra = this.ti_pCompra.getValor();
+									u.precoVenda = this.ti_pVenda.getValor();
+									u.qtdEmEstoque = Number(this.ti_qtdEstoque.text);
+									this.ro.atualizarProduto(resultadoAtualizarItem,u);	
+															
+								
+						
+			}
+			
+			private function resultadoAddItem(event:ResultEvent):void{
+				this.itensArray.addItem(event.result);
+				this.enviar_arquivo(event.result.codigo+"");
+				Alert.show("O item foi adicionado!","Sucesso!",4,this);
+				this.limpar();
+			}
+			
+			private function resultadoAtualizarItem(event:ResultEvent):void{
+				this.itensArray[this.modificado] = event.result;	
+				Alert.show("O item foi Atualizado!","Sucesso!",4,this);
+				this.limpar();
+			}
+			
+			
+			private function removerItem():void{
+				this.item = this.grid_itens.selectedItem as ProdutoVO;
+				this.ro.removerProduto(resultadoRemover, this.item);
+				
+				
+			}
+			private function resultadoRemover(event:ResultEvent):void{
+				if(event.result){
+					Alert.show("O item foi removido!","Sucesso",4,this);
+					this.itensArray.removeItemAt(this.grid_itens.selectedIndex);
+				}else{
+					Alert.show("O item não pôde ser removido!","Ops!",4,this);					
+				}
+				this.limpar();
+			}
+			
+			
+			private function limpar():void{
+				this.ti_codigo.text = "";
+				this.ti_descricao.text = "";
+				this.ti_pCompra.text = "";
+				this.ti_pVenda.text = "";
+				this.ti_qtdEstoque.text = "";
+				this.ti_pesquisar.text = "";
+				this.grid_itens.selectedIndex = -1;
+				this.add.label = "Atualizar"
+			}
+			
+			
+			public function itemSelecionado(event:Event):void{
+				this.item = event.currentTarget.selectedItem as ProdutoVO;
+				this.modificado = this.grid_itens.selectedIndex;
+				this.ti_codigo.text = this.item.codigo.toString();
+				this.ti_descricao.text = this.item.descricao;
+				this.ti_pCompra.setValor(this.item.precoCompra.toString());
+				this.ti_pVenda.setValor(this.item.precoVenda.toString());
+				this.ti_qtdEstoque.text = this.item.qtdEmEstoque.toString();
+				this.add.label = "Atualizar";
+                						
+			} 
+			private function pesquisarItem():void{
+				if(this.ti_pesquisar.text == ""){
+					this.listarALLItens();
+				}else if(this.ti_pesquisar.validador.validate().type == ValidationResultEvent.VALID ){
+					
+					if(this.rd_codigo.selected){
+						this.ro.pesquisarProduto(resultadoPesquisaItem,this.ti_pesquisar.text,"codigo");
+					}else if(this.rd_descricao.selected){
+						this.ro.pesquisarProduto(resultadoPesquisaItem,this.ti_pesquisar.text,"descricao");
+					}else {
+						this.ro.pesquisarProduto(resultadoPesquisaItem,this.ti_pesquisar.text,"referencia");
+					}
+					
+				}else{
+					Alert.show("Campo Vazio!","Ops!",4,this);
+				}
+			}
+			private function resultadoPesquisaItem(event:ResultEvent):void{
+				this.itensArray = new ArrayCollection(event.result as Array);
+			}
+			
+		]]>
+	</mx:Script>
+	
+	<ns1:BuscarButton x="372" y="10" click="{this.pesquisarItem()}" height="23"/>
+	<ns2:TextoInput x="10" y="10" width="339" id="ti_pesquisar"/>
+	<mx:RadioButton x="110" y="40" label="descricao" id="rd_descricao"/>
+	<mx:RadioButton x="36" y="40" label="código" id="rd_codigo"/>
+	<mx:RadioButton x="208" y="40" label="referência" id="rd_referencia"/>
+	
+	
+	
+	<mx:Label x="10" y="74" text="Código:"/>
+	<mx:Label x="72" y="72" width="94" id="ti_codigo" />
+	
+	<mx:Label x="10" y="102" text="Descrição:"/>
+	<ns2:TextoInput x="88" y="100" width="454" id="ti_descricao" editable="false"/>
+	
+	
+	<mx:Label x="10" y="132" text="Qtd. Estoque:"/>
+	<ns2:InteiroInput x="111" y="130" width="49" id="ti_qtdEstoque"/>
+	
+	<mx:Label x="168" y="132" text="Preco de Compra:"/>
+	<ns2:NumberInput x="289" y="130" width="60" id="ti_pCompra"/>
+	
+	<mx:Label x="357" y="132" text="Preco de Venda:"/>
+	
+	<ns2:NumberInput x="474" y="130" width="68" id="ti_pVenda"/>
+	
+	
+	<ns1:SalvarButton id="add" x="10" y="340" click="{this.adicionar()}"/>
+	<ns1:LimparButton x="118" y="340" click="{this.limpar()}"/>
+
+
+	<mx:DataGrid x="10" y="160" id = "grid_itens" dataProvider="{this.itensArray}" change="{this.itemSelecionado(event)}" width="539.5" height="172">
+		<mx:columns>
+			<mx:DataGridColumn headerText="Código" dataField="codigo"/>
+			<mx:DataGridColumn headerText="Descrição" dataField="descricao"/>
+			<mx:DataGridColumn headerText="Quantidade" dataField="Quantidade"/>
+		</mx:columns>
+	</mx:DataGrid>
+	
+	
+</mx:TitleWindow>
