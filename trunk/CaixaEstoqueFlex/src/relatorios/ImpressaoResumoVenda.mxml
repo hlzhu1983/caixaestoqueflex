@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" width="1139">
+
+
+	<mx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			
+			[Bindable]
+			public var array_vendas:ArrayCollection;
+			
+			[Bindable]
+			public var array_formasPgto:ArrayCollection;
+			
+			[Bindable]
+			public var array_graficoVendas:ArrayCollection;
+			
+			[Bindable]
+			public var array_rClientes:ArrayCollection;
+			
+			[Bindable]
+			public var array_rProdutos:ArrayCollection;
+			
+			[Bindable]
+			public var array_rFormasPagamento:ArrayCollection;
+			
+			
+			
+		]]>
+	</mx:Script>
+
+	<mx:VBox  id="body" width="100%" height="100%">
+		<mx:Panel width="100%" height="167" layout="absolute" title="Relatório Venda" x="2.5" y="10" borderColor="#FFFFFF">
+			<mx:Label x="10" y="20" text="Empresa:"/>
+			<mx:Label x="79" y="20" id="lb_nomeEmpresa" text="Empresa A"/>
+			<mx:Label x="377" y="20" text="CNPJ:"/>
+			<mx:Label x="422" y="20" id="lb_cnpj" text="999.999.999/0001-99"/>
+			<mx:Label x="10" y="46" text="Endereço:"/>
+			<mx:Label x="67" y="46" id="lb_endereco" text="Avenida do Tempo 47"/>
+			<mx:Label x="121" y="72" text="Bairro:"/>
+			<mx:Label x="164" y="72" id="lb_bairro" text="Bairro"/>
+			<mx:Label x="277" y="72" text="Cidade:"/>
+			<mx:Label x="323" y="72" id="lb_cidade" text="Cidade"/>
+			<mx:Label x="409" y="72" text="Estado:"/>
+			<mx:Label x="477" y="72" id="lb_estado" text="Estado"/>
+			<mx:Label x="347" y="46" text="Telefones:"/>
+			<mx:Label x="420" y="46" id="lb_telefones" text="(81) 9999-9999"/>
+		</mx:Panel>
+	
+		<mx:Panel  x="10" y="253" layout="absolute" title="Montante de Vendas" width="100%" height="100%">
+			<mx:DataGrid id="grid_vendas" x="10" y="10" rowCount="{this.array_vendas.length+1}" width="492" dataProvider="{this.array_vendas}" >
+				<mx:columns>
+					<mx:DataGridColumn headerText="Código" dataField="codigo"/>
+					<mx:DataGridColumn headerText="Data" dataField="dataVenda"/>
+					<mx:DataGridColumn headerText="Valor Total" dataField="valorTotal"/>
+				</mx:columns>
+			</mx:DataGrid>
+			<mx:LineChart   showDataTips="true" x="510" y="10"
+				 id="ch_Vendas" width="423" height="242"  dataProvider="{this.array_graficoVendas}" >
+				<mx:horizontalAxis>
+				        		 <mx:CategoryAxis categoryField="yField"/>
+				     	</mx:horizontalAxis>
+				<mx:series>
+					<mx:LineSeries  yField="valor" displayName="Vendas"/>
+				</mx:series>
+			</mx:LineChart>
+			<mx:Legend dataProvider="{ch_Vendas}" x="941" y="10"/>
+		</mx:Panel>
+		<mx:Panel id="pn_rCliente" x="22" y="461" width="100%" layout="absolute" title="Ranking Cliente">
+			<mx:DataGrid id="grid_rClientes" x="10" y="10" width="488" rowCount="{this.array_rClientes.length+1}" dataProvider="{this.array_rClientes}">
+				<mx:columns>
+					<mx:DataGridColumn headerText="Código" dataField="codigo"/>
+					<mx:DataGridColumn headerText="Nome" dataField="nome"/>
+					<mx:DataGridColumn headerText="Telefone:" dataField="fone"/>
+					<mx:DataGridColumn headerText="Valor Total Compras:" dataField="valorTotal"/>
+				</mx:columns>
+			</mx:DataGrid>
+			<mx:ColumnChart  x="506" y="10" id="ch_rankingCliente" width="273" height="201"  dataProvider="{this.array_rClientes}">
+				<mx:horizontalAxis>
+               		 <mx:CategoryAxis categoryField="nome"/>
+            	</mx:horizontalAxis>
+				<mx:series>
+					<mx:ColumnSeries displayName="Ranking Cliente" yField="valorTotal"/>
+				</mx:series>
+			</mx:ColumnChart>
+		</mx:Panel>			
+		<mx:Panel id="pn_rProduto" width="100%" layout="absolute" title="Ranking Produto">
+			<mx:DataGrid id="grid_rProdutos" x="10" y="10" rowCount="{this.array_rClientes.length}" width="488" dataProvider="{this.array_rProdutos}">
+				<mx:columns>
+					<mx:DataGridColumn headerText="Código" dataField="codigo"/>
+					<mx:DataGridColumn headerText="Descrição" dataField="descricao"/>
+					<mx:DataGridColumn headerText="Qtd." dataField="quantidade"/>
+				</mx:columns>
+			</mx:DataGrid>
+			<mx:ColumnChart x="506" y="10" id="ch_rProdutos" width="273" height="201" dataProvider="{this.array_rProdutos}">
+				<mx:horizontalAxis>
+               		 <mx:CategoryAxis categoryField="descricao"/>
+            	</mx:horizontalAxis>
+				<mx:series>
+					<mx:ColumnSeries displayName="Ranking Produtos" yField="quantidade"/>
+				</mx:series>
+			</mx:ColumnChart>
+			<mx:Legend dataProvider="{ch_rProdutos}" x="787" y="10"/>
+		</mx:Panel>
+		<mx:Panel id="pn_rFormaPagamento" layout="absolute" title="Resumo Formas Pagamento" width="100%">
+			<mx:DataGrid id="grid_fPgto" x="10" y="10" dataProvider="{this.array_formasPgto}" width="495">
+				<mx:columns>
+					<mx:DataGridColumn headerText="Código" dataField="codigo"/>
+					<mx:DataGridColumn headerText="Descrição" dataField="descricao"/>
+					<mx:DataGridColumn headerText="Valor Total" dataField="valorTotal"/>
+				</mx:columns>
+			</mx:DataGrid>
+			<mx:ColumnChart x="513" y="10" id="ch_formaPagamento" width="273" height="201"  dataProvider="{this.array_formasPgto}">
+				<mx:horizontalAxis>
+               		 <mx:CategoryAxis categoryField="descricao"/>
+            	</mx:horizontalAxis>
+				<mx:series>
+					<mx:ColumnSeries displayName="Ranking Produtos" yField="valorTotal"/>
+				</mx:series>
+			</mx:ColumnChart>
+			<mx:Legend dataProvider="{ch_formaPagamento}" x="786" y="10"/>
+		</mx:Panel>
+	</mx:VBox>
+	
+	
+
+	
+	
+</mx:TitleWindow>

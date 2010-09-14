@@ -2,11 +2,14 @@
 <mx:Window xmlns:mx="http://www.adobe.com/2006/mxml"
 	 layout="absolute" width="1024" height="768" creationComplete="{this.init()}"
 	  title="Resumo Vendas" xmlns:ns1="utilidades.botoes.*" 
-	  xmlns:ns2="utilidades.inputs.*" xmlns:utilidades="utilidades.*">
+	  xmlns:ns2="utilidades.inputs.*" xmlns:utilidades="utilidades.*" xmlns:relatorios="relatorios.*" 
+	  horizontalScrollPolicy="off" verticalScrollPolicy="off">
 
 
 	<mx:Script>
 		<![CDATA[
+			import mx.printing.FlexPrintJobScaleType;
+			import mx.printing.FlexPrintJob;
 			import mx.formatters.SwitchSymbolFormatter;
 			import mx.rpc.events.ResultEvent;
 			import mx.controls.Alert;
@@ -52,6 +55,7 @@
 			
 			
 			private function realizarFiltro():void{
+				trace(this.abaSelecionada);
 				switch(this.abaSelecionada){
 					case 0: 
 						this.pesquisarVenda();
@@ -91,11 +95,11 @@
 			}
 			
 			private function getRankingFormaPagamento():void{
-				this.ro.getRankingFormaPagamento(result_getRankingProduto);
+				this.ro.getRankingFormaPagamento(result_getRankingFormaPagamento);
 			}
 			
 			private function result_getRankingFormaPagamento(event:ResultEvent):void{
-				this.array_rProdutos = event.result as ArrayCollection;
+				this.array_formasPgto = event.result as ArrayCollection;
 			}
 			
 			
@@ -193,6 +197,56 @@
 				
 			}
 			
+			private function imprimirRelatorio():void{
+				var isImpressao:Boolean = false;
+								
+				if(this.cb_lvenda.selected){
+					i.array_vendas = this.array_vendas;
+					isImpressao = true;
+				}else{
+					i.grid_vendas.visible = false;
+				}
+				
+				if(this.cb_gVenda.selected){
+					i.array_graficoVendas = this.array_graficoVendas;
+					isImpressao = true;
+				}else{
+					i.ch_Vendas.visible = false;
+				}
+				
+				if(this.cb_rCliente.selected){
+					i.array_rClientes = this.array_rClientes;
+					isImpressao = true;
+				}else{
+					i.body.removeChild(i.pn_rCliente);
+				}
+				
+				if(this.cb_rProduto.selected){
+					i.array_rProdutos = this.array_rProdutos;
+					isImpressao = true;
+				}else{
+					i.body.removeChild(i.pn_rProduto);
+				}
+				
+				if(this.cb_rFP.selected){
+					i.array_formasPgto = this.array_formasPgto;
+					isImpressao = true;
+				}else{
+					i.body.removeChild(i.pn_rFormaPagamento);
+				}
+					
+				if(isImpressao){	
+					var p:FlexPrintJob = new FlexPrintJob();
+					if(p.start()){
+						p.addObject(i,FlexPrintJobScaleType.SHOW_ALL);
+						p.send();
+					}
+				}else{
+					Alert.show("Selecione algum relatorio!","Ops!",4,this);
+				}
+			}
+			
+			
 			
 			
 		]]>
@@ -201,10 +255,10 @@
 	
 		<mx:Label x="10" y="20" text="Codigo: Vendedor:"/>
 		<ns2:InteiroInput x="130" y="18" width="97" id="ti_codVendedor"/>
-		<ns1:BuscarButton x="239" y="14" label="Buscar Vendedor"/>
+		<ns1:BuscarButton x="239" y="16" label="Buscar Vendedor" height="26"/>
 		
 		<mx:Label x="10" y="58" text="Codigo Cliente:"/>
-		<ns1:BuscarButton x="239" y="52" label="Buscar Cliente" width="143"/>
+		<ns1:BuscarButton x="239" y="52" label="Buscar Cliente" width="143" height="26"/>
 		<ns2:InteiroInput x="130" y="56" width="97" id="ti_codigoCliente"/>
 		<ns1:BuscarButton x="841" y="10" label="Filtrar" click="{this.realizarFiltro()}" width="131"/>
 		<ns1:LimparButton x="841" y="52" label="Limpar Filtros"/>
@@ -253,7 +307,7 @@
 	</mx:Panel>
 	<mx:TabNavigator x="10" y="182" width="1002" height="504" change="{this.mudaAba(event)}">
 		<mx:Canvas label="Lista Vendas" width="100%" height="100%">
-			<mx:DataGrid x="10" y="10" width="492" height="440" dataProvider="{this.array_vendas}" change="{this.itemSelecionado(event)}">
+			<mx:DataGrid id="grid_vendas" x="10" y="10" width="492" height="440" dataProvider="{this.array_vendas}" change="{this.itemSelecionado(event)}">
 				<mx:columns>
 					<mx:DataGridColumn headerText="Código" dataField="codigo"/>
 					<mx:DataGridColumn headerText="Data" dataField="dataVenda"/>
@@ -297,7 +351,7 @@
 			<mx:Legend dataProvider="{ch_Vendas}" x="732" y="320"/>
 		</mx:Canvas>
 		<mx:Canvas label="Ranking Clientes" width="100%" height="100%">
-			<mx:DataGrid x="10" y="32" height="370" width="351" dataProvider="{this.array_rClientes}">
+			<mx:DataGrid id="grid_rClientes" x="10" y="32" height="370" width="351" dataProvider="{this.array_rClientes}">
 				<mx:columns>
 					<mx:DataGridColumn headerText="Código" dataField="codigo"/>
 					<mx:DataGridColumn headerText="Nome" dataField="nome"/>
@@ -305,7 +359,7 @@
 					<mx:DataGridColumn headerText="Valor Total Compras:" dataField="valorTotal"/>
 				</mx:columns>
 			</mx:DataGrid>
-			<mx:ColumnChart x="444" y="32" id="ch_rankingCliente" height="370" width="522" dataProvider="{this.array_rClientes}">
+			<mx:ColumnChart  x="444" y="32" id="ch_rankingCliente" height="370" width="522" dataProvider="{this.array_rClientes}">
 				<mx:horizontalAxis>
                		 <mx:CategoryAxis categoryField="nome"/>
             	</mx:horizontalAxis>
@@ -316,7 +370,7 @@
 			<mx:Legend dataProvider="{ch_rankingCliente}" x="881" y="32"/>
 		</mx:Canvas>
 		<mx:Canvas label="Ranking Produtos" width="100%" height="100%">
-			<mx:DataGrid x="10" y="10" height="436" width="405" dataProvider="{this.array_rProdutos}">
+			<mx:DataGrid id="grid_rProdutos" x="10" y="10" height="436" width="405" dataProvider="{this.array_rProdutos}">
 				<mx:columns>
 					<mx:DataGridColumn headerText="Código" dataField="codigo"/>
 					<mx:DataGridColumn headerText="Descrição" dataField="descricao"/>
@@ -334,23 +388,32 @@
 			<mx:Legend dataProvider="{ch_rProdutos}" x="905" y="10"/>
 		</mx:Canvas>
 		<mx:Canvas label="Resumo Formas Pagamento" width="100%" height="100%">
-			<mx:DataGrid x="10" y="27" height="312">
+			<mx:DataGrid id="grid_fPgto" x="10" y="27" height="312" dataProvider="{this.array_formasPgto}">
 				<mx:columns>
 					<mx:DataGridColumn headerText="Código" dataField="codigo"/>
 					<mx:DataGridColumn headerText="Descrição" dataField="descricao"/>
-					<mx:DataGridColumn headerText="Valor Total" dataField="valor"/>
+					<mx:DataGridColumn headerText="Valor Total" dataField="valorTotal"/>
 				</mx:columns>
 			</mx:DataGrid>
-			<mx:PieChart x="454" y="27" id="ch_formaPagamento">
+			<mx:ColumnChart x="471" y="10" id="ch_formaPagamento" width="519" height="436"  dataProvider="{this.array_formasPgto}">
+				<mx:horizontalAxis>
+               		 <mx:CategoryAxis categoryField="descricao"/>
+            	</mx:horizontalAxis>
 				<mx:series>
-					<mx:PieSeries displayName="Series 1" field=""/>
+					<mx:ColumnSeries displayName="Ranking Produtos" yField="valorTotal"/>
 				</mx:series>
-			</mx:PieChart>
+			</mx:ColumnChart>
 			<mx:Legend dataProvider="{ch_formaPagamento}" x="361" y="57"/>
 		</mx:Canvas>
 		
 	</mx:TabNavigator>
-	<mx:RadioButton x="364" y="716" label="Completa" groupName="grb_tipoImpressao" id="rb_tipoCompleta"/>
-	<mx:RadioButton x="248" y="716" label="Detalhada" id="rb_tipoDetalhe" groupName="grb_tipoImpressao"/>
+	
+	<mx:CheckBox id="cb_lvenda" x="97" y="707" label="Lista Venda"/>
+	<mx:CheckBox id="cb_gVenda" x="192" y="707" label="Gráfico Venda"/>
+	<mx:CheckBox id="cb_rCliente" x="302" y="707" label="Ranking Clientes"/>
+	<mx:CheckBox id="cb_rProduto" x="430" y="707" label="Ranking Produtos"/>
+	<mx:CheckBox id="cb_rFP" x="562" y="707" label="Resumo Formas Pagamento"/>
+	<mx:Button id="bt_imprimr" x="764" y="707" label="Imprimir" click="{this.imprimirRelatorio()}"/>
+	<relatorios:ImpressaoResumoVenda id="i" visible="false" />
 	
 </mx:Window>

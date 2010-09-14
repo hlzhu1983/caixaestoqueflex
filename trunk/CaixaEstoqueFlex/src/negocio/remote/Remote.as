@@ -478,7 +478,7 @@ package negocio.remote{
 			_remote = new RemoteObject();
 			_remote.showBusyCursor = true;
 			_remote.destination = 'servicos';				
-			_remote.endpoint = "http://localhost:8080/blaseds/messagebroker/amf";
+			_remote.endpoint = "http://localhost:8080/blazeds/messagebroker/amf";
 			/* _remote.destination = 'zend';	
 			_remote.endpoint = "http://localhost/Zendamf/bridge.php"; */
 			
