@@ -538,8 +538,8 @@ public class FachadaServicos {
 	}
 	
 	public ArrayList<VendaVO> getVendasHoje() {
-		return this.servVenda.getVendasHoje();
-
+		//return this.servVenda.getVendasHoje();
+		return this.servVenda.getItens();
 	}
 	
 	public ArrayList<ItemGraficoVO> geraGraficoVendaTotal(){
@@ -601,8 +601,8 @@ public class FachadaServicos {
 			sql += " and " + str.get(i);
 		}
 		// throw new RuntimeException(sql);
-//		if(1==1)
-//			throw new RuntimeException(sql+" and status = 1");
+		if(1==1)
+			throw new RuntimeException(sql+" and status = 1");
 		return this.servVenda.getVendas(sql+" and status = 1");
 	}
 
@@ -635,6 +635,6 @@ public class FachadaServicos {
 		ClienteVO p = new ClienteVO();
 		p.nome = "cliente";
 		FachadaServicos f = new FachadaServicos();
-		f.getVendasHoje();
+		f.getVendas();
 	}
 }
