@@ -152,7 +152,7 @@
 					this.preVenda.valorTotal = this.valorTotal;
 					this.preVenda.itemPreVenda = this.array_itensPrevenda;
 					this.ro.fecharPreVenda(result_fecharPreVenda,this.preVenda);
-					Util.abrePopUp(this,Impressao,true);
+					//Util.abrePopUp(this,Impressao,true);
 					
 					new PrintPreVenda(this.i);
 				}else{
