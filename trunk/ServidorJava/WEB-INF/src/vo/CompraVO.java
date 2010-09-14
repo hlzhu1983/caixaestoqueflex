@@ -5,10 +5,11 @@ import java.util.ArrayList;
 public class CompraVO {
 
 public int codigo;		
+public String NF;
 public int codUsuario;
 public int codFornecedor;
-public String NF;
-public ArrayList<ItensCompraVO> itemCompra;
-public String dataCompra;	
+public String dataCompra;
+public ArrayList<ItemCompraVO> itemCompra;
+	
 	
 }
