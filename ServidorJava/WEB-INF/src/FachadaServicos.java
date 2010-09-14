@@ -7,6 +7,7 @@ import java.util.Map;
 
 import exception.ClienteJaexisteException;
 import services.ServicosCliente;
+import services.ServicosCompra;
 import services.ServicosFormadePagto;
 import services.ServicosFornecedor;
 import services.ServicosGrupoProduto;
@@ -18,6 +19,7 @@ import services.ServicosUsuario;
 import services.ServicosVenda;
 import util.UtilData;
 import vo.ClienteVO;
+import vo.CompraVO;
 import vo.FormaPgtoVendaVO;
 import vo.FormadePagtoVO;
 import vo.FornecedorVO;
@@ -46,6 +48,7 @@ public class FachadaServicos {
 	private ServicosProduto servProduto;
 	private ServicosPreVenda servPreVenda;
 	private ServicosVenda servVenda;
+	private ServicosCompra servCompra;
 
 	public FachadaServicos() {
 		this.servCliente = new ServicosCliente();
@@ -58,7 +61,16 @@ public class FachadaServicos {
 		this.servProduto = new ServicosProduto();
 		this.servPreVenda = new ServicosPreVenda();
 		this.servVenda = new ServicosVenda();
+		this.servCompra = new ServicosCompra();
 	}
+
+	public CompraVO fecharCompra(CompraVO item) {
+		if (item == null)
+			throw new RuntimeException("Parametro invalido");
+		return this.servCompra.fecharCompra(item);
+	}
+	
+
 
 	public ClienteVO addCliente(ClienteVO item) throws SQLException {
 		if (item == null)
@@ -414,8 +426,6 @@ public class FachadaServicos {
 
 	}
 
-	
-
 	// **********************************************************************************//
 
 	public PreVendaVO abrirPreVenda(PreVendaVO item) {
@@ -536,60 +546,61 @@ public class FachadaServicos {
 		return this.servVenda.getItens();
 
 	}
-	
+
 	public ArrayList<VendaVO> getVendasHoje() {
-		//return this.servVenda.getVendasHoje();
+		// return this.servVenda.getVendasHoje();
 		return this.servVenda.getItens();
 	}
-	
-	public ArrayList<ItemGraficoVO> geraGraficoVendaTotal(){
+
+	public ArrayList<ItemGraficoVO> geraGraficoVendaTotal() {
 		return this.servVenda.getGraficoVendaTotal();
-		
+
 	}
-	
-	public ArrayList<ItemGraficoVO> geraGraficoVendaIntervalo(String str){
+
+	public ArrayList<ItemGraficoVO> geraGraficoVendaIntervalo(String str) {
 		if (str == null)
 			throw new RuntimeException("Grafico não pode ser gerado!");
 		return this.servVenda.getGraficoVendaIntervalo(str);
-		
+
 	}
-	
-	public ArrayList<ItemGraficoVO> geraGraficoVendaMes(String str){
+
+	public ArrayList<ItemGraficoVO> geraGraficoVendaMes(String str) {
 		if (str == null)
 			throw new RuntimeException("Grafico não pode ser gerado!");
 		return this.servVenda.getGraficoVendaMes(str);
-		
+
 	}
-	
-	public ArrayList<ItemGraficoVO> geraGraficoVendaAno(String str){
+
+	public ArrayList<ItemGraficoVO> geraGraficoVendaAno(String str) {
 		if (str == null)
 			throw new RuntimeException("Grafico não pode ser gerado!");
 		return this.servVenda.getGraficoVendaAno(str);
-		
+
 	}
-	
-	public ArrayList<ItemGraficoVO> geraGraficoVendaMesAno(String mes, String ano){
+
+	public ArrayList<ItemGraficoVO> geraGraficoVendaMesAno(String mes,
+			String ano) {
 		if (mes == null || ano == null)
 			throw new RuntimeException("Grafico não pode ser gerado!");
-		return this.servVenda.getGraficoVendaMesAno(mes,ano);
-		
+		return this.servVenda.getGraficoVendaMesAno(mes, ano);
+
 	}
-	
-	public ArrayList<RankingClienteVO> getRankingCliente(){
+
+	public ArrayList<RankingClienteVO> getRankingCliente() {
 		return this.servVenda.getRankingCliente();
-		
+
 	}
-	
-	public ArrayList<RankingProdutoVO> getRankingProduto(){
+
+	public ArrayList<RankingProdutoVO> getRankingProduto() {
 		return this.servVenda.getRankingProduto();
-		
+
 	}
-	
-	public ArrayList<RankingFormaPagamentoVO> getRankingFormaPagamento(){
+
+	public ArrayList<RankingFormaPagamentoVO> getRankingFormaPagamento() {
 		return this.servVenda.getRankingFormaPagamento();
-		
+
 	}
-	
+
 	public ArrayList<VendaVO> filtrarVendas(ArrayList<String> str) {
 		if (str.size() == 0) {
 			throw new RuntimeException(
@@ -601,9 +612,9 @@ public class FachadaServicos {
 			sql += " and " + str.get(i);
 		}
 		// throw new RuntimeException(sql);
-		if(1==1)
-			throw new RuntimeException(sql+" and status = 1");
-		return this.servVenda.getVendas(sql+" and status = 1");
+		if (1 == 1)
+			throw new RuntimeException(sql + " and status = 1");
+		return this.servVenda.getVendas(sql + " and status = 1");
 	}
 
 	// **********************************************************************************//

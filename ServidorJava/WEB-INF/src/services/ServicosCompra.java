@@ -7,7 +7,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import vo.ItensCompraVO;
+import vo.ItemCompraVO;
 import vo.CompraVO;
 import vo.ProdutoVO;
 
@@ -15,7 +15,11 @@ public class ServicosCompra {
 
 	public CompraVO fecharCompra(CompraVO item) {
 		String sql = "insert into compra (codUsuario,codFornecedor,dataCompra,NF) values ("
-				+ item.codUsuario + ","+item.codFornecedor+" ,now(),"+item.NF+")";
+				+ item.codUsuario
+				+ ","
+				+ item.codFornecedor
+				+ " ,now(),"
+				+ item.NF + ")";
 
 		Statement st;
 		this.banco.conectar();
@@ -25,32 +29,24 @@ public class ServicosCompra {
 		if (st.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS) == 0) {
 			throw new RuntimeException("Erro ao abrir Compra!");
 		}
-     
-		
+
 		ResultSet rs = st.getGeneratedKeys();
-		if (rs.next()){
+		if (rs.next()) {
 			item.codigo = rs.getInt(1);
-		 for (ItensCompraVO itemCompra : item.itemCompra) {
+			for (ItemCompraVO itemCompra : item.itemCompra) {
 				itemCompra.codigoCompra = item.codigo;
-				this.addItemCompra(itemCompra);
-				}
-		}else
+				this.adicionarItemCompra(itemCompra,st);
+			}
+		} else
 			throw new RuntimeException("Erro ao salvar Compra!");
-		
-		
-		
+
 		this.banco.getConexao().commit();
-		
+
 		return item;
 	}
 
-	public ItensCompraVO addItemCompra(ItensCompraVO item) {
+	public ItemCompraVO adicionarItemCompra(ItemCompraVO item,Statement st) throws SQLException {
 		String sql = "select * from produto where codigo = " + item.codProduto;
-
-		Statement st;
-		this.banco.conectar();
-		this.banco.getConexao().setAutoCommit(false);
-		st = this.banco.getConexao().createStatement();
 
 		ArrayList<ProdutoVO> itens = new ServicosProduto().getProdutos(sql);
 		;
@@ -58,16 +54,13 @@ public class ServicosCompra {
 			throw new RuntimeException("Produto não existe");
 		}
 		ProdutoVO registro = itens.get(0);
-		
+
 		sql = "insert into itensCompra (codCompra, codProduto, quantidade,valorCompra)"
 				+ " values ('"
 				+ item.codigoCompra
 				+ "','"
 				+ item.codProduto
-				+ "','"
-				+ item.quantidade
-				+ "','"
-				+ item.valorDeCompra + "')";
+				+ "','" + item.quantidade + "','" + item.valorDeCompra + "')";
 		if (st.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS) == 0) {
 			throw new RuntimeException("Erro ao Adicionar ItemCompra");
 		}
@@ -76,22 +69,19 @@ public class ServicosCompra {
 		if (rs.next())
 			item.codigo = rs.getInt(1);
 
-		//adicionando ao produto a quantidade
+		// adicionando ao produto a quantidade
 		sql = "UPDATE produto SET qtdEmEstoque = (qtdEmEstoque + "
 				+ item.quantidade + ") where codigo = " + item.codProduto;
 
 		if (st.executeUpdate(sql) == 0) {
 			throw new RuntimeException("Erro ao atualizar itemprevenda");
 		}
-		this.banco.getConexao().commit();
 
 		return item;
 
 	}
 
-	
-
-	public void removerItemCompra(ItensCompraVO item) {
+	public void removerItemCompra(ItemCompraVO item) {
 
 		String sql = "UPDATE produto SET qtdEmEstoque = (qtdEmEstoque - "
 				+ item.quantidade + ")  WHERE codigo = " + item.codProduto;
@@ -113,12 +103,8 @@ public class ServicosCompra {
 
 	}
 
-
-	
-
 	public ArrayList<CompraVO> getAllItensCompra(String codigo) {
-		String sql = "select * from itensCompra where codCompra  = "
-				+ codigo;
+		String sql = "select * from itensCompra where codCompra  = " + codigo;
 		ResultSet resultado = banco.executar(sql);
 
 		return this.toCompra(resultado);
@@ -139,8 +125,6 @@ public class ServicosCompra {
 		return this.toCompra(rs);
 	}
 
-
-
 	private ArrayList<CompraVO> toCompra(ResultSet rs) throws SQLException {
 		ArrayList<CompraVO> gp = new ArrayList<CompraVO>();
 		while (rs.next()) {
@@ -150,9 +134,8 @@ public class ServicosCompra {
 			dados_item.dataCompra = rs.getString("dataAbertura");
 			dados_item.NF = rs.getString("obs");
 			dados_item.codFornecedor = rs.getInt("status");
-			
 
-			ArrayList<ItensCompraVO> itens;
+			ArrayList<ItemCompraVO> itens;
 			itens = this.getItensCompra(dados_item);
 			if (itens.size() != 0)
 				dados_item.itemCompra = itens;
@@ -163,23 +146,23 @@ public class ServicosCompra {
 		return gp;
 	}
 
-	private ArrayList<ItensCompraVO> getItensCompra(CompraVO item) {
-		String sql = "select * FROM itensprevenda WHERE codPrevenda = "
+	private ArrayList<ItemCompraVO> getItensCompra(CompraVO item) {
+		String sql = "select * FROM itensCompra WHERE codCompra = "
 				+ item.codigo;
 		ResultSet rs = banco.executar(sql);
 		return this.toItemCompra(rs);
 	}
 
-	private ArrayList<ItensCompraVO> toItemCompra(ResultSet rs)
+	private ArrayList<ItemCompraVO> toItemCompra(ResultSet rs)
 			throws SQLException {
-		ArrayList<ItensCompraVO> gp = new ArrayList<ItensCompraVO>();
+		ArrayList<ItemCompraVO> gp = new ArrayList<ItemCompraVO>();
 		while (rs.next()) {
-			ItensCompraVO dados_item = new ItensCompraVO();
+			ItemCompraVO dados_item = new ItemCompraVO();
 			dados_item.codigo = rs.getInt("codigo");
-			dados_item.codProduto = rs.getInt("codProduto");		
+			dados_item.codProduto = rs.getInt("codProduto");
 			dados_item.quantidade = rs.getInt("quantidade");
 			dados_item.valorDeCompra = rs.getDouble("valor");
-			dados_item.codigoCompra = rs.getInt("codigoCompra");
+			dados_item.codigoCompra = rs.getInt("codCompra");
 			gp.add(dados_item);
 		}
 		return gp;
