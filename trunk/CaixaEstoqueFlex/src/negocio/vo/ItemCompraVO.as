@@ -4,8 +4,9 @@ package negocio.vo
 	{
 	public var codigo:int;
 	public var codigoCompra:int;
+	public var descricao:String;
 	public var codProduto:int;
 	public var quantidade:int;
-	public var valorDeCompra:Number;
+	public var valorCompra:Number;
 	}
 }
