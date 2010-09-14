@@ -1,5 +1,7 @@
 package negocio.vo
 {
+	import mx.collections.ArrayCollection;
+	
 	public class CompraVO
 	{
 		public var codigo:int;

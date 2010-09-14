@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Window  xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
-	width="952" height="466" title="Pré-Venda"
+	width="590" height="442" title="Pré-Venda"
 	xmlns:utilidades="utilidades.*" fontSize="12" closing="{this.onCloseCommand(event)}"
 	keyDown="keyEvento(event)"  backgroundAlpha="1.0" xmlns:inputs="utilidades.inputs.*" 
 	xmlns:botoes="utilidades.botoes.*" xmlns:local="*" creationComplete="init()" alpha="1.0" borderColor="#009DFF" xmlns:prevenda="modulos.prevenda.*">
 	
 	<mx:Script>
 		<![CDATA[
+			import modulos.fornecedor.BuscaFornecedor;
+			import events.FornecedorEvent;
 			import negocio.vo.FornecedorVO;
 			import mx.events.ItemClickEvent;
 			import negocio.vo.ItemCompraVO;
@@ -39,7 +41,8 @@
 			public var compra:CompraVO;
 			public var fornecedor:FornecedorVO;
 			public var ro:Remote = Remote.getInstance();
-			
+			private var titleWindow_BuscaProduto:BuscaProduto;
+			private var titleWindow_BuscaFornecedor:BuscaFornecedor;
 			public var produto:ProdutoVO;
 			
 			[Bindable]
@@ -76,10 +79,9 @@
 			}
 			
 			public function addItemProduto(event:ItemCompraEvent):void{
-				event.itemCompra.codigoPrevenda = this.compra.codigo;
-				var i:ItemCompraVO = event.result as ItemCompraVO;
+				event.itemCompra.codigoCompra = this.compra.codigo;
+				var i:ItemCompraVO = event.itemCompra as ItemCompraVO;
 				this.array_itensCompras.addItem(i);				
-				this.valorTotal += i.valor;
 				this.isProduto = true;
 				this.focusManager.setFocus(this.codProduto);
 			}
@@ -108,7 +110,7 @@
         	
         	public function removeItemArrayCollection(event:CloseEvent):void{
         		if(event.detail == Alert.OK){
-        			this.ro.removerItemCompra(result_removeItemArrayCollection,this.array_itensCompras.getItemAt(this.produtos.selectedIndex) as ItemCompraVO);
+        			//this.ro.removerItemCompra(result_removeItemArrayCollection,this.array_itensCompras.getItemAt(this.produtos.selectedIndex) as ItemCompraVO);
         		}
         		
         	}
@@ -162,15 +164,15 @@
 			private function fecharCompra():void{
 				if(this.isProduto){
 					if(this.fornecedor!=null){
-					this.compra.valorTotal = this.valorTotal;
+					
 					this.compra.itemCompra = this.array_itensCompras;
 					this.compra.codFornecedor = this.fornecedor.codigo;
 					this.compra.NF = this.ti_NF.text;
 					this.compra.codigo = Config.usuario.codigo;
 					this.ro.fecharCompra(result_fecharCompra,this.compra);
-					Util.abrePopUp(this,Impressao,true);
+				//	Util.abrePopUp(this,Impressao,true);
 					
-					new PrintCompra(this.i);
+			//		new PrintCompra(this.i);
 					}else{
 						Alert.show("Selecione um Fornecedor","Ops!",4,this);
 					}
@@ -194,7 +196,9 @@
 			
 			private function resposta_cancelarCompra(event:CloseEvent):void{
 				if(event.detail == Alert.YES){
-					this.ro.cancelarCompra(result_cancelarCompra,this.compra);					
+				//	this.ro.cancelarCompra(result_cancelarCompra,this.compra);					
+				this.isFecharCompra = true;
+				this.stage.nativeWindow.close();
 				}
 				
 			}
@@ -208,42 +212,26 @@
 			
 		]]>
 	</mx:Script>
-	
-	<mx:VBox id="body" width="946" height="422" >
-		<mx:ApplicationControlBar dock="true" width="100%" height="45" fillAlphas="[1.0, 1.0]" fillColors="[#FFFFFF, #D2D2D2]">
-			<mx:Label text="Compra: " fontSize="30" />
-			<mx:Label id="numPedido" text="{this.compra.codigo}" fontSize="30" />
-			<mx:Spacer width="50%"/>
-			<utilidades:RelogioDigital/>	
-		</mx:ApplicationControlBar>
-		<mx:VBox height="369" width="945">
-			<mx:HBox width="100%" height="184" horizontalAlign="center">
-				<mx:Panel width="372" height="163" layout="absolute" title="Informações">
-					<mx:Label x="10" y="52" text="Fornecedor:"/>
-					<mx:Label x="10" y="10" text="N° da Nota:" width="81"/>
-					<botoes:BuscarButton x="252" y="82" click="{this.procurarFornecedor()}" height="24" label="Buscar" width="90"/>
-					<mx:TextInput id="ti_nomeFornecedor" x="99" y="50" width="243" editable="false" borderColor="#CBCCCD" backgroundColor="#AABDF3" color="#000000" fontWeight="bold"/>
-					<inputs:InteiroInput  id="ti_NF" requerido="true"  enter="{this.previewProduto()}" isEnter="false" x="99" y="8" fontSize="12" width="151"/>
-				</mx:Panel>
-			</mx:HBox>
-			<mx:HBox width="939" height="183" horizontalAlign="center">
-			<mx:DataGrid id="produtos"  width="607"  height="171" rowCount="10" dataProvider="{array_itensCompras}">
+			<mx:DataGrid id="produtos"  width="568"  height="171" rowCount="10" dataProvider="{array_itensCompras}" x="10" y="208">
 				<mx:columns>
 					<mx:DataGridColumn headerText="Cod. Produto" dataField="codProduto"/>
 					<mx:DataGridColumn headerText="Descrição" dataField="descricao"/>
 					<mx:DataGridColumn headerText="Quantidade" dataField="quantidade"/>					
-					<mx:DataGridColumn headerText="Valor de Compra" dataField="valor"/>
+					<mx:DataGridColumn headerText="Valor de Compra" dataField="valorCompra"/>
 				</mx:columns>
 			</mx:DataGrid>
-			<mx:Panel title="Entrada de Produtos" layout="absolute" height="169" width="325">
+			<mx:Panel layout="absolute" height="94" width="568" x="10" y="10">
 				<mx:Label text="Código Produto:" x="18" y="17" fontSize="12"/>
 				<inputs:InteiroInput  id="codProduto" requerido="true"  enter="{this.previewProduto()}" isEnter="false" x="129" y="15" fontSize="12" width="159"/>
-				<botoes:BuscarButton  x="196.75" y="52" click="{this.pesquisarProduto()}" height="27"/>
+				<botoes:BuscarButton  x="296" y="13" click="{this.pesquisarProduto()}" height="27"/>
 			</mx:Panel>
-			</mx:HBox>
-		</mx:VBox>	
-	</mx:VBox>
-	<prevenda:Impressao id="i" pVenda="{this.compra}" visible="false"/>
-	<mx:Button id="bt_gerarCompra" label="Salvar Compra" toolTip="Clique para gerar Compra"  click="{this.fecharCompra()}" x="624" y="430" width="139"/>
-	<mx:Button id="bt_cancelarCompra" label="Cancelar Compra" toolTip="Clique para cancelar Compra"  x="801" y="430"  click="{this.cancelarCompra()}"/>
+	
+	<!--<prevenda:Impressao id="i" pVenda="{this.compra}" visible="false"/>-->
+	<mx:Button id="bt_gerarCompra" label="Salvar Compra" toolTip="Clique para gerar Compra"  click="{this.fecharCompra()}" x="292" y="396" width="139"/>
+	<mx:Button id="bt_cancelarCompra" label="Cancelar Compra" toolTip="Clique para cancelar Compra"  x="439" y="396"  click="{this.cancelarCompra()}"/>
+	<mx:Label x="10" y="156" text="Fornecedor:"/>
+	<mx:Label x="10" y="128" text="N° da Nota:" width="81"/>
+	<botoes:BuscarButton x="350" y="154" click="{this.procurarFornecedor()}" height="24" label="Buscar" width="90"/>
+	<mx:TextInput id="ti_nomeFornecedor" x="99" y="154" width="243" editable="false" borderColor="#CBCCCD" backgroundColor="#AABDF3" color="#000000" fontWeight="bold"/>
+	<inputs:InteiroInput  id="ti_NF" requerido="true"  enter="{this.previewProduto()}" isEnter="false" x="99" y="126" fontSize="12" width="151"/>
 </mx:Window>

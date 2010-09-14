@@ -468,7 +468,12 @@ package negocio.remote{
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
 		
-		
+	//*******************************888*********************************//
+	public function fecharCompra(result:Function,compra:CompraVO):void{
+ 			_remote.source = "ServicosPreVenda";
+			var async:AsyncToken = _remote.fecharPreVenda(compra);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}	
 		
 		//--------------------setup----------------------------//
 		private var _remote:RemoteObject;

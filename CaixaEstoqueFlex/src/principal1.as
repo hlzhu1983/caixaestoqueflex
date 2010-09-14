@@ -2,6 +2,7 @@
 	import events.AutenticacaoUsuarioEvent;
 	
 	import modulos.cliente.CadastroCliente;
+	import modulos.compra.Compra;
 	import modulos.formadepagto.CadastroFormadePagto;
 	import modulos.fornecedor.CadastroFornecedor;
 	import modulos.grupoproduto.CadastroGrupoProduto;
@@ -56,7 +57,7 @@
          {label: "Cad. Loc. Produto", funcao: gerLocalProduto},{label: "Cad. Produto", funcao: gerProduto },
          {label: "Cad. Fornecedor", funcao: gerFornecedor}, {label: "Cad. Unidades", funcao: gerUnidade},
          {label: "Cad. Forma Pagamento", funcao: gerFormadePagto }],
-         [{label: "Pré-Venda", funcao: preVendaWindow},{label: "Janela de Venda", funcao: abreCaixaWindow},
+         [{label: "Pré-Venda", funcao: preVendaWindow},{label: "Compra", funcao: compraWindow},{label: "Janela de Venda", funcao: abreCaixaWindow},
          {label: "Pedido de Compra"},{label: "Receitas", funcao: gerReceita},{label: "Orçamento", funcao: orcamentoWindow},
          {label: "Transf Filiais"},{label: "Devolução"}],
          [{label: "Resumo Vendas", funcao: resumoVendaWindow}],
@@ -219,6 +220,17 @@
 		newWindow.activate();
 	}
 	
+	public function compraWindow():void{
+		this.logou = false;	
+		var newWindow:Window = new Compra();
+		newWindow.maximizable=false;
+		newWindow.minimizable = false;
+		newWindow.resizable = false;
+		newWindow.open(false);
+		newWindow.nativeWindow.x = 0;
+		newWindow.nativeWindow.y = 0;
+		newWindow.activate();
+	}
 	public function gerCalculadora():void{		
 		Util.abrePopUp(this,Calculadora,true);
 	}
