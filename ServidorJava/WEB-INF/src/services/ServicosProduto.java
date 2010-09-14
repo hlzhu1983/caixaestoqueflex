@@ -64,7 +64,7 @@ public class ServicosProduto {
 	public ArrayList<ProdutoVO> getProduto(String texto,String coluna){
 		String sql = "select * from produto where "+coluna+" = '"+texto+"'";
 		ResultSet rs =  banco.executar(sql);
-		return this.toProdutos(rs);
+		return  this.toProdutos(rs);
 	}
 	
 	public ArrayList<ProdutoVO> getProdutos(){

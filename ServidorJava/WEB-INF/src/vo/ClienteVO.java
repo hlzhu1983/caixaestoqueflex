@@ -9,8 +9,8 @@ public class ClienteVO {
 	public String nome;
 	public int tipoPessoa;
 	public int sexo;
-	public java.sql.Date dataNascimento;
-	public java.sql.Date dataCadastro;
+	public String dataNascimento;
+	public String dataCadastro;
 	public String endereco;
 	public String bairro;
 	public String cidade;
