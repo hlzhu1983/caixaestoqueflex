@@ -31,14 +31,14 @@
  */
  
  
-package reports
+package libs.reports.templates.dataproviders
 {
 	
 	public class DemoReportDP
 	{
 		public var text:String;
 		
-		[Embed(source="/assets/logo.png")] 
+		[Embed(source="/assets/img/eSolicite48x48.png")] 
 		public var logo:Class;	
 					
 		public function DemoReportDP(text:String)
