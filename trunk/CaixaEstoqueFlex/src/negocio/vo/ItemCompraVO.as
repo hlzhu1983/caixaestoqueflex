@@ -1,5 +1,6 @@
 package negocio.vo
-{
+{[Bindable]
+	[RemoteClass(alias="vo.ItemCompraVO")]
 	public class ItemCompraVO
 	{
 	public var codigo:int;

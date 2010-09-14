@@ -2,6 +2,8 @@ package negocio.vo
 {
 	import mx.collections.ArrayCollection;
 	
+	[Bindable]
+	[RemoteClass(alias="vo.CompraVO")]
 	public class CompraVO
 	{
 		public var codigo:int;
