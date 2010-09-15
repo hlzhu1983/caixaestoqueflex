@@ -1,11 +1,11 @@
 package services;
 
-import java.sql.Date;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Calendar;
+
 
 import vo.ItemCompraVO;
 import vo.CompraVO;
@@ -50,11 +50,11 @@ public class ServicosCompra {
 		String sql = "select * from produto where codigo = " + item.codProduto;
 
 		ArrayList<ProdutoVO> itens = new ServicosProduto().getProdutos(sql);
-		;
+		
 		if (itens.size() == 0) {
 			throw new RuntimeException("Produto não existe");
 		}
-		ProdutoVO registro = itens.get(0);
+		
 
 		sql = "insert into itensCompra (codCompra, codProduto, quantidade,valorCompra)"
 				+ " values ('"
