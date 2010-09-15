@@ -468,13 +468,33 @@ package negocio.remote{
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
 		
-	//*******************************888*********************************//
+	//*******************************Compra*********************************//
 	public function fecharCompra(result:Function,compra:CompraVO):void{
  			_remote.source = "ServicosCompra";
 			var async:AsyncToken = _remote.fecharCompra(compra);
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}	
 		
+	public function removerCompra(result:Function,compra:CompraVO):void{
+ 			_remote.source = "ServicosCompra";
+			var async:AsyncToken = _remote.removerCompra(compra);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}	
+		public function atualizarCompra(result:Function,compra:CompraVO):void{
+ 			_remote.source = "ServicosCompra";
+			var async:AsyncToken = _remote.atualizarCompra(compra);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}	
+			public function pesquisarCompra(result:Function,texto:String,coluna:String):void{
+			_remote.source = "ServicosPreVenda";
+			var async:AsyncToken = _remote.pesquisarCompra(texto,coluna);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}	
+			public function listarCompra(result:Function):void{
+ 			_remote.source = "ServicosCompra";
+			var async:AsyncToken = _remote.listarCompra();
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}	
 		//--------------------setup----------------------------//
 		private var _remote:RemoteObject;
 		
@@ -483,7 +503,7 @@ package negocio.remote{
 			_remote = new RemoteObject();
 			_remote.showBusyCursor = true;
 			_remote.destination = 'servicos';				
-			_remote.endpoint = "http://localhost:8080/blazeds/messagebroker/amf";
+			_remote.endpoint = "http://localhost:8080/blaseds/messagebroker/amf";
 			/* _remote.destination = 'zend';	
 			_remote.endpoint = "http://localhost/Zendamf/bridge.php"; */
 			

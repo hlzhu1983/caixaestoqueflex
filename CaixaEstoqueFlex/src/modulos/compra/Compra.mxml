@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Window  xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
-	width="590" height="442" title="Pré-Venda"
-	xmlns:utilidades="utilidades.*" fontSize="12" closing="{this.onCloseCommand(event)}"
-	keyDown="keyEvento(event)"  backgroundAlpha="1.0" xmlns:inputs="utilidades.inputs.*" 
+<mx:TitleWindow  xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
+	width="604" height="476" title="Compras"
+	xmlns:utilidades="utilidades.*" fontSize="12" close="fechar()" showCloseButton="true"
+	keyDown="{keyEvento(event)}"  backgroundAlpha="1.0" xmlns:inputs="utilidades.inputs.*" 
 	xmlns:botoes="utilidades.botoes.*" xmlns:local="*" creationComplete="init()" alpha="1.0" borderColor="#009DFF" xmlns:prevenda="modulos.prevenda.*">
 	
 	<mx:Script>
 		<![CDATA[
+			import events.CompraEvent;
 			import modulos.fornecedor.BuscaFornecedor;
 			import events.FornecedorEvent;
 			import negocio.vo.FornecedorVO;
@@ -36,7 +37,7 @@
 			
 			[Bindable]
 			private var isFecharCompra:Boolean = false;
-			
+			private var titleWindow_BuscaCompra:BuscarCompra;
 			[Bindable]
 			public var compra:CompraVO;
 			public var fornecedor:FornecedorVO;
@@ -50,12 +51,44 @@
 					
 			private function init():void{
 				this.ro.parent = this;
+				this.limpar();
+				
+				
+				this.focusManager.setFocus(this.codProduto);
+			}
+			
+			private function fechar():void{
+				PopUpManager.removePopUp(this);
+			}
+			
+			private function removerItem():void{
+				this.ro.removerCompra(resultadoRemover, this.compra);
+				
+				
+			}
+			private function resultadoRemover(event:ResultEvent):void{
+				if(event.result){
+					Alert.show("O item foi removido!","Sucesso",4,this);
+				}else{
+					Alert.show("O item não pôde ser removido!","Ops!",4,this);					
+				}
+				this.limpar();
+			}
+			
+			private function limpar():void{
+				this.produto = new ProdutoVO();
+				this.fornecedor = new FornecedorVO();
+				this.ti_NF.text = "";
+				this.ti_nomeFornecedor.text = "";
+				this.bt_remover.enabled = false;
 				this.compra = new CompraVO();
 				this.compra.codUsuario = 0;
 				this.compra.codFornecedor = 0;
 				this.compra.NF = "";
-				
-				this.focusManager.setFocus(this.codProduto);
+				this.codProduto.text = "";
+				this.produtos.selectedIndex = -1;
+				this.array_itensCompras = new ArrayCollection();
+			    this.add.label = "Salvar";
 			}
 			
 			private function procurarFornecedor():void{
@@ -63,6 +96,28 @@
 				this.titleWindow_BuscaFornecedor.addEventListener(FornecedorEvent.FORNECEDORSELECIONADO,result_buscaFornecedor);
 			}
 			
+			private function pesquisarCompra():void{
+				this.titleWindow_BuscaCompra = BuscarCompra(Util.abrePopUp(this,BuscarCompra,true));
+				this.titleWindow_BuscaCompra.addEventListener(CompraEvent.COMPRASELECIONADA,itemSelecionado);
+			}
+			
+			private function result_fornecedor(event:ResultEvent):void{
+			var a:ArrayCollection = event.result as ArrayCollection;
+				if(a.length == 0){
+					Alert.show("Fornecedor inexistente!","Ops!",4,this);
+				}else{
+					this.fornecedor = a.getItemAt(0) as FornecedorVO;
+				}
+			}
+			public function itemSelecionado(event:CompraEvent):void{
+				this.compra = event.compra;
+				this.ti_NF.text = this.compra.NF;
+				this.ro.pesquisarFornecedor(result_fornecedor,this.compra.codFornecedor+"","codigo");
+				this.ti_nomeFornecedor.text = this.fornecedor.nome;
+				this.array_itensCompras = this.compra.itemCompra;
+				
+                						
+			} 
 			
 			private function result_buscaFornecedor(event:FornecedorEvent):void{
 				this.fornecedor = event.fornecedor;
@@ -220,18 +275,22 @@
 					<mx:DataGridColumn headerText="Valor de Compra" dataField="valorCompra"/>
 				</mx:columns>
 			</mx:DataGrid>
-			<mx:Panel layout="absolute" height="94" width="568" x="10" y="10">
+			<mx:Panel layout="absolute" height="94" width="564" x="10" y="104" title="Inserção de Produto">
 				<mx:Label text="Código Produto:" x="18" y="17" fontSize="12"/>
 				<inputs:InteiroInput  id="codProduto" requerido="true"  enter="{this.previewProduto()}" isEnter="false" x="129" y="15" fontSize="12" width="159"/>
 				<botoes:BuscarButton  x="296" y="13" click="{this.pesquisarProduto()}" height="27"/>
 			</mx:Panel>
 	
 	<!--<prevenda:Impressao id="i" pVenda="{this.compra}" visible="false"/>-->
-	<mx:Button id="bt_gerarCompra" label="Salvar Compra" toolTip="Clique para gerar Compra"  click="{this.fecharCompra()}" x="292" y="396" width="139"/>
-	<mx:Button id="bt_cancelarCompra" label="Cancelar Compra" toolTip="Clique para cancelar Compra"  x="439" y="396"  click="{this.cancelarCompra()}"/>
-	<mx:Label x="10" y="156" text="Fornecedor:"/>
-	<mx:Label x="10" y="128" text="N° da Nota:" width="81"/>
-	<botoes:BuscarButton x="350" y="154" click="{this.procurarFornecedor()}" height="24" label="Buscar" width="90"/>
-	<mx:TextInput id="ti_nomeFornecedor" x="99" y="154" width="243" editable="false" borderColor="#CBCCCD" backgroundColor="#AABDF3" color="#000000" fontWeight="bold"/>
-	<inputs:InteiroInput  id="ti_NF" requerido="true"  enter="{this.previewProduto()}" isEnter="false" x="99" y="126" fontSize="12" width="151"/>
-</mx:Window>
+	<mx:Button id="bt_gerarCompra" label="Salvar Compra" toolTip="Clique para gerar Compra"  click="{this.fecharCompra()}" x="288" y="20" width="139"/>
+	<mx:Button id="bt_cancelarCompra" label="Cancelar Compra" toolTip="Clique para cancelar Compra"  x="435" y="20"  click="{this.cancelarCompra()}"/>
+	<mx:Label x="10" y="76" text="Fornecedor:"/>
+	<mx:Label x="10" y="48" text="N° da Nota:" width="81"/>
+	<botoes:BuscarButton x="350" y="74" click="{this.procurarFornecedor()}" height="24" label="Buscar Fornecedor" width="174"/>
+	<botoes:BuscarButton x="10"  y="10" click="{this.pesquisarCompra()}" height="24" label="Buscar Compra" width="149"/>
+	<mx:TextInput id="ti_nomeFornecedor" x="99" y="74" width="243" editable="false" borderColor="#CBCCCD" backgroundColor="#AABDF3" color="#000000" fontWeight="bold"/>
+	<mx:TextInput  id="ti_NF"   enter="{this.previewProduto()}" x="99" y="46" fontSize="12" width="151"/>
+	<botoes:SalvarButton id="add" x="228" y="387" click="{this.fecharCompra()}"/>
+	<botoes:ExcluirButton id ="bt_remover"  x="354" y="387" click="{this.removerItem()}" enabled="false"/>
+	<botoes:LimparButton x="475" y="387" click="{this.limpar()}"/>
+</mx:TitleWindow>

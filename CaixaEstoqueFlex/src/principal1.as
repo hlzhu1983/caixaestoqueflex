@@ -221,15 +221,7 @@
 	}
 	
 	public function compraWindow():void{
-		this.logou = false;	
-		var newWindow:Window = new Compra();
-		newWindow.maximizable=false;
-		newWindow.minimizable = false;
-		newWindow.resizable = false;
-		newWindow.open(false);
-		newWindow.nativeWindow.x = 0;
-		newWindow.nativeWindow.y = 0;
-		newWindow.activate();
+				Util.abrePopUp(this,Compra,true);
 	}
 	public function gerCalculadora():void{		
 		Util.abrePopUp(this,Calculadora,true);
