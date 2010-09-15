@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:TitleWindow  xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
 	width="604" height="476" title="Compras"
-	xmlns:utilidades="utilidades.*" fontSize="12" close="fechar()" showCloseButton="true"
+	xmlns:utilidades="utilidades.*" fontSize="12" close="{fechar()}" showCloseButton="true"
 	keyDown="{keyEvento(event)}"  backgroundAlpha="1.0" xmlns:inputs="utilidades.inputs.*" 
 	xmlns:botoes="utilidades.botoes.*" xmlns:local="*" creationComplete="init()" alpha="1.0" borderColor="#009DFF" xmlns:prevenda="modulos.prevenda.*">
 	
@@ -82,6 +82,7 @@
 				this.ti_nomeFornecedor.text = "";
 				this.bt_remover.enabled = false;
 				this.compra = new CompraVO();
+				this.compra.codigo =0; 
 				this.compra.codUsuario = 0;
 				this.compra.codFornecedor = 0;
 				this.compra.NF = "";
@@ -223,8 +224,12 @@
 					this.compra.itemCompra = this.array_itensCompras;
 					this.compra.codFornecedor = this.fornecedor.codigo;
 					this.compra.NF = this.ti_NF.text;
-					this.compra.codigo = ConfiguracoesSistema.usuario.codigo;
-					this.ro.fecharCompra(result_fecharCompra,this.compra);
+					this.compra.codUsuario = Config.usuario.codigo;
+					if(this.compra.codigo==0){
+					this.ro.fecharCompra(result_fecharCompra,this.compra);}else
+					{
+					this.ro.atualizarCompra(result_fecharCompra,this.compra);
+					}
 				//	Util.abrePopUp(this,Impressao,true);
 					
 			//		new PrintCompra(this.i);
@@ -238,15 +243,15 @@
 			
 			private function result_fecharCompra(e:ResultEvent):void{
 				this.isFecharCompra = true;
-				Alert.show("Pré-venda gerada com sucesso","Aew!",4,this,this.fechando);
+				Alert.show("Compra gerada com sucesso","Aew!",4,this,this.fechando);
 			}
 			
 			private function fechando(event:Event):void{
-				this.stage.nativeWindow.close();
+				this.fechar();
 			}
 			
 			private function cancelarCompra():void{
-				Alert.show("Deseja realemente cancelar a pré-venda?","Opa!",Alert.YES|Alert.NO,this,resposta_cancelarCompra);
+				Alert.show("Deseja realemente cancelar a Compra?","Opa!",Alert.YES|Alert.NO,this,resposta_cancelarCompra);
 			}
 			
 			private function resposta_cancelarCompra(event:CloseEvent):void{
