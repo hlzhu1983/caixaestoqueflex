@@ -31,11 +31,11 @@
  */
  
  
-package reports
+package relatorios.reports
 {
 	
-	public class ReportDPText
-	{
+	public class ReportDPText{
+		
 		public var text:String;
 		
 		public function ReportDPText(text:String)

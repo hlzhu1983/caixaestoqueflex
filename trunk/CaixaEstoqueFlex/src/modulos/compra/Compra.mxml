@@ -223,7 +223,7 @@
 					this.compra.itemCompra = this.array_itensCompras;
 					this.compra.codFornecedor = this.fornecedor.codigo;
 					this.compra.NF = this.ti_NF.text;
-					this.compra.codigo = Config.usuario.codigo;
+					this.compra.codigo = ConfiguracoesSistema.usuario.codigo;
 					this.ro.fecharCompra(result_fecharCompra,this.compra);
 				//	Util.abrePopUp(this,Impressao,true);
 					
