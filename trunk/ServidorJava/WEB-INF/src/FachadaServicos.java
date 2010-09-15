@@ -24,6 +24,7 @@ import vo.FormaPgtoVendaVO;
 import vo.FormadePagtoVO;
 import vo.FornecedorVO;
 import vo.GrupoProdutoVO;
+import vo.ItemCompraVO;
 import vo.ItemGraficoVO;
 import vo.ItemPreVendaVO;
 import vo.LocalProdutoVO;
@@ -75,7 +76,13 @@ public class FachadaServicos {
     		throw new RuntimeException("Parametro invalido");
 		return this.servCompra.atualizarCompra(item);
     }
-	
+	public ArrayList<CompraVO> pesquisarCompra(String texto, String coluna){
+		return this.servCompra.pesquisarCompra(texto, coluna);
+	}
+
+	public ArrayList<ItemCompraVO> pesquisarItensCompra(String texto, String coluna){
+		return this.servCompra.pesquisarItens(texto, coluna);
+	}
     public ArrayList<CompraVO> listAllCompra(){
     	
 		return this.servCompra.getItens();	

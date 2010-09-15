@@ -121,7 +121,7 @@ public class ServicosCompra {
 		return this.toItemCompra(resultado);
 	}
 
-	public ArrayList<CompraVO> pesquisarItens(String texto, String coluna) {
+	public ArrayList<CompraVO> pesquisarCompra(String texto, String coluna) {
 		String sql = "select * from compra where " + coluna + " like '%"
 				+ texto + "%'";
 		ResultSet resultado = banco.executar(sql);
@@ -131,6 +131,14 @@ public class ServicosCompra {
 			compraVO.itemCompra = this.getItensCompra(compraVO);
 		}
 		return retorno;
+
+	}
+	public ArrayList<ItemCompraVO> pesquisarItens(String texto, String coluna) {
+		String sql = "select * from itensCompra where " + coluna + " like '%"
+				+ texto + "%'";
+		ResultSet resultado = banco.executar(sql);
+
+		return this.toItemCompra(resultado);
 
 	}
 
@@ -314,4 +322,6 @@ public class ServicosCompra {
 		}
 		return gp;
 	}
+
+	
 }
