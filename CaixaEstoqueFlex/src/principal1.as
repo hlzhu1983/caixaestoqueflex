@@ -120,7 +120,7 @@
 		
 	
 	public function usuarioAutenticado(event:AutenticacaoUsuarioEvent):void{
-		Config.usuario = event.usuario;
+		ConfiguracoesSistema.usuario = event.usuario;
 		this.usuario = event.usuario;
 		if(this.usuario.permissao == 1){
 			this.menuArray  = new ArrayCollection(this.menuItensVendedor);
@@ -268,9 +268,9 @@
 	
 	public function resumoVendaWindow():void{		
 		var newWindow:Window = new ResumoVendas();
-		newWindow.maximizable=false;
-		newWindow.minimizable = false;
-		newWindow.resizable = false;
+		newWindow.maximizable=true;
+		newWindow.minimizable = true;
+		newWindow.resizable = true;
 		newWindow.open(false);
 		newWindow.nativeWindow.x = 0;
 		newWindow.nativeWindow.y = 0;

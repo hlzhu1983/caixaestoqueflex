@@ -8,6 +8,8 @@
 
 	<mx:Script>
 		<![CDATA[
+			import relatorios.reports.rListagem;
+			import relatorios.reports.ReportPreview;
 			import mx.printing.FlexPrintJobScaleType;
 			import mx.printing.FlexPrintJob;
 			import mx.formatters.SwitchSymbolFormatter;
@@ -132,6 +134,7 @@
 				}else{
 					this.ro.filtrarVendas(result_filtroVenda,sql);
 				} 
+				this.prencheGraficoVenda();
 			}
 			
 			private function result_filtroVenda(event:ResultEvent):void{
@@ -199,51 +202,54 @@
 			
 			private function imprimirRelatorio():void{
 				var isImpressao:Boolean = false;
-								
+			   var report:ReportPreview = new ReportPreview();
+			   var listagem:rListagem = new rListagem();
+				report.addChild(listagem);
+			   listagem.header.title = "Relatório: Demonstrativo Vendas";
+			 
 				if(this.cb_lvenda.selected){
-					i.array_vendas = this.array_vendas;
-					isImpressao = true;
-				}else{
-					i.grid_vendas.visible = false;
+					  listagem.grid.dataProvider = this.grid_vendas.dataProvider;
+					  listagem.grid.columns = this.grid_vendas.columns;
+					  isImpressao = true;
 				}
 				
-				if(this.cb_gVenda.selected){
-					i.array_graficoVendas = this.array_graficoVendas;
-					isImpressao = true;
-				}else{
-					i.ch_Vendas.visible = false;
-				}
-				
+			
 				if(this.cb_rCliente.selected){
-					i.array_rClientes = this.array_rClientes;
+					 listagem.grid.dataProvider = this.grid_rClientes.dataProvider;
+					 listagem.grid.columns = this.grid_rClientes.columns;
 					isImpressao = true;
-				}else{
-					i.pn_rCliente;
 				}
 				
 				if(this.cb_rProduto.selected){
-					i.array_rProdutos = this.array_rProdutos;
+					 listagem.grid.dataProvider = this.grid_rProdutos.dataProvider;
+					 listagem.grid.columns = this.grid_rProdutos.columns;
 					isImpressao = true;
-				}else{
-					i.body.removeChild(i.pn_rProduto);
 				}
 				
 				if(this.cb_rFP.selected){
-					i.array_formasPgto = this.array_formasPgto;
+					 listagem.grid.dataProvider = this.grid_fPgto.dataProvider;
+					 listagem.grid.columns = this.grid_fPgto.columns;
+					 isImpressao = true;
 					isImpressao = true;
-				}else{
-					i.body.removeChild(i.pn_rFormaPagamento);
 				}
-					
+				
 				if(isImpressao){	
-					var p:FlexPrintJob = new FlexPrintJob();
-					if(p.start()){
-						p.addObject(i,FlexPrintJobScaleType.SHOW_ALL);
-						p.send();
-					}
+					var titleW:Window = new Window();
+				  	titleW.maximizable=true;
+					titleW.minimizable = true;
+					titleW.resizable = true;		
+					titleW.open(false);
+					titleW.nativeWindow.x = 0;
+					titleW.nativeWindow.y = 0;
+					titleW.width = 1024;
+			  		titleW.height = 700;
+			 		titleW.addChild(report);
+			 		
+					report.execute(listagem);  
+			  		titleW.activate();
 				}else{
 					Alert.show("Selecione algum relatorio!","Ops!",4,this);
-				}
+				} 
 			}
 			
 			
@@ -342,8 +348,8 @@
 				<mx:LineChart   showDataTips="true" x="19" y="92"
 					 id="ch_Vendas" width="682" height="351"  dataProvider="{this.array_graficoVendas}" >
 					<mx:horizontalAxis>
-					        		 <mx:CategoryAxis categoryField="yField"/>
-					     	</mx:horizontalAxis>
+					       <mx:CategoryAxis categoryField="yField"/>
+					</mx:horizontalAxis>
 					<mx:series>
 						<mx:LineSeries  yField="valor" displayName="Vendas"/>
 					</mx:series>
@@ -408,12 +414,10 @@
 			
 		</mx:TabNavigator>
 	
-	<mx:CheckBox id="cb_lvenda" x="66" y="691" label="Lista Venda"/>
-	<relatorios:ImpressaoResumoVenda id="i" visible="false" />
-	<mx:CheckBox id="cb_gVenda" x="179" y="691" label="Gráfico Venda"/>
-	<mx:CheckBox id="cb_rCliente" x="289" y="691" label="Ranking Clientes"/>
-	<mx:CheckBox id="cb_rProduto" x="417" y="691" label="Ranking Produtos"/>
-	<mx:CheckBox id="cb_rFP" x="549" y="691" label="Resumo Formas Pagamento"/>
+	<mx:RadioButton groupName="opPrint" id="cb_lvenda" x="191" y="691" label="Lista Venda"/>
+	<mx:RadioButton groupName="opPrint" id="cb_rCliente" x="289" y="691" label="Ranking Clientes"/>
+	<mx:RadioButton groupName="opPrint" id="cb_rProduto" x="417" y="691" label="Ranking Produtos"/>
+	<mx:RadioButton groupName="opPrint" id="cb_rFP" x="549" y="691" label="Resumo Formas Pagamento"/>
 	<mx:Button id="bt_imprimr" x="754" y="691" label="Imprimir" click="{this.imprimirRelatorio()}"/>
 	
 </mx:Window>

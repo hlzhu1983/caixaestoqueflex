@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Report xmlns="libs.reports.org.print.*" xmlns:mx="http://www.adobe.com/2006/mxml" width="595" height="842" xmlns:report="*" xmlns:reports="reports.*">
+<Report xmlns="libs.reports.org.print.*"
+	 xmlns:mx="http://www.adobe.com/2006/mxml" width="595" 
+	 height="842" xmlns:reports="relatorios.reports.*" >
 	<!-- REPORT LAYOUT -->
 	<reports:Header id="header" width="100%" showInAllPages="true"/>
 	
@@ -8,7 +10,6 @@
 	</Body>
 	
 	<reports:Footer width="100%" showInFirstPage="true" showInMiddlePages="true" showInLastPage="true"/>
-	
 	<mx:Script>
 		<![CDATA[
 			public override function loadData() : void
@@ -16,4 +17,5 @@
 			}
 		]]>
 	</mx:Script>
+	
 </Report>
