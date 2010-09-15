@@ -18,8 +18,8 @@ public class ServicosCompra {
 				+ item.codUsuario
 				+ ","
 				+ item.codFornecedor
-				+ " ,now(),"
-				+ item.NF + ")";
+				+ " ,now(),'"
+				+ item.NF + "')";
 
 		Statement st;
 		this.banco.conectar();
@@ -286,9 +286,11 @@ public class ServicosCompra {
 			CompraVO dados_item = new CompraVO();
 			dados_item.codigo = rs.getInt("codigo");
 			dados_item.codUsuario = rs.getInt("codUsuario");
-			dados_item.dataCompra = rs.getString("dataAbertura");
-			dados_item.NF = rs.getString("obs");
-			dados_item.codFornecedor = rs.getInt("status");
+			
+			dados_item.dataCompra = rs.getString("dataCompra");
+			
+			dados_item.NF = rs.getString("NF");
+			dados_item.codFornecedor = rs.getInt("codFornecedor");
 
 			ArrayList<ItemCompraVO> itens;
 			itens = this.getItensCompra(dados_item);
@@ -316,7 +318,7 @@ public class ServicosCompra {
 			dados_item.codigo = rs.getInt("codigo");
 			dados_item.codProduto = rs.getInt("codProduto");
 			dados_item.quantidade = rs.getInt("quantidade");
-			dados_item.valorDeCompra = rs.getDouble("valor");
+			dados_item.valorDeCompra = rs.getDouble("valorCompra");
 			dados_item.codigoCompra = rs.getInt("codCompra");
 			gp.add(dados_item);
 		}
