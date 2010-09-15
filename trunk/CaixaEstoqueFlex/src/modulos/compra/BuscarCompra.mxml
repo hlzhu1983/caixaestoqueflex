@@ -72,16 +72,14 @@
 					Alert.show("erro");
 				}
 			}
-			public function pesquisarCompra():void{
-			Alert.show("anderson murilo");
-			}
+			
 			
 		]]>
 		
 	</mx:Script>	
 	<mx:Label text="Pesquisa:" x="24" y="19" fontSize="12"/>
 	<inputs:TextoInput  id="ti_pesquisa" requerido="true"   isEnter="false" x="99" y="12" fontSize="12" width="204"/>
-	<botoes:BuscarButton  x="311" y="10" click="{this.pesquisarCompra()}" height="27"/>
+	<botoes:BuscarButton  x="311" y="10" click="{this.pesquisarItem()}" height="27"/>
 	<mx:HBox width="283" height="22" x="24" y="44">
 		<mx:RadioButtonGroup id="grupo_pesquisa"/>
 		<mx:RadioButton label="Código" id="radio_codigo" groupName="grupo_pesquisa"/>
@@ -89,7 +87,7 @@
 	</mx:HBox>
 	<mx:Panel x="5" y="74" width="574" height="156" layout="absolute" title="Filtros">
 		<mx:Label text="Fornecedor: " y="12" x="19"/>
-		<mx:ComboBox id="cb_fornecedor"  change="{this.pesquisarCompra()}" editable="false"  dataProvider="{this.itensFornecedores}" labelField="nome" x="102" y="10" width="168"/>
+		<mx:ComboBox id="cb_fornecedor"   editable="false"  dataProvider="{this.itensFornecedores}" labelField="nome" x="102" y="10" width="168"/>
 		<mx:Label text="Data Compra:" x="300" y="13"/>
 		<mx:Label text="à" x="226" y="61"/>
 		<mx:Label text="Intervalo:" x="19" y="61"/>
