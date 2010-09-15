@@ -490,9 +490,10 @@ package negocio.remote{
 			var async:AsyncToken = _remote.pesquisarCompra(texto,coluna);
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}	
+		
 			public function listarCompra(result:Function):void{
  			_remote.source = "ServicosCompra";
-			var async:AsyncToken = _remote.listarCompra();
+			var async:AsyncToken = _remote.listAllCompra();
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}	
 		//--------------------setup----------------------------//
