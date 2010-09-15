@@ -103,11 +103,11 @@ public class ServicosCompra {
 
 	}
 
-	public ArrayList<CompraVO> getAllItensCompra(String codigo) {
+	public ArrayList<ItemCompraVO> getAllItensCompra(String codigo) {
 		String sql = "select * from itensCompra where codCompra  = " + codigo;
 		ResultSet resultado = banco.executar(sql);
 
-		return this.toCompra(resultado);
+		return this.toItemCompra(resultado);
 	}
 
 	public ArrayList<CompraVO> pesquisarItens(String texto, String coluna) {
@@ -115,16 +115,25 @@ public class ServicosCompra {
 				+ texto + "%'";
 		ResultSet resultado = banco.executar(sql);
 
-		return this.toCompra(resultado);
+		ArrayList<CompraVO> retorno = this.toCompra(resultado);
+	 for (CompraVO compraVO : retorno) {
+		compraVO.itemCompra = this.getItensCompra(compraVO);
+	}
+	 return retorno;
 	}
 
 	public ArrayList<CompraVO> getItens() {
 		String sql = "select * from compra";
 
 		ResultSet rs = banco.executar(sql);
-		return this.toCompra(rs);
+		ArrayList<CompraVO> retorno = this.toCompra(rs);
+		 for (CompraVO compraVO : retorno) {
+			compraVO.itemCompra = this.getItensCompra(compraVO);
+		}
+		 return retorno;
 	}
-
+	
+	
 	private ArrayList<CompraVO> toCompra(ResultSet rs) throws SQLException {
 		ArrayList<CompraVO> gp = new ArrayList<CompraVO>();
 		while (rs.next()) {
