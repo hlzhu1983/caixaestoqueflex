@@ -70,8 +70,23 @@ public class FachadaServicos {
 		return this.servCompra.fecharCompra(item);
 	}
 	
+    public CompraVO atualizarCompra(CompraVO item){
+    	if(item==null)
+    		throw new RuntimeException("Parametro invalido");
+		return this.servCompra.atualizarCompra(item);
+    }
+	
+    public ArrayList<CompraVO> listAllCompra(){
+    	
+		return this.servCompra.getItens();	
+    }
 
-
+    public void removerCompra(CompraVO item){
+    	if(item==null)
+    		throw new RuntimeException("Parametro invalido");
+		 this.servCompra.removerCompra(item);
+    }
+    
 	public ClienteVO addCliente(ClienteVO item) throws SQLException {
 		if (item == null)
 			throw new RuntimeException("Parametro invalido");
