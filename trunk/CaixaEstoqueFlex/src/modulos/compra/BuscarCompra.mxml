@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow  xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
+	width="604" height="484" title="Procurar Compras"
+	xmlns:utilidades="utilidades.*" fontSize="12" close="fechar()" showCloseButton="true"
+	backgroundAlpha="1.0" xmlns:inputs="utilidades.inputs.*" 
+	xmlns:botoes="utilidades.botoes.*" xmlns:local="*" creationComplete="init()" alpha="1.0" borderColor="#009DFF" xmlns:prevenda="modulos.prevenda.*" cornerRadius="12">
+	
+	<mx:Script
+	>
+		<![CDATA[
+			import mx.managers.PopUpManager;
+			import mx.controls.Alert;
+			import mx.events.ValidationResultEvent;
+			import mx.rpc.events.ResultEvent;
+			import negocio.remote.Remote;
+			import mx.collections.ArrayCollection;
+		
+		[Bindable]
+		private var ro:Remote = Remote.getInstance();
+		[Bindable] 
+		private var itensFornecedores:ArrayCollection;
+		[Bindable] 
+		private var itensCompra:ArrayCollection;
+		    
+		    private function init():void{
+				this.ro.parent = this;
+				this.limpar();
+				
+				
+				this.focusManager.setFocus(this.ti_pesquisa);
+			}
+			
+			
+			
+			private function limpar():void{
+				this.ti_pesquisa.text = "";
+				this.itensFornecedores = new ArrayCollection();
+				this.itensCompra = new ArrayCollection();
+				this.dataFinal.text = "";
+				this.dataInicial.text = "";
+				this.dataCompra.text = "";
+				this.produtos.selectedIndex = -1;
+				
+			}
+			private function fechar():void{
+				PopUpManager.removePopUp(this);
+			}
+		private function listarAllItems():void{
+				this.ro.listarCompra(resultListarItens);
+				
+			}
+				private function resultadoPesquisaItem(event:ResultEvent):void{
+				this.itensCompra = event.result as ArrayCollection;
+			}
+		
+			private function resultListarItens(event:ResultEvent):void{
+				this.itensCompra = event.result as ArrayCollection;
+			}
+		
+			private function pesquisarItem():void{
+				if(this.ti_pesquisa.text == ""){
+					this.listarAllItems();
+				}else if(this.ti_pesquisa.validador.validate().type == ValidationResultEvent.VALID ){
+					
+					if(this.radio_codigo.selected){
+						this.ro.pesquisarCompra(resultadoPesquisaItem,this.ti_pesquisa.text,"codigo");
+					}else if(this.radio_NF.selected){
+						this.ro.pesquisarCompra(resultadoPesquisaItem,this.ti_pesquisa.text,"NF");
+					}
+					
+				}else{
+					Alert.show("erro");
+				}
+			}
+			public function pesquisarCompra():void{
+			Alert.show("anderson murilo");
+			}
+			
+		]]>
+		
+	</mx:Script>	
+	<mx:Label text="Pesquisa:" x="24" y="19" fontSize="12"/>
+	<inputs:TextoInput  id="ti_pesquisa" requerido="true"   isEnter="false" x="99" y="12" fontSize="12" width="204"/>
+	<botoes:BuscarButton  x="311" y="10" click="{this.pesquisarCompra()}" height="27"/>
+	<mx:HBox width="283" height="22" x="24" y="44">
+		<mx:RadioButtonGroup id="grupo_pesquisa"/>
+		<mx:RadioButton label="Código" id="radio_codigo" groupName="grupo_pesquisa"/>
+		<mx:RadioButton label="N° da Nota" id="radio_NF" groupName="grupo_pesquisa" selected="true"/>
+	</mx:HBox>
+	<mx:Panel x="5" y="74" width="574" height="156" layout="absolute" title="Filtros">
+		<mx:Label text="Fornecedor: " y="12" x="19"/>
+		<mx:ComboBox id="cb_fornecedor"  change="{this.pesquisarCompra()}" editable="false"  dataProvider="{this.itensFornecedores}" labelField="nome" x="102" y="10" width="168"/>
+		<mx:Label text="Data Compra:" x="300" y="13"/>
+		<mx:Label text="à" x="226" y="61"/>
+		<mx:Label text="Intervalo:" x="19" y="61"/>
+		<utilidades:DateInput  x="401" y="11" width="124" id="dataCompra"/>
+		<utilidades:DateInput  x="94" y="59" width="124" id="dataInicial"/>
+		<utilidades:DateInput  x="256" y="59" width="124" id="dataFinal"/>
+	</mx:Panel>
+	<mx:DataGrid id="produtos"  width="568"  height="171" rowCount="10" dataProvider="{this.itensCompra}" x="6" y="261">
+		<mx:columns>
+			<mx:DataGridColumn width="53" headerText="código" dataField="codigo"/>
+			<mx:DataGridColumn width="83" headerText="N° da Nota" dataField="NF"/>
+			<mx:DataGridColumn headerText="Fornecedor" dataField="fornecedor"/>					
+			<mx:DataGridColumn width="112" headerText="data de Entrada" dataField="dataCompra"/>
+		</mx:columns>
+	</mx:DataGrid>
+</mx:TitleWindow>
