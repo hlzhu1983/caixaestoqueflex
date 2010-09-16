@@ -143,31 +143,40 @@ public class ServicosCompra {
 	}
 
 	public CompraVO atualizarCompra(CompraVO item) {
-		String sql = "UPDATE compra set codUsuario =" + item.codUsuario
-				+ " , codFornecedor =" + item.codFornecedor
-				+ " , dataCompra = now(), NF ='" + item.NF
-				+ "' " + "where  codigo =" + item.codigo;
-
 		
 		this.banco.conectar();
 		this.banco.getConexao().setAutoCommit(false);
 		Statement st = this.banco.getConexao().createStatement();
-		if (st.executeUpdate(sql) == 0) {
-			throw new RuntimeException("Erro ao abrir Compra!");
-		}
-
-		for (ItemCompraVO itemCompra : item.itemCompra) {
+	   for (int i = 0; i < item.itemCompra.size(); i++) {
+		   ItemCompraVO itemCompra = item.itemCompra.get(0);
 			itemCompra.codigoCompra = item.codigo;
 			if(itemCompra.status==0){
 			this.updateItemCompra(itemCompra,st);
 			}else{
 				
 				this.retirarItemCompra(itemCompra,st);
-				item.itemCompra.remove(itemCompra);
+				item.itemCompra.remove(i);
 			}
-		}
+	   }
+		
+		
+		
 
 		
+		
+		
+		String sql = "UPDATE compra set codUsuario =" + item.codUsuario
+				+ " , codFornecedor =" + item.codFornecedor
+				+ " , dataCompra = now(), NF ='" + item.NF
+				+ "' " + "where  codigo =" + item.codigo;
+
+		
+		
+		if (st.executeUpdate(sql) == 0) {
+			throw new RuntimeException("Erro ao abrir Compra!");
+		}
+
+			
 		this.banco.getConexao().commit();
 		return item;
 	}
@@ -217,27 +226,34 @@ public class ServicosCompra {
 
 		} else {
 			
-				sql = "select * from produto where codigo = " + itemCompra.codProduto;
+			sql = "select * from produto where codigo = " + itemCompra.codProduto;
 
-				ArrayList<ProdutoVO> itensProduto = new ServicosProduto().getProdutos(sql);
-				;
-				if (itensProduto.size() == 0) {
+			ArrayList<ProdutoVO> itensProduto = new ServicosProduto().getProdutos(sql);
+				
+				
+			if (itensProduto.size() == 0) {
 					throw new RuntimeException("Produto não existe");
-				}
-				ProdutoVO registro = itensProduto.get(0);
+			}
+				
+				
+			ProdutoVO registro = itensProduto.get(0);
 
 				
-				ArrayList<ItemCompraVO> itens = this
-						.getItensCompra(itemCompra.codigo + "");
+			ArrayList<ItemCompraVO> itens = this
+						.pegarItensCompra(itemCompra.codigo + "",st);
 
 				if (itens.size() == 0) {
 					throw new RuntimeException("Item não existe");
 				}
+				
 				ItemCompraVO icompra = itens.get(0);
+				
 				if (icompra.quantidade != itemCompra.quantidade) {
-                if(registro.qtdEmEstoque+(itemCompra.quantidade-icompra.quantidade)<0){
+               
+					
+					if(registro.qtdEmEstoque+(itemCompra.quantidade-icompra.quantidade)<0){
                 	throw new RuntimeException("Não pode atualizar Item");
-                }else{
+					}else{
                 	quantidade = itemCompra.quantidade-icompra.quantidade;
                 	sql = "UPDATE itensCompra set codCompra = "
 						+ itemCompra.codigoCompra + ",codProduto ="
@@ -245,12 +261,15 @@ public class ServicosCompra {
 						+ itemCompra.quantidade + ",valorCompra = "
 						+ itemCompra.valorCompra + " where codigo="
 						+ itemCompra.codigo;
-                }
-                if(st.executeUpdate(sql)==0){
-					 throw new RuntimeException("Não foi possível atualizar o item");
-				 }
-				} else {
-					quantidade = itemCompra.quantidade;
+                	if(st.executeUpdate(sql)==0){
+   					 throw new RuntimeException("Não foi possível atualizar o item");
+   				 
+   					}
+					}
+                
+					
+					} else {
+					quantidade = 0;
 					 sql = "UPDATE itensCompra set codCompra = "
 							+ itemCompra.codigoCompra + ",codProduto ="
 							+ itemCompra.codProduto + " ,quantidade ="
@@ -264,14 +283,17 @@ public class ServicosCompra {
 				}
 				registro.qtdEmEstoque = quantidade;
 				//atualizando o produto resultante
-				(new ServicosProduto()).atualizarProduto(registro);
-		
+				sql = "UPDATE produto SET qtdEmEstoque = (qtdEmEstoque - "
+					+ registro.qtdEmEstoque + ") where codigo = " + registro.codigo;
+				if(st.executeUpdate(sql)==0){
+					 throw new RuntimeException("Não foi possível atualizar o produto");
+				 }
 		}
 	}
 
-	private ArrayList<ItemCompraVO> getItensCompra(String codigo) {
+	private ArrayList<ItemCompraVO> pegarItensCompra(String codigo,Statement st) throws SQLException {
 		String sql = "select * from itensCompra where codigo  = " + codigo;
-		ResultSet resultado = banco.executar(sql);
+		ResultSet resultado = st.executeQuery(sql);
 
 		return this.toItemCompra(resultado);
 	}
