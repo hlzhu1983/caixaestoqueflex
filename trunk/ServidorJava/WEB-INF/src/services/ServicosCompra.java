@@ -91,6 +91,9 @@ public class ServicosCompra {
 		if (itens.size() == 0) {
 			throw new RuntimeException("Produto não existe");
 		}
+		if(1==1){
+			throw new RuntimeException("oi oi oi ");
+		}
 		ProdutoVO registro = itens.get(0);
      if(registro.qtdEmEstoque>=item.quantidade){
 		 sql = "UPDATE produto SET qtdEmEstoque = (qtdEmEstoque - "
@@ -173,17 +176,10 @@ public class ServicosCompra {
 	}
 
 	public void removerCompra(CompraVO item) {
-		
-		String sql = "DELETE FROM compra where  codigo =" + item.codigo;
-
-		
 		this.banco.conectar();
 		this.banco.getConexao().setAutoCommit(false);
 		Statement st = this.banco.getConexao().createStatement();
-		if (st.executeUpdate(sql) == 0) {
-			throw new RuntimeException("Erro ao remover Compra!");
-		}
-
+		
 		for (ItemCompraVO itemCompra : item.itemCompra) {
 			itemCompra.codigoCompra = item.codigo;
 			
@@ -193,6 +189,16 @@ public class ServicosCompra {
 			
 		}
 
+		
+		String sql = "DELETE FROM compra where  codigo =" + item.codigo;
+
+		
+		
+		if (st.executeUpdate(sql) == 0) {
+			throw new RuntimeException("Erro ao remover Compra!");
+		}
+
+		
 		
 		this.banco.getConexao().commit();
 		
