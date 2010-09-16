@@ -7,6 +7,7 @@
 	
 	<mx:Script>
 		<![CDATA[
+			import negocio.vo.ItensReceitaVO;
 			import events.CompraEvent;
 			import modulos.fornecedor.BuscaFornecedor;
 			import events.FornecedorEvent;
@@ -67,12 +68,16 @@
 				
 			}
 			private function resultadoRemover(event:ResultEvent):void{
+				if(event.result==null){
+				Alert.show("O item não pôde ser removido!","Ops!",4,this);
+				}else{
 				if(event.result){
 					Alert.show("O item foi removido!","Sucesso",4,this);
 				}else{
 					Alert.show("O item não pôde ser removido!","Ops!",4,this);					
 				}
 				this.limpar();
+				}
 			}
 			
 			private function limpar():void{
@@ -108,17 +113,37 @@
 					Alert.show("Fornecedor inexistente!","Ops!",4,this);
 				}else{
 					this.fornecedor = a.getItemAt(0) as FornecedorVO;
+				  this.ti_nomeFornecedor.text = this.fornecedor.nome;
 				}
 			}
 			public function itemSelecionado(event:CompraEvent):void{
 				this.compra = event.compra;
 				this.ti_NF.text = this.compra.NF;
 				this.ro.pesquisarFornecedor(result_fornecedor,this.compra.codFornecedor+"","codigo");
-				this.ti_nomeFornecedor.text = this.fornecedor.nome;
+					
 				this.array_itensCompras = this.compra.itemCompra;
-				
-                						
+				for(var i:int = 0; i<array_itensCompras.length;i++){
+				var item:ItemCompraVO = this.array_itensCompras.getItemAt(i) as ItemCompraVO;	
+				 this.ro.pesquisarProduto(result_produto,item.codProduto+"","codigo");
+				}
+				this.bt_remover.enabled = true;
+			  						
 			} 
+			private function result_produto(event:ResultEvent):void{
+			    var a:ArrayCollection = event.result as ArrayCollection;
+		     var icomp:ItemCompraVO = null;
+		       for(var i:int=0;i<this.array_itensCompras.length;i++){
+		      
+		     icomp =  this.array_itensCompras.getItemAt(i) as ItemCompraVO; 
+		     var produto:ProdutoVO = a.getItemAt(0) as ProdutoVO; 
+		      if(icomp.codProduto==produto.codigo){
+		      	icomp.descricao = produto.descricao;
+		      this.array_itensCompras.setItemAt(icomp,i);
+		      break;
+		      }
+		       }
+		     
+			}
 			
 			private function result_buscaFornecedor(event:FornecedorEvent):void{
 				this.fornecedor = event.fornecedor;
@@ -224,7 +249,7 @@
 					this.compra.itemCompra = this.array_itensCompras;
 					this.compra.codFornecedor = this.fornecedor.codigo;
 					this.compra.NF = this.ti_NF.text;
-					this.compra.codUsuario = Config.usuario.codigo;
+					this.compra.codUsuario = ConfiguracoesSistema.usuario.codigo;
 					if(this.compra.codigo==0){
 					this.ro.fecharCompra(result_fecharCompra,this.compra);}else
 					{
