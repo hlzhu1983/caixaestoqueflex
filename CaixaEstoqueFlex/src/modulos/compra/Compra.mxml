@@ -2,8 +2,8 @@
 <mx:TitleWindow  xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
 	width="604" height="476" title="Compras"
 	xmlns:utilidades="utilidades.*" fontSize="12" close="{fechar()}" showCloseButton="true"
-	keyDown="{keyEvento(event)}"  backgroundAlpha="1.0" xmlns:inputs="utilidades.inputs.*" 
-	xmlns:botoes="utilidades.botoes.*" xmlns:local="*" creationComplete="init()" alpha="1.0" borderColor="#009DFF" xmlns:prevenda="modulos.prevenda.*">
+	  backgroundAlpha="1.0" xmlns:inputs="utilidades.inputs.*" 
+	xmlns:botoes="utilidades.botoes.*" xmlns:local="*" creationComplete="init()" alpha="1.0" borderColor="#009DFF" xmlns:compra="modulos.compra.*">
 	
 	<mx:Script>
 		<![CDATA[
@@ -169,25 +169,7 @@
 			
 			
 						
-        	private function keyEvento(event:KeyboardEvent):void{
-        		switch(event.keyCode){
-        			case 123: 
-						this.stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
-        				break;
-        			case 46:
-        				if(event.ctrlKey){
-	        				if(event.target == produtos){ 
-	        					if(this.produtos.selectedIndex > -1){
-	        						Alert.show("Deseja realmente deletar o item?",
-	        							"Alerta",Alert.OK | Alert.CANCEL,this,removeItemArrayCollection,null,Alert.OK);
-	        					}else{
-	        						Alert.show("Não há item selecionado!","Ops!",4,this);
-	        					}							
-	        				}
-        				}
-        				break;
-        		}
-        	}
+        	
         	
         	public function removeItemArrayCollection(event:CloseEvent):void{
         		if(event.detail == Alert.OK){
