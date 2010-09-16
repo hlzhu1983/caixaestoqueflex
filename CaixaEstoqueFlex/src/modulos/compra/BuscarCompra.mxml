@@ -118,7 +118,7 @@
 			}
 			
 			private function selecionarItem(event:ListEvent):void{
-				 Alert.show("Entrou");
+				 
 				if(event.rowIndex == -1){
 					Alert.show("Produto não selecinado!","Ops!",4,this);					
 				}else{
