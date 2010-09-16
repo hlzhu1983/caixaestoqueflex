@@ -226,10 +226,10 @@
 					Alert.show("Produto não exite","Ops!",4,this,focusTextCodProduto);
 				}else{
 					var pvProduto:PreviewProdutoTitleWindow = PreviewProdutoTitleWindow(Util.abrePopUp(this,PreviewProdutoTitleWindow,true));
-					pvProduto.addEventListener(ItemCompraEvent.ADICIONADOSUCEESSO,addItemProduto)
 					pvProduto.setProduto(e.result as ProdutoVO);
-					this.produto = e.result as ProdutoVO;
-					this.codProduto.text = "";
+					pvProduto.addEventListener(ItemCompraEvent.ADICIONADOSUCEESSO,addItemProduto);
+					
+					
 				}
 			}
 			
@@ -243,9 +243,9 @@
 			}
 			
 			private function fecharCompra():void{
-				if(this.isProduto){
+				
 					if(this.fornecedor!=null){
-					
+					if(this.array_itensCompras.length>0){
 					this.compra.itemCompra = this.array_itensCompras;
 					this.compra.codFornecedor = this.fornecedor.codigo;
 					this.compra.NF = this.ti_NF.text;
@@ -258,12 +258,11 @@
 				//	Util.abrePopUp(this,Impressao,true);
 					
 			//		new PrintCompra(this.i);
+					}else Alert.show("Adicione um Produto","Ops!",4,this);
 					}else{
 						Alert.show("Selecione um Fornecedor","Ops!",4,this);
 					}
-				}else{
-					Alert.show("Não ha produtos inseridos!","Ops!",4,this);
-				}
+				
 			}
 			
 			private function result_fecharCompra(e:ResultEvent):void{
@@ -288,10 +287,7 @@
 				
 			}
 			
-			private function result_cancelarCompra(e:ResultEvent):void{
-				this.isFecharCompra = true;
-				this.stage.nativeWindow.close();
-			}
+		
 			
 			
 			
