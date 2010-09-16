@@ -8,6 +8,11 @@
 	<mx:Script
 	>
 		<![CDATA[
+			import mx.events.ListEvent;
+			import events.CompraEvent;
+			import negocio.vo.CompraVO;
+			import negocio.vo.FornecedorVO;
+			import mx.containers.Form;
 			import mx.managers.PopUpManager;
 			import mx.controls.Alert;
 			import mx.events.ValidationResultEvent;
@@ -19,9 +24,12 @@
 		private var ro:Remote = Remote.getInstance();
 		[Bindable] 
 		private var itensFornecedores:ArrayCollection;
+		[Bindable]
+		
 		[Bindable] 
+		private var itensView:ArrayCollection;
 		private var itensCompra:ArrayCollection;
-		    
+		private var contando:int = 0;    
 		    private function init():void{
 				this.ro.parent = this;
 				this.limpar();
@@ -52,11 +60,47 @@
 				private function resultadoPesquisaItem(event:ResultEvent):void{
 				this.itensCompra = event.result as ArrayCollection;
 			}
+			
+			 private function resultadoPesquisaFornecedor(event:ResultEvent):void{
+		    
+		      var a:ArrayCollection = event.result as ArrayCollection;
+		     
+		       for(var i:int=0;i<a.length;i++){
+		      
+		      this.itensFornecedores.addItem(a.getItemAt(i)); 
+		      
+		       }
+		     	var view:ViewCompra = new ViewCompra();
+				var forn:FornecedorVO = this.itensFornecedores.getItemAt(this.contando) as FornecedorVO;
+				var comp:CompraVO = this.itensCompra.getItemAt(this.contando) as CompraVO;
+				view.codigo = comp.codigo;
+				view.dataCompra = comp.dataCompra;
+				view.NF = comp.NF;
+				view.fornecedor = forn.nome;
+				this.itensView.addItem(view);
+			   this.contando++;	
+			
+		    }
+		
+		
 		
 			private function resultListarItens(event:ResultEvent):void{
 				this.itensCompra = event.result as ArrayCollection;
+				this.itensFornecedores = new ArrayCollection();
+				this.itensView = new ArrayCollection();
+				this.contando=0;
+				for(var i:int=0;i<this.itensCompra.length;i++){
+				var comp:CompraVO = this.itensCompra.getItemAt(i) as CompraVO;	
+				this.ro.pesquisarFornecedor(resultadoPesquisaFornecedor,""+comp.codFornecedor,"codigo");
+			
+				
+				}
+				
+				
+				
+			
 			}
-		
+		  
 			private function pesquisarItem():void{
 				if(this.ti_pesquisa.text == ""){
 					this.listarAllItems();
@@ -73,6 +117,17 @@
 				}
 			}
 			
+			private function selecionarItem(event:ListEvent):void{
+				 Alert.show("Entrou");
+				if(event.rowIndex == -1){
+					Alert.show("Produto não selecinado!","Ops!",4,this);					
+				}else{
+					var i:int = event.rowIndex;
+					this.dispatchEvent(new CompraEvent(this.itensCompra.getItemAt(i) as CompraVO,CompraEvent.COMPRASELECIONADA));
+					this.fechar();	
+				}				
+				
+			}
 			
 		]]>
 		
@@ -95,7 +150,7 @@
 		<utilidades:DateInput  x="94" y="59" width="124" id="dataInicial"/>
 		<utilidades:DateInput  x="256" y="59" width="124" id="dataFinal"/>
 	</mx:Panel>
-	<mx:DataGrid id="produtos"  width="568"  height="171" rowCount="10" dataProvider="{this.itensCompra}" x="6" y="261">
+	<mx:DataGrid id="produtos"  width="568" doubleClickEnabled="true"  itemDoubleClick="{this.selecionarItem(event)}"  height="171" rowCount="10" dataProvider="{this.itensView}" x="6" y="261">
 		<mx:columns>
 			<mx:DataGridColumn width="53" headerText="código" dataField="codigo"/>
 			<mx:DataGridColumn width="83" headerText="N° da Nota" dataField="NF"/>
