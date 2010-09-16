@@ -61,7 +61,7 @@ public class ServicosCompra {
 				+ item.codigoCompra
 				+ "','"
 				+ item.codProduto
-				+ "','" + item.quantidade + "','" + item.valorDeCompra + "')";
+				+ "','" + item.quantidade + "','" + item.valorCompra + "')";
 		if (st.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS) == 0) {
 			throw new RuntimeException("Erro ao Adicionar ItemCompra");
 		}
@@ -82,8 +82,8 @@ public class ServicosCompra {
 
 	}
 
-	public void removerItemCompra(ItemCompraVO item,Statement st) {
-
+	public void retirarItemCompra(ItemCompraVO item,Statement st) throws SQLException {
+		
 		String sql = "select * from produto where codigo = " + item.codProduto;
 
 		ArrayList<ProdutoVO> itens = new ServicosProduto().getProdutos(sql);
@@ -91,30 +91,27 @@ public class ServicosCompra {
 		if (itens.size() == 0) {
 			throw new RuntimeException("Produto não existe");
 		}
-		if(1==1){
-			throw new RuntimeException("oi oi oi ");
-		}
+		
 		ProdutoVO registro = itens.get(0);
+		
      if(registro.qtdEmEstoque>=item.quantidade){
 		 sql = "UPDATE produto SET qtdEmEstoque = (qtdEmEstoque - "
 				+ item.quantidade + ")  WHERE codigo = " + item.codProduto;
 
+		 if (st.executeUpdate(sql) == 0) {
+				throw new RuntimeException("Erro ao atualizar produto");
+			}
 		
-		
-		
-
-		if (st.executeUpdate(sql) == 0) {
-			throw new RuntimeException("Erro ao atualizar ItemCompra");
-		}
 		sql = "DELETE FROM itensCompra WHERE codigo = " + item.codigo;
 		if (st.executeUpdate(sql) == 0) {
 			throw new RuntimeException("Erro ao Deletar ItemCompra");
 		}
-
+		
      }else{
     	 throw new RuntimeException("Quantidade em produto é insuficiênte");
      }
-
+     
+     
 	}
 
 	public ArrayList<ItemCompraVO> getAllItensCompra(String codigo) {
@@ -148,7 +145,7 @@ public class ServicosCompra {
 	public CompraVO atualizarCompra(CompraVO item) {
 		String sql = "UPDATE compra set codUsuario =" + item.codUsuario
 				+ " , codFornecedor =" + item.codFornecedor
-				+ " , dataCompra = " + item.dataCompra + ", NF ='" + item.NF
+				+ " , dataCompra = now(), NF ='" + item.NF
 				+ "' " + "where  codigo =" + item.codigo;
 
 		
@@ -162,10 +159,10 @@ public class ServicosCompra {
 		for (ItemCompraVO itemCompra : item.itemCompra) {
 			itemCompra.codigoCompra = item.codigo;
 			if(itemCompra.status==0){
-			this.atualizarItemCompra(itemCompra,st);
+			this.updateItemCompra(itemCompra,st);
 			}else{
 				
-				this.removerItemCompra(itemCompra,st);
+				this.retirarItemCompra(itemCompra,st);
 				item.itemCompra.remove(itemCompra);
 			}
 		}
@@ -180,13 +177,17 @@ public class ServicosCompra {
 		this.banco.getConexao().setAutoCommit(false);
 		Statement st = this.banco.getConexao().createStatement();
 		
-		for (ItemCompraVO itemCompra : item.itemCompra) {
+		
+		for (int i = 0; i < item.itemCompra.size(); i++) {
+			ItemCompraVO itemCompra = item.itemCompra.get(i);
+		
 			itemCompra.codigoCompra = item.codigo;
 			
 				
-				this.removerItemCompra(itemCompra,st);
+				this.retirarItemCompra(itemCompra,st);
+				
 				item.itemCompra.remove(itemCompra);
-			
+				
 		}
 
 		
@@ -194,17 +195,17 @@ public class ServicosCompra {
 
 		
 		
-		if (st.executeUpdate(sql) == 0) {
+		if (st.executeUpdate(sql)==0) {
 			throw new RuntimeException("Erro ao remover Compra!");
 		}
-
+		
 		
 		
 		this.banco.getConexao().commit();
 		
 	}
 
-	private void atualizarItemCompra(ItemCompraVO itemCompra, Statement st) {
+	private void updateItemCompra(ItemCompraVO itemCompra, Statement st) throws SQLException {
 		
 		String sql = "";
 		int quantidade = 0;
@@ -242,7 +243,7 @@ public class ServicosCompra {
 						+ itemCompra.codigoCompra + ",codProduto ="
 						+ itemCompra.codProduto + " ,quantidade ="
 						+ itemCompra.quantidade + ",valorCompra = "
-						+ itemCompra.valorDeCompra + " where codigo="
+						+ itemCompra.valorCompra + " where codigo="
 						+ itemCompra.codigo;
                 }
                 if(st.executeUpdate(sql)==0){
@@ -254,7 +255,7 @@ public class ServicosCompra {
 							+ itemCompra.codigoCompra + ",codProduto ="
 							+ itemCompra.codProduto + " ,quantidade ="
 							+ itemCompra.quantidade + ",valorCompra = "
-							+ itemCompra.valorDeCompra + " where codigo="
+							+ itemCompra.valorCompra + " where codigo="
 							+ itemCompra.codigo;
 					 
 					 if(st.executeUpdate(sql)==0){
@@ -324,7 +325,7 @@ public class ServicosCompra {
 			dados_item.codigo = rs.getInt("codigo");
 			dados_item.codProduto = rs.getInt("codProduto");
 			dados_item.quantidade = rs.getInt("quantidade");
-			dados_item.valorDeCompra = rs.getDouble("valorCompra");
+			dados_item.valorCompra = rs.getDouble("valorCompra");
 			dados_item.codigoCompra = rs.getInt("codCompra");
 			gp.add(dados_item);
 		}
