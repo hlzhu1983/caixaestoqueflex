@@ -88,10 +88,11 @@ public class FachadaServicos {
 		return this.servCompra.getItens();	
     }
 
-    public void removerCompra(CompraVO item){
+    public boolean removerCompra(CompraVO item){
     	if(item==null)
     		throw new RuntimeException("Parametro invalido");
-		 this.servCompra.removerCompra(item);
+		  this.servCompra.removerCompra(item);
+		  return true;
     }
     
 	public ClienteVO addCliente(ClienteVO item) throws SQLException {
