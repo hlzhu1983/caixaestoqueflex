@@ -479,6 +479,11 @@ package negocio.remote{
  			_remote.source = "ServicosCompra";
 			var async:AsyncToken = _remote.removerCompra(compra);
 			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+		public function removerItemCompra(result:Function,icompra:ItemCompraVO):void{
+ 			_remote.source = "ServicosCompra";
+			var async:AsyncToken = _remote.removerItemCompra(icompra);
+			async.addResponder(new Responder(result, defaultFaultHandler));
 		}	
 		public function atualizarCompra(result:Function,compra:CompraVO):void{
  			_remote.source = "ServicosCompra";
