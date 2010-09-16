@@ -5,6 +5,6 @@ public class ItemCompraVO {
 	public int codigoCompra;
 	public int codProduto;
 	public int quantidade;
-	public double valorDeCompra;
+	public double valorCompra;
 	public int status;
 }
