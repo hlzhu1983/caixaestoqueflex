@@ -65,6 +65,25 @@
          [{label: "Ajuda"},{label: "Sobre o Sistema"},{label: "Tópicos de Ajuda"},
          {label: "Versão"}]];
 	
+	private function keyEvento(event:KeyboardEvent):void{
+        		switch(event.keyCode){
+        			case 123: 
+						this.stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
+        				break;
+        			case 46:
+        				if(event.ctrlKey){
+	        				if(event.target == produtos){ 
+	        					if(this.produtos.selectedIndex > -1){
+	        						Alert.show("Deseja realmente deletar o item?",
+	        							"Alerta",Alert.OK | Alert.CANCEL,this,removeItemArrayCollection,null,Alert.OK);
+	        					}else{
+	        						Alert.show("Não há item selecionado!","Ops!",4,this);
+	        					}							
+	        				}
+        				}
+        				break;
+        		}
+        	}
 	
 	public function init():void{
 		this.logou = false;	
