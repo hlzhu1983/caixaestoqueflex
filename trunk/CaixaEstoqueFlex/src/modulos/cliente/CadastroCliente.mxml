@@ -285,7 +285,7 @@
 	</mx:Script>
 		
 	<mx:FormItem defaultButton="{this.bt_buscar}" label="Pesquisa" x="10" y="10"  width="550">
-		<ns1:TextoInput x="10" y="10" requerido="true" width="219" id="ti_pesquisa"  isEnter="false"/>
+		<ns1:TextoInput x="10" y="10" enter="{this.pesquisarItem()}" requerido="true" width="219" id="ti_pesquisa"  isEnter="false"/>
 		<mx:HBox width="468" height="100%">
 			<mx:RadioButtonGroup id="grupo_pesquisa"/>
 			<mx:RadioButton label="Telefone" id="radio_telefone" groupName="grupo_pesquisa" selected="true"/>

@@ -135,7 +135,7 @@
 
 
 	<mx:FormItem defaultButton="{this.bt_buscar}" label="Pesquisa" x="10" y="10" >
-		<inputs:TextoInput x="10" y="10" width="225" id="ti_pesquisa"  isEnter="false"/>
+		<inputs:TextoInput enter="{this.pesquisarItem()}" x="10" y="10" width="225" id="ti_pesquisa"  isEnter="false"/>
 		<mx:HBox width="100%" height="100%">
 			<mx:RadioButtonGroup id="grupo_pesquisa"/>
 			<mx:RadioButton label="Código" id="radio_codigo" groupName="grupo_pesquisa"/>
@@ -148,7 +148,7 @@
 			<mx:Label id="codInput"/>
 		</mx:FormItem>
 		<mx:FormItem label="Descrição" x="10" y="110" required="true">
-			<inputs:TextoInput id="descInput" requerido="true"/>
+			<inputs:TextoInput enter="salvarUnidade()" id="descInput" requerido="true"/>
 		</mx:FormItem>
 		
 		<botoes:SalvarButton id="add" click="salvarUnidade()" x="121" y="68"/>

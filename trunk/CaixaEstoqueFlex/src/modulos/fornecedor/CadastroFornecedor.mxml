@@ -232,7 +232,7 @@
 	</mx:Script>
 		
 	<mx:FormItem defaultButton="{this.bt_buscar}" label="Pesquisa" x="10" y="10"  width="411">
-		<ns1:TextoInput x="10" y="10" requerido="true" width="225" id="ti_pesquisa"  isEnter="false"/>
+		<ns1:TextoInput enter="{this.pesquisarItem()}" x="10" y="10" requerido="true" width="225" id="ti_pesquisa"  isEnter="false"/>
 		<mx:HBox width="100%" height="100%">
 			<mx:RadioButtonGroup id="grupo_pesquisa"/>
 			<mx:RadioButton label="Código" id="radio_codigo" groupName="grupo_pesquisa"/>

@@ -102,7 +102,7 @@
 	</mx:Script>
 	<mx:Panel x="10" y="10" width="690" height="83" layout="absolute" title="Pesquisa">
 		<mx:Label x="25" y="12" text="Campo:"/>
-		<mx:TextInput x="101" y="10" id="ti_pesquisCliente" width="247"/>
+		<mx:TextInput x="101" enter="{this.pesquisarCliente()}" y="10" id="ti_pesquisCliente" width="247"/>
 		
 		<mx:RadioButton x="524" y="10" label="Nome" id="rb_nome" groupName="grupo"/>
 		
@@ -133,7 +133,7 @@
 	</mx:Panel>
 	<mx:Panel x="384" y="275" width="318" height="120" layout="absolute" title="Valor a ser Utilizado">
 		<mx:Label x="27" y="10" text="Valor:"/>
-		<ns1:NumberInput x="70" y="8"/>
+		<ns1:NumberInput enter="{this.finalizarConfia()}" x="70" y="8"/>
 		<mx:Button x="70" y="38" label="Inserir" click="{this.finalizarConfia()}" toolTip="Clique para Finalizar Confia."/>
 		<mx:Button x="155" y="38" label="Cancelar" click="{this.cancelarConfia()}"/>
 	</mx:Panel>

@@ -77,7 +77,7 @@
 
 
 	<mx:Panel x="10" y="10" width="387" height="120" layout="absolute" title="Pesquisa">
-		<mx:TextInput x="106" y="10" id="ti_pesquisaImport" width="106"/>
+		<mx:TextInput enter="{this.pesquisarPreVenda()}" x="106" y="10" id="ti_pesquisaImport" width="106"/>
 		<mx:Label x="10" y="12" text="Código:"/>
 		<botoes:BuscarButton  x="220" y="6" click="{this.pesquisarPreVenda()}"/>
 		<mx:DateField x="120" y="42" id="df_data" change="{this.filtrarData()}" width="106"/>
