@@ -2,11 +2,24 @@
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
 	layout="absolute" title="Gerenciador de Receitas" 
 	height="576" width="739" xmlns:botoes="utilidades.botoes.*" 
-	xmlns:inputs="utilidades.inputs.*" creationComplete="{this.init()}">
+	xmlns:inputs="utilidades.inputs.*" creationComplete="{this.init()}" showCloseButton="true" close="{this.close()}">
+	<mx:states>
+		<mx:State name="telaCadastro">
+			<mx:SetProperty target="{this.cv_busca}" name="height" value="0"/>
+			<mx:SetProperty target="{this.cv_busca}" name="width" value="0"/>
+			<mx:SetProperty target="{this.cv_cadastro}" name="height" value="100%"/>
+			<mx:SetProperty target="{this.cv_cadastro}" name="width" value="100%"/>
+		</mx:State>
+		
+	</mx:states>
 	
 
 	<mx:Script>
 		<![CDATA[
+			import mx.managers.PopUpManager;
+			import mx.events.CloseEvent;
+			import mx.events.ListEvent;
+			import mx.events.ItemClickEvent;
 			import negocio.vo.ItensReceitaVO;
 			import events.ProdutoEvent;
 			import utilidades.Util;
@@ -21,22 +34,29 @@
 			import negocio.vo.ProdutoVO;
 			
 			
-			private var receita:ReceitaVO;
+			
 			
 			private var produtoProduzido:ProdutoVO;
 			
-			private var quantidadeProduzida:Number;
-			
-			private var tempItemReceita:ItensReceitaVO;
+			private var quantidadeProduzida:Number;			
 			
 			[Bindable]
 			private var itensReceita:ArrayCollection;
+			
+			[Bindable]
+			private var receitas:ArrayCollection;
+			
+			private var receita:ReceitaVO;
+			
+			private var itemReceita:ItensReceitaVO;
 			
 			private var ro:Remote = Remote.getInstance();
 			
 			
 			private function init():void{
 				this.ro.parent = this;
+				this.itensReceita = new ArrayCollection();
+				this.listarAllItems();
 			}
 			
 			private function buscarProduto():void{
@@ -80,40 +100,219 @@
 			
 			private function showBuscarItemTitleWindow():void{
 				var t:BuscaProduto = BuscaProduto(Util.abrePopUp(this,BuscaProduto,true));
-				t.addEventListener(ProdutoEvent.PRODUTOSELECIONADO,result_showBuscarProdutoTitleWindow);
+				t.addEventListener(ProdutoEvent.PRODUTOSELECIONADO,resulta_showBuscarItemReceitaTitleWindow);
 				
 			}
 			
 			private function result_buscarItemReceita(event:ResultEvent):void{
 				var temp:ProdutoVO = event.result as ProdutoVO;
-				this.tempItemReceita = new ItensReceitaVO();
-				this.tempItemReceita.codProduto = temp.codigo;
-				this.tempItemReceita.descProduto = temp.descricao;
-				this.lb_codigoItemReceita.text = this.produtoProduzido.codigo.toString();
-				this.lb_descricaoItemReceita.text = this.produtoProduzido.descricao;
+				this.itemReceita = new ItensReceitaVO();
+				this.itemReceita.codProduto = temp.codigo;	
+				this.itemReceita.descricao = temp.descricao;
+				this.lb_codigoItemReceita.text =  temp.codigo.toString();			
+				this.lb_descricaoItemReceita.text = temp.descricao;
 			}
 			
 			private function resulta_showBuscarItemReceitaTitleWindow(event:ProdutoEvent):void{
-				var temp:ProdutoVO = event.produto;
-				this.tempItemReceita = new ItensReceitaVO();
-				this.tempItemReceita.codProduto = temp.codigo;
-				this.tempItemReceita.descProduto = temp.descricao;
-				this.lb_codigoItemReceita.text = this.produtoProduzido.codigo.toString();
-				this.lb_descricaoItemReceita.text = this.produtoProduzido.descricao;
+				this.itemReceita = new ItensReceitaVO();
+				this.itemReceita.codProduto = event.produto.codigo;
+				this.itemReceita.descricao = event.produto.descricao;
+				this.lb_codigoItemReceita.text =  event.produto.codigo.toString();
+				this.lb_descricaoItemReceita.text = event.produto.descricao;
 			}
 			
 			
 			
-						
+			private function procurarReceitas():void{
+				if(this.ti_pesquisa.text == ""){
+					this.listarAllItems();
+				}else if(this.ti_pesquisa.validador.validate().type == ValidationResultEvent.VALID ){
+					if(this.rb_codigo.selected){
+						this.ro.pesquisarCliente(result_listarItens,this.ti_pesquisa.text,"codigo");
+					}else if(this.rb_produto.selected){
+						this.ro.pesquisarCliente(result_listarItens,this.ti_pesquisa.text,"produto");
+					}else {
+						this.ro.pesquisarCliente(result_listarItens,this.ti_pesquisa.text,"quantidade");
+					}
+				}
+			}
 			
 			
+			
+			private function listarAllItems():void{
+				this.ro.listarAllReceita(result_listarItens);
+				
+			}	
+			
+			private function result_listarItens(event:ResultEvent):void{
+				this.receitas = event.result as ArrayCollection;
+			}
+			
+			private function receitaSelecionada(event:ListEvent):void{
+				if(event.rowIndex !=-1){
+					this.receita = this.receitas.getItemAt(event.rowIndex) as ReceitaVO;
+					this.lb_codigoReceita.text = this.receita.codigo.toString();
+					this.lb_codigoProduto.text = this.receita.codProduto.toString();
+					this.lb_descricaoProduto.text = this.receita.descricao;
+					this.lb_qtdEstoqueProduto.text = this.receita.qtdEstoque.toPrecision(2);
+					this.ti_qtdreceita.setValor(this.receita.quantidade);
+					this.itensReceita = this.receita.itensReceita;
+					this.currentState = 'telaCadastro';
+				}
+				
+			}
+			
+			private function itemSelecionado(event:Event):void{
+				this.itemReceita = event.currentTarget.selectedItem;
+				this.lb_codigoItemReceita.text = this.itemReceita.codProduto.toString();
+				this.lb_descricaoItemReceita.text = this.itemReceita.descricao;
+				this.ti_qtdItemReceita.setValor(this.itemReceita.quantidade);
+				
+			}
+			
+			private function cancelar():void{
+				Alert.show("Deseja realmente cancelar?","Atenção",Alert.YES|Alert.NO,this,result_cancelar);
+			}
+			
+			private function result_cancelar(event:CloseEvent):void{
+				if(event.detail == Alert.YES){
+					this.currentState = '';					
+				}
+				
+			}
+			
+			private function close():void{
+				PopUpManager.removePopUp(this);
+			}
+			
+			
+			private function salvarItemReceita():void{
+				if(this.lb_codigoItemReceita.text == ""){
+					Alert.show("Codigo produto necessário!","Ops!",4,this);
+				}else{
+					if(this.ti_qtdItemReceita.getValor() == 0){
+						Alert.show("Quantidade não pode ser '0,00'!","Ops!",4,this);
+					}else{
+						if(this.itemReceita.codigo == 0){
+							this.itemReceita.codigo = -1;
+							this.itemReceita.quantidade = this.ti_qtdItemReceita.getValor();
+							this.itensReceita.addItem(this.itemReceita);
+						}else{
+							this.itemReceita.quantidade = this.ti_qtdItemReceita.getValor();
+							this.itensReceita.setItemAt(this.itemReceita,this.itensReceita.getItemIndex(this.itemReceita));
+						}
+						this.limparCamposItem();
+					}
+				}
+			}
+			
+			private function limparCamposItem():void{
+				this.lb_codigoItemReceita.text = "";
+				this.lb_descricaoItemReceita.text = "";
+				this.ti_codigoItemReceita.text = "";
+				this.ti_qtdItemReceita.reset();
+				this.itemReceita = null;
+			}
+			
+			private function limparCamposReceita():void{
+				this.lb_codigoProduto.text = "";
+				this.lb_descricaoProduto.text = "";
+				this.lb_qtdEstoqueProduto.text = "";
+				this.ti_qtdreceita.reset();
+				this.itensReceita.removeAll();
+				this.receita = null;
+			}
+			
+			private function salvarReceita():void{
+				if(this.lb_codigoProduto.text == ""){
+					Alert.show("O codigo do produto é necessário. Insira um produto a ser produzido!","Ops!",4,this);
+				}else{
+					if(this.ti_qtdreceita.getValor() ==0 ){
+						Alert.show("Quantidade não pode ser '0,00'!","Ops!",4,this);
+					}else{
+						if(this.itensReceita.length == 0 ){
+							Alert.show("Insira itens na receita!","Ops!",4,this);
+						}else{
+							this.receita = new ReceitaVO();
+							this.receita.codProduto = Number(this.lb_codigoProduto.text);
+							this.receita.quantidade = this.ti_qtdreceita.getValor();
+							this.receita.itensReceita = this.itensReceita;
+							if(this.lb_codigoReceita.text == "")
+								this.ro.salvarReceita(result_salvarReceita,this.receita);
+							else{
+								this.receita.codigo = Number(this.lb_codigoReceita.text);
+								this.ro.atualizarReceita(result_salvarReceita,this.receita);
+							}
+						}
+					}
+				}
+			}
+			
+			private function result_salvarReceita(event:ResultEvent):void{
+				Alert.show("Receita salva!","Sucesso!",4,this);
+				this.receitas.addItem(event.result);
+				this.limparCamposItem();
+				this.limparCamposReceita();
+			}
+			
+			private function removerItemReceita():void{
+				if(this.itemReceita == null){
+					Alert.show("Busque um item!","Ops!",4,this);
+				}else{
+					if(this.itensReceita.contains(this.itemReceita)){
+						this.itensReceita.removeItemAt(this.itensReceita.getItemIndex(this.itemReceita));
+					}else{
+						Alert.show("O item não foi inserido previamente!","Ops!",4,this);
+					}
+				}
+			}
+			
+			private function removerReceita():void{
+				if(this.grid_Receitas.selectedIndex == -1){
+					Alert.show("Selecione Item!","Ops!",4,this);
+				}else{
+					this.ro.removerReceita(result_removerReceita,this.grid_Receitas.selectedItem as ReceitaVO);
+				}
+			}
+			
+			private function result_removerReceita(event:ResultEvent):void{
+				Alert.show("Receita removida!","Sucesso!",4,this);
+				this.receitas.removeItemAt(this.grid_Receitas.selectedIndex);
+			}
+			
+			private function result_selecionaReceita():void{
+				this.receita = this.grid_Receitas.selectedItem as ReceitaVO;
+			}
 			
 			
 		]]>
 	</mx:Script>
 	
-		<mx:Label x="21" y="12" text="Código Receita"/>
-		<mx:Label x="115" y="12" id="lb_codigoReceita"/>
+	
+	
+	<mx:Canvas id="cv_busca" height="100%" width="100%">
+		<inputs:TextoInput id="ti_pesquisa" enter="{this.procurarReceitas()}" x="99" y="19" width="169"/>	
+		<botoes:BuscarButton x="281" y="19" click="{this.procurarReceitas()}"/>
+		<mx:RadioButton id="rb_codigo" x="99" y="49" label="Código" groupName="gb_receita"/>	
+		<mx:RadioButton id="rb_produto" x="171" y="49" label="Produto" selected="true" groupName="gb_receita"/>
+		<mx:RadioButton id="rb_quantidade" x="256" y="49" label="Quantidade" groupName="gb_receita"/>
+		<mx:Button x="446" y="19" label="Adicionar" click="{this.currentState = 'telaCadastro'}"/>
+		<mx:Button x="535" y="19" label="Remover" click="{this.removerReceita()}"/>
+		<mx:Label x="31" y="21" text="Pesquisa:"/>
+		<mx:DataGrid id="grid_Receitas" x="10" y="97" height="429" 
+			width="699" dataProvider="{this.receitas}"  change="{this.result_selecionaReceita()}"
+			doubleClickEnabled="true" itemDoubleClick="{this.receitaSelecionada(event)}" >
+			<mx:columns>
+				<mx:DataGridColumn headerText="Código" dataField="codigo" width="80"/>
+				<mx:DataGridColumn headerText="Produto" dataField="descricao"/>
+				<mx:DataGridColumn headerText="Qtd." dataField="quantidade" width="90"/>
+			</mx:columns>
+		</mx:DataGrid>
+	</mx:Canvas>
+	
+	<mx:Canvas id="cv_cadastro" height="0%" width="0%">
+		<mx:Label x="21" y="12" text="Código Receita" fontSize="16" fontWeight="bold"/>
+		<mx:Label x="171" y="12" id="lb_codigoReceita" fontSize="16" fontWeight="bold"/>
 		<mx:Panel x="10" y="44" width="699" height="155" layout="absolute" title="Informações Produto">
 				<mx:Label x="10" y="16" text="Código Produto:"/>
 				<inputs:InteiroInput isEnter="false" requerido="true" enter="{this.buscarProduto()}" id="ti_codigoProduto" x="114" y="14"/>
@@ -128,12 +327,13 @@
 				<inputs:NumberInput x="469" y="72" valorDefault="0,00" id="ti_qtdreceita"/>
 				
 		</mx:Panel>
-		<botoes:GerarButton x="441" y="6" id="bt_gerarReceita"/>
-		<botoes:CancelarButton x="534" y="6" id="bt_cancelarReceita"/>
+		<botoes:SalvarButton x="425" y="6" id="bt_gerarReceita" click="{this.salvarReceita()}"/>
+		<botoes:CancelarButton x="534" y="6" id="bt_cancelarReceita" click="{this.cancelar()}"/>
 		<mx:Panel x="10" y="215" width="699" height="299" layout="absolute" title="Itens da Receita">
-			<mx:DataGrid x="305" y="10" height="239" width="354" editable="false" id="grid_itensReceita" textAlign="center">
+			<mx:DataGrid x="305" y="10" height="239" width="354" editable="false" 
+				id="grid_itensReceita" textAlign="center" dataProvider="{this.itensReceita}" change="{this.itemSelecionado(event)}">
 				<mx:columns >
-					<mx:DataGridColumn headerText="Código" dataField="codigo" width="90" />
+					<mx:DataGridColumn headerText="Código" dataField="codProduto" width="90" />
 					<mx:DataGridColumn headerText="Descrição" dataField="descricao"/>
 					<mx:DataGridColumn headerText="Qtd." dataField="quantidade" width="70"/>
 				</mx:columns>
@@ -146,10 +346,12 @@
 			<mx:Label x="10" y="109" text="Descrição:"/>
 			<mx:Label x="80" y="109" id="lb_descricaoItemReceita"/>
 			<mx:Label x="10" y="137" text="Qtd. necessária:"/>
-			<inputs:NumberInput x="115" y="135" valorDefault="0,00"/>
-			<mx:Button x="29" y="182" label="Inserir Item" id="bt_inserirItemReceita"/>
-			<mx:Button x="134" y="182" label="Remover Item" id="bt_cancelarItemReceita"/>
+			<inputs:NumberInput id="ti_qtdItemReceita" x="115" y="135" valorDefault="0,00"/>
+			<mx:Button x="30" y="182" label="Salvar Item" id="bt_inserirItemReceita" click="{this.salvarItemReceita()}"/>
+			<mx:Button x="151" y="182" label="Remover Item" id="bt_cancelarItemReceita" click="{this.removerItemReceita()}"/>
 		</mx:Panel>
+	</mx:Canvas>
+		
 		
 	
 </mx:TitleWindow>

@@ -158,7 +158,7 @@
 				this.lb_codInput.text = this.usuario.codigo.toString();
 				this.ti_nome.text = this.usuario.nome;
 				this.cb_permissao.selectedIndex = this.usuario.permissao;
-				this.ti_comissao.setValor(this.usuario.comissao.toString());
+				this.ti_comissao.setValor(this.usuario.comissao);
                 this.bt_remover.enabled = true; 
                 this.currentState = '';
                 this.hb_senhas.visible = false;

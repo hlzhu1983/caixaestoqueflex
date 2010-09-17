@@ -46,6 +46,11 @@
 	    <mx:Object recordName="28" recordAmount="43.18 seconds" who="Michael Johnson" where="Seville, Spain" when="9/26/1999"/>
 	    <mx:Object recordName="29" recordAmount="1:41.11" who="Wilson Kipketer" where="Cologne, Germany" when="9/24/1997"/>
 	    <mx:Object recordName="30" recordAmount="2:11.96" who="Noah Ngeny" where="Rieti, Italy" when="9/5/1999"/>  
+	     <mx:Object recordName="30" recordAmount="2:11.96" who="Noah Ngeny" where="Rieti, Italy" when="9/5/1999"/>
+	      <mx:Object recordName="30" recordAmount="2:11.96" who="Noah Ngeny" where="Rieti, Italy" when="9/5/1999"/>
+	       <mx:Object recordName="30" recordAmount="2:11.96" who="Noah Ngeny" where="Rieti, Italy" when="9/5/1999"/>
+	        <mx:Object recordName="30" recordAmount="2:11.96" who="Noah Ngeny" where="Rieti, Italy" when="9/5/1999"/>
+	        
 	</mx:ArrayCollection>	
 	
 	<mx:Script>

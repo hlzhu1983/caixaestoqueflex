@@ -10,6 +10,7 @@
 	import modulos.orcamento.Orcamento;
 	import modulos.prevenda.PreVendaWindow;
 	import modulos.produto.ProdutoWindow;
+	import modulos.receitas.ProducaoReceita;
 	import modulos.receitas.ReceitaTitleWindow;
 	import modulos.unidade.CadastroUnidade;
 	import modulos.usuario.CadastroUsuario;
@@ -56,24 +57,15 @@
          {label: "Cad. Usuário", funcao: gerUsuario },{label: "Cad. Gpo Produto", funcao: gerGrupoProduto },
          {label: "Cad. Loc. Produto", funcao: gerLocalProduto},{label: "Cad. Produto", funcao: gerProduto },
          {label: "Cad. Fornecedor", funcao: gerFornecedor}, {label: "Cad. Unidades", funcao: gerUnidade},
-         {label: "Cad. Forma Pagamento", funcao: gerFormadePagto }],
+         {label: "Cad. Forma Pagamento", funcao: gerFormadePagto },{label: "Cad. Receita", funcao: gerReceita}],
          [{label: "Pré-Venda", funcao: preVendaWindow},{label: "Compra", funcao: compraWindow},{label: "Janela de Venda", funcao: abreCaixaWindow},
-         {label: "Pedido de Compra"},{label: "Receitas", funcao: gerReceita},{label: "Orçamento", funcao: orcamentoWindow},
+         {label: "Pedido de Compra"},{label: "Produção", funcao: gerProducao},{label: "Orçamento", funcao: orcamentoWindow},
          {label: "Transf Filiais"},{label: "Devolução"}],
          [{label: "Resumo Vendas", funcao: resumoVendaWindow}],
          [{label: "Calculadora", funcao:gerCalculadora},{label: "Cálculo de Dias"}],
          [{label: "Ajuda"},{label: "Sobre o Sistema"},{label: "Tópicos de Ajuda"},
          {label: "Versão"}]];
 	
-	private function keyEvento(event:KeyboardEvent):void{
-        		
-        		switch(event.keyCode){
-        			case 123: 
-						this.stage.displayState = StageDisplayState.FULL_SCREEN_INTERACTIVE;
-        				break;
-        			
-        		}
-        	}
 	
 	public function init():void{
 		this.logou = false;	
@@ -273,6 +265,17 @@
 	
 	public function testImage():void{		
 		Util.abrePopUp(this,TesteImage,true);
+	}
+	
+	public function gerProducao():void{		
+		var newWindow:Window = new ProducaoReceita();
+		newWindow.maximizable=true;
+		newWindow.minimizable = true;
+		newWindow.resizable = true;
+		newWindow.open(false);
+		newWindow.nativeWindow.x = 0;
+		newWindow.nativeWindow.y = 0;
+		newWindow.activate();
 	}
 	
 	public function resumoVendaWindow():void{		

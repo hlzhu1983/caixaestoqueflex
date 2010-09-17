@@ -135,16 +135,18 @@
 				this.lengthText = 0;
 			}
 			
-			public function setValor(valor:String):void{
-				var array_aux:Array = valor.split(".",2);
+			public function setValor(valor:Number):void{
+				var valorStr:String = valor.toString();
+				var array_aux:Array = valorStr.split(".",2);
 				if(array_aux.length < 2){
-					this.text = this.valorDefault;
-					this.lengthText = 0;
-					this.foiEditado = false;
+					this.lengthText = array_aux[0].toString().length + 2;
+					this.text = array_aux[0].toString()+",00";
+					this.foiEditado = true;
 				}else{ 
-					this.lengthText += array_aux[0].toString().length + array_aux[1].toString().length;
-					if(array_aux[0].toString().length<2){
+					this.lengthText = array_aux[0].toString().length + array_aux[1].toString().length;
+					if(array_aux[1].toString().length<2){
 						this.text = array_aux[0].toString()+","+array_aux[1].toString()+"0";
+						this.lengthText++;
 					}else{
 						this.text = array_aux[0].toString()+","+array_aux[1].toString();
 					}
