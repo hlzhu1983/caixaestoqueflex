@@ -76,10 +76,10 @@
 	
 	
 	
-	<inputs:TextoInput x="11" y="36" width="281" id="ti_nome" maxChars="255"/>
-	<inputs:InteiroInput x="10" y="89" width="84" id="ti_codigo" maxChars="8"/>
-	<inputs:InteiroInput x="310" y="91" id="ti_telefone" maxChars="10"/>
-	<inputs:InteiroInput x="116" y="89" width="176" id="ti_CPFCNPJ" maxChars="14"/>
+	<inputs:TextoInput x="11" enter="{this.filtrarFornecedor()}" y="36" width="281" id="ti_nome" maxChars="255"/>
+	<inputs:InteiroInput x="10" enter="{this.filtrarFornecedor()}" y="89" width="84" id="ti_codigo" maxChars="8"/>
+	<inputs:InteiroInput x="310" enter="{this.filtrarFornecedor()}" y="91" id="ti_telefone" maxChars="10"/>
+	<inputs:InteiroInput x="116" enter="{this.filtrarFornecedor()}" y="89" width="176" id="ti_CPFCNPJ" maxChars="14"/>
 	<botoes:BuscarButton x="437" y="32" click="{this.filtrarFornecedor()}"/>
 	<mx:Label x="10" y="10" text="Nome:"/>
 	<mx:Label x="10" y="63" text="Código:"/>

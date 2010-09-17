@@ -187,7 +187,7 @@
 		
 	</mx:Script>	
 	<mx:Label text="Pesquisa:" x="24" y="19" fontSize="12"/>
-	<inputs:TextoInput  id="ti_pesquisa" requerido="true"   isEnter="false" x="99" y="12" fontSize="12" width="204"/>
+	<inputs:TextoInput enter="{this.pesquisarItem()}"  id="ti_pesquisa" requerido="true"   isEnter="false" x="99" y="12" fontSize="12" width="204"/>
 	<botoes:BuscarButton  x="311" y="10" click="{this.pesquisarItem()}" height="27"/>
 	<mx:HBox width="283" height="22" x="24" y="44">
 		<mx:RadioButtonGroup id="grupo_pesquisa"/>

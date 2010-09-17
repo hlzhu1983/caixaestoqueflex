@@ -79,6 +79,6 @@
 			<mx:Button x="217" y="218" label="Cancelar" id="bt_cancelar" click="{cancelarInsercaoProduto()}" />
         </mx:FormItem>
 	<mx:FormItem defaultButton="{this.bt_ok}" id="fi_valor" label="Preço de Compra:" fontSize="16" width="282" required="true" x="10" y="166">
-		<inputs:NumberInput id="valorCompra" width="144" x="158" y="108"  change="{this.valorTotal()}"/>
+		<inputs:NumberInput id="valorCompra" width="116" x="158" y="108" enter="{inserirInsercaoProduto()}"  change="{this.valorTotal()}"/>
 	</mx:FormItem>
 </mx:TitleWindow>

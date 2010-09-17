@@ -143,13 +143,13 @@
 	</mx:Script>
 
 		<mx:FormItem label="Descrição Produto: " horizontalAlign="left" x="20" y="22">
-				<inputs:TextoInput  width="426" id="ti_descricao" />
+				<inputs:TextoInput enter="{this.pesquisarProduto()}"  width="426" id="ti_descricao" />
 		</mx:FormItem>
 		<mx:FormItem label="Referência: " horizontalAlign="left" x="20" y="52">
-			<inputs:TextoInput width="225" id="ti_referencia" />
+			<inputs:TextoInput enter="{this.pesquisarProduto()}" width="225" id="ti_referencia" />
 		</mx:FormItem>
 		<mx:FormItem label="Preço: " defaultButton="{this.bt_pesquisar}" horizontalAlign="left" x="400" y="52">
-			<inputs:NumberInput width="158" valorDefault="0,00" id="ti_precoVenda" />
+			<inputs:NumberInput width="158" enter="{this.pesquisarProduto()}" valorDefault="0,00" id="ti_precoVenda" />
 		</mx:FormItem>
 		<mx:Panel x="0" y="82" width="100%" height="155" layout="absolute" title="Filtros">
 			<mx:Label text="Fornecedor: " y="12" x="19"/>

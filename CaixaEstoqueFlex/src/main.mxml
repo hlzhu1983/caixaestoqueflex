@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:WindowedApplication width="1024" height="700" creationComplete="init()"
 	 xmlns:mx="http://www.adobe.com/2006/mxml"  
-	 keyDown="{keyEvento(event)}"
+	
 	 layout="absolute" borderThickness="0" fontSize="12" cornerRadius="0"
 	 xmlns:local="*" verticalAlign="top" horizontalAlign="center" backgroundColor="#ffffff"
 	 xmlns:botoes="utilidades.botoes.*" backgroundImage="icons/fundo.jpg">
