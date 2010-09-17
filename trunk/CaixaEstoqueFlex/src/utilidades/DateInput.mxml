@@ -12,7 +12,7 @@
                 this.monthNames = ['Janeiro', 'Fevereiro', 'Março', 
                     'Abril', 'Maio', 'Junho', 'Julho','Agosto', 'Setembro', 'Outubro', 
                     'Novembro', 'Dezembro'];  
-                this.formatString = "DD/MM/YY";    
+                this.formatString = "DD/MM/YYYY";    
 			}
 			
 			public function getStringData():String{
