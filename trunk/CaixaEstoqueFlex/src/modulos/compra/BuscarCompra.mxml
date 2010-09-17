@@ -3,7 +3,7 @@
 	width="604" height="484" title="Procurar Compras"
 	xmlns:utilidades="utilidades.*" fontSize="12" close="fechar()" showCloseButton="true"
 	backgroundAlpha="1.0" xmlns:inputs="utilidades.inputs.*" 
-	xmlns:botoes="utilidades.botoes.*" xmlns:local="*" creationComplete="init()" alpha="1.0" borderColor="#D2D2D2" xmlns:prevenda="modulos.prevenda.*" cornerRadius="12">
+	xmlns:botoes="utilidades.botoes.*" xmlns:local="*" creationComplete="init()" alpha="1.0" borderColor="#009DFF" xmlns:prevenda="modulos.prevenda.*" cornerRadius="12">
 	
 	<mx:Script
 	>
@@ -35,7 +35,7 @@
 		private var adicionou:ArrayCollection;
 		    
 		    private function init():void{
-				this.ro.parent = this;
+			//	this.ro.parent = this;
 				this.limpar();
 				
 				
