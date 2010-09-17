@@ -15,6 +15,7 @@ import vo.ProdutoVO;
 public class ServicosCompra {
 
 	public CompraVO fecharCompra(CompraVO item) {
+		
 		String sql = "insert into compra (codUsuario,codFornecedor,dataCompra,NF) values ("
 				+ item.codUsuario
 				+ ","
@@ -34,6 +35,7 @@ public class ServicosCompra {
 		ResultSet rs = st.getGeneratedKeys();
 		if (rs.next()) {
 			item.codigo = rs.getInt(1);
+			
 			for (ItemCompraVO itemCompra : item.itemCompra) {
 				itemCompra.codigoCompra = item.codigo;
 				this.adicionarItemCompra(itemCompra, st);
@@ -48,6 +50,7 @@ public class ServicosCompra {
 
 	public ItemCompraVO adicionarItemCompra(ItemCompraVO item, Statement st)
 			throws SQLException {
+		
 		String sql = "select * from produto where codigo = " + item.codProduto;
 
 		ArrayList<ProdutoVO> itens = new ServicosProduto().getProdutos(sql);
@@ -66,21 +69,19 @@ public class ServicosCompra {
 		if (st.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS) == 0) {
 			throw new RuntimeException("Erro ao Adicionar ItemCompra");
 		}
-
+	
 		ResultSet rs = st.getGeneratedKeys();
 		if (rs.next())
 			item.codigo = rs.getInt(1);
 
 		// adicionando ao produto a quantidade
-		//sql = "UPDATE produto SET qtdEmEstoque = (qtdEmEstoque + "
-		//		+ item.quantidade + ") where codigo = " + item.codProduto;
+		sql = "UPDATE produto SET qtdEmEstoque = (qtdEmEstoque + "
+				+ item.quantidade + ") where codigo = " + item.codProduto;
 
-		//if (st.executeUpdate(sql) == 0) {
-			//throw new RuntimeException("Erro ao atualizar itemprevenda");
-		//}
-         produto.qtdEmEstoque = produto.qtdEmEstoque+item.quantidade;
-         (new ServicosProduto()).atualizarProduto(produto);
-			
+		if (st.executeUpdate(sql) == 0) {
+			throw new RuntimeException("Erro ao atualizar itemprevenda");
+		}
+        	
 		return item;
 
 	}
@@ -98,14 +99,13 @@ public class ServicosCompra {
 		ProdutoVO registro = itens.get(0);
 		
      if(registro.qtdEmEstoque>=item.quantidade){
-		// sql = "UPDATE produto SET qtdEmEstoque = (qtdEmEstoque - "
-			//	+ item.quantidade + ")  WHERE codigo = " + item.codProduto;
+		 sql = "UPDATE produto SET qtdEmEstoque = (qtdEmEstoque - "
+				+ item.quantidade + ")  WHERE codigo = " + item.codProduto;
 
-		 //if (st.executeUpdate(sql) == 0) {
-		//		throw new RuntimeException("Erro ao atualizar produto");
-		//	}
-    	 registro.qtdEmEstoque-=item.quantidade;
-		(new ServicosProduto()).atualizarProduto(registro);
+		 if (st.executeUpdate(sql) == 0) {
+				throw new RuntimeException("Erro ao atualizar produto");
+			}
+    
 		sql = "DELETE FROM itensCompra WHERE codigo = " + item.codigo;
 		if (st.executeUpdate(sql) == 0) {
 			throw new RuntimeException("Erro ao Deletar ItemCompra");
@@ -299,7 +299,13 @@ public class ServicosCompra {
 				}
 				registro.qtdEmEstoque = quantidade;
 				//atualizando o produto resultante
-				(new ServicosProduto()).atualizarProduto(registro);
+				sql = "UPDATE produto SET qtdEmEstoque = "
+					+ registro.qtdEmEstoque + ") where codigo = " + registro.codigo;
+
+			if (st.executeUpdate(sql) == 0) {
+				throw new RuntimeException("Erro ao atualizar itemprevenda");
+			}
+
 				
 		}
 	}

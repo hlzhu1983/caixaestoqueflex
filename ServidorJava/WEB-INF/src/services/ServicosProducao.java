@@ -55,24 +55,24 @@ public class ServicosProducao {
 		
 		String sql;
 		for (ItemReceitaVO itensReceitaVO : itens) {
-			 sql = "select * from produto where codigo = " + itensReceitaVO.codProduto;
+		//	 sql = "select * from produto where codigo = " + itensReceitaVO.codProduto;
 
-			ArrayList<ProdutoVO> itensProduto = new ServicosProduto().getProdutos(sql);
+		//	ArrayList<ProdutoVO> itensProduto = new ServicosProduto().getProdutos(sql);
 			
-			if (itensProduto.size() == 0) {
-				throw new RuntimeException("Produto não existe");
-			}
-			
-			ProdutoVO registro = itensProduto.get(0);
-			
-			registro.qtdEmEstoque -= itensReceitaVO.quantidade;
-			(new ServicosProduto()).atualizarProduto(registro);
-		//	sql = "update produto set qtdEmEstoque = qtdEmEstoque - "
-		//		+ itensReceitaVO.quantidade + " where codigo = "
-		//			+ itensReceitaVO.codProduto;
-		//	if (st.executeUpdate(sql) == 0) {
-		//		throw new RuntimeException("Erro ao atualizar quantidade produto!");
+		//	if (itensProduto.size() == 0) {
+		//		throw new RuntimeException("Produto não existe");
 		//	}
+			
+		//	ProdutoVO registro = itensProduto.get(0);
+			
+			//registro.qtdEmEstoque -= itensReceitaVO.quantidade;
+			//(new ServicosProduto()).atualizarProduto(registro);
+			sql = "update produto set qtdEmEstoque = qtdEmEstoque - "
+				+ itensReceitaVO.quantidade + " where codigo = "
+					+ itensReceitaVO.codProduto;
+			if (st.executeUpdate(sql) == 0) {
+				throw new RuntimeException("Erro ao atualizar quantidade produto!");
+			}
 			
 		}
 		
