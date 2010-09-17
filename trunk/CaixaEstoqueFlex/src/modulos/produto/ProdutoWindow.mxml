@@ -196,8 +196,8 @@
 				this.ro.pesquisarFornecedor(result_intemSelecionadoFornecedor,this.item.codFornecedor.toString(),"codigo");
 				this.ti_codigo.text = this.item.codigo.toString();
 				this.ti_descricao.text = this.item.descricao;
-				this.ti_pCompra.setValor(this.item.precoCompra.toString());
-				this.ti_pVenda.setValor(this.item.precoVenda.toString());
+				this.ti_pCompra.setValor(this.item.precoCompra);
+				this.ti_pVenda.setValor(this.item.precoVenda);
 				this.ti_qtdEstoque.text = this.item.qtdEmEstoque.toString();
 				this.ti_qtdUnidade.text = this.item.qtdPorUnidade.toString();
 				this.ti_referencia.text = this.item.referencia;

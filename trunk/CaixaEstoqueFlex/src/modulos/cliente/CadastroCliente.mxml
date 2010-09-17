@@ -184,7 +184,7 @@
 				this.dataCadastro.data = this.item.getDataCadastro();
 				this.dataNascimento.data = this.item.getDataNascimento();
 				this.obs.text = this.item.obs;
-				this.ti_limCredito.setValor(this.item.limCredito.toString());
+				this.ti_limCredito.setValor(this.item.limCredito);
                 						
 			} 
 	
@@ -267,7 +267,7 @@
 				this.dataNascimento.data = null;
 				this.obs.text = "";
 				this.grid_itens.selectedIndex = -1;
-				this.ti_limCredito.setValor(this.ti_limCredito.valorDefault);
+				this.ti_limCredito.setValor(Number(this.ti_limCredito.valorDefault));
 			
 			}  
 			

@@ -9,11 +9,10 @@ package negocio.vo
 		
 		
 		public var codigo:int;
-		
 		public var codProduto:int;
-		
-		public var qtdProduzido:Number;
-		
+		public var descricao:String;
+		public var qtdEstoque:Number;
+		public var quantidade:Number;
 		public var itensReceita:ArrayCollection;
 		
 

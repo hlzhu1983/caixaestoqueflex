@@ -469,38 +469,107 @@ package negocio.remote{
 		}
 		
 	//*******************************Compra*********************************//
-	public function fecharCompra(result:Function,compra:CompraVO):void{
- 			_remote.source = "ServicosCompra";
-			var async:AsyncToken = _remote.fecharCompra(compra);
-			async.addResponder(new Responder(result, defaultFaultHandler));
-		}	
-		
-	public function removerCompra(result:Function,compra:CompraVO):void{
- 			_remote.source = "ServicosCompra";
-			var async:AsyncToken = _remote.removerCompra(compra);
-			async.addResponder(new Responder(result, defaultFaultHandler));
-		}
-		public function removerItemCompra(result:Function,icompra:ItemCompraVO):void{
- 			_remote.source = "ServicosCompra";
-			var async:AsyncToken = _remote.removerItemCompra(icompra);
-			async.addResponder(new Responder(result, defaultFaultHandler));
+		public function fecharCompra(result:Function,compra:CompraVO):void{
+	 			_remote.source = "ServicosCompra";
+				var async:AsyncToken = _remote.fecharCompra(compra);
+				async.addResponder(new Responder(result, defaultFaultHandler));
+			}	
+			
+		public function removerCompra(result:Function,compra:CompraVO):void{
+	 			_remote.source = "ServicosCompra";
+				var async:AsyncToken = _remote.removerCompra(compra);
+				async.addResponder(new Responder(result, defaultFaultHandler));
 		}	
 		public function atualizarCompra(result:Function,compra:CompraVO):void{
  			_remote.source = "ServicosCompra";
 			var async:AsyncToken = _remote.atualizarCompra(compra);
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}	
-			public function pesquisarCompra(result:Function,texto:String,coluna:String):void{
+		public function pesquisarCompra(result:Function,texto:String,coluna:String):void{
 			_remote.source = "ServicosPreVenda";
 			var async:AsyncToken = _remote.pesquisarCompra(texto,coluna);
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}	
-		
-			public function listarCompra(result:Function):void{
+		public function listarCompra(result:Function):void{
  			_remote.source = "ServicosCompra";
-			var async:AsyncToken = _remote.listAllCompra();
+			var async:AsyncToken = _remote.listarCompra();
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}	
+		
+		
+		//*******************************Receitas*********************************//
+		
+		public function salvarReceita(result:Function,receita:ReceitaVO):void{
+	 			_remote.source = "ServicosReceita";
+				var async:AsyncToken = _remote.adicionarReceita(receita);
+				async.addResponder(new Responder(result, defaultFaultHandler));
+			}	
+			
+		public function removerReceita(result:Function,receita:ReceitaVO):void{
+	 			_remote.source = "ServicosReceita";
+				var async:AsyncToken = _remote.removerReceita(receita);
+				async.addResponder(new Responder(result, defaultFaultHandler));
+		}	
+		public function atualizarReceita(result:Function,receita:ReceitaVO):void{
+ 			_remote.source = "ServicosReceita";
+			var async:AsyncToken = _remote.atualizarReceita(receita);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}	
+		public function pesquisarReceita(result:Function,texto:String,coluna:String):void{
+			_remote.source = "ServicosReceita";
+			var async:AsyncToken = _remote.pesquisarReceita(texto,"p."+coluna);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}	
+		
+		public function getReceita(result:Function,codigo:String):void{
+			_remote.source = "ServicosReceita";
+			var async:AsyncToken = _remote.getReceita(codigo);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}	
+		
+		
+		public function listarAllReceita(result:Function):void{
+ 			_remote.source = "ServicosReceita";
+			var async:AsyncToken = _remote.listAllReceita();
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}	
+		
+		
+		
+		//*******************************Receita*********************************//
+		
+		//*******************************Producao*********************************//
+		
+		
+		public function salvarProducao(result:Function,producao:ProducaoVO):void{
+	 			_remote.source = "ServicosProducao";
+				var async:AsyncToken = _remote.adicionarProducao(producao);
+				async.addResponder(new Responder(result, defaultFaultHandler));
+			}	
+			
+		public function removerProducao(result:Function,producao:ProducaoVO):void{
+	 			_remote.source = "ServicosProducao";
+				var async:AsyncToken = _remote.removerProducao(producao);
+				async.addResponder(new Responder(result, defaultFaultHandler));
+		}	
+		public function atualizarProducao(result:Function,producao:ProducaoVO):void{
+ 			_remote.source = "ServicosProducao";
+			var async:AsyncToken = _remote.atualizarProducao(producao);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}	
+		public function pesquisarProducao(result:Function,texto:String,coluna:String):void{
+			_remote.source = "ServicosProducao";
+			var async:AsyncToken = _remote.pesquisarProducao(texto,coluna);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}	
+		
+		public function listarAllProducao(result:Function):void{
+ 			_remote.source = "ServicosProducao";
+			var async:AsyncToken = _remote.listAllProducao();
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}	
+		
+		//*******************************Producao*********************************//
 		//--------------------setup----------------------------//
 		private var _remote:RemoteObject;
 		
@@ -509,7 +578,7 @@ package negocio.remote{
 			_remote = new RemoteObject();
 			_remote.showBusyCursor = true;
 			_remote.destination = 'servicos';				
-			_remote.endpoint = "http://localhost:8080/blaseds/messagebroker/amf";
+			_remote.endpoint = "http://localhost:8080/blazeds/messagebroker/amf";
 			/* _remote.destination = 'zend';	
 			_remote.endpoint = "http://localhost/Zendamf/bridge.php"; */
 			
