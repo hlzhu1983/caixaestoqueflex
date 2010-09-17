@@ -6,9 +6,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import vo.ItemProducaoVO;
-import vo.ItensReceitaVO;
 import vo.ProducaoVO;
-import vo.ReceitaVO;
 
 public class ServicosProducao {
 
