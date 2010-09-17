@@ -1,12 +1,9 @@
 package services;
 
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Calendar;
-
 import vo.ItemPreVendaVO;
 import vo.PreVendaVO;
 import vo.ProdutoVO;

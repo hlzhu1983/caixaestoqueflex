@@ -1,7 +1,7 @@
 package vo;
 
-public class ItensReceitaVO {
-	
+public class ItemReceitaVO {
+			 
 	public int codigo;
 	public int codReceita;
 	public int codProduto;

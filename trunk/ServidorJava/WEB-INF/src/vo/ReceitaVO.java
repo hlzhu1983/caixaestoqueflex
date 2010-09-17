@@ -9,6 +9,6 @@ public class ReceitaVO {
 	public String descricao;
 	public double qtdEstoque;
 	public double quantidade;
-	public ArrayList<ItensReceitaVO> itensReceita;
+	public ArrayList<ItemReceitaVO> itensReceita;
 
 }

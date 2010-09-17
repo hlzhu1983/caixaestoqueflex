@@ -5,8 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Map;
-
 import vo.FormaPgtoVendaVO;
 import vo.ItemGraficoVO;
 import vo.RankingClienteVO;
@@ -116,7 +114,7 @@ public class ServicosVenda {
 	}
 
 	public ArrayList<VendaVO> getItens() {
-		String sql = "select * from venda";
+		String sql = "select * from venda where status = 1";
 		ResultSet rs = banco.executar(sql);
 		return this.toVenda(rs);
 
