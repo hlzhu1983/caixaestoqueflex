@@ -7,6 +7,7 @@
 	
 	<mx:Script>
 		<![CDATA[
+			import negocio.vo.ItensReceitaVO;
 			import events.CompraEvent;
 			import modulos.fornecedor.BuscaFornecedor;
 			import events.FornecedorEvent;
@@ -100,17 +101,21 @@
 				this.codProduto.text = "";
 				this.produtos.selectedIndex = -1;
 				this.array_itensCompras = new ArrayCollection();
+			    this.array_viewItensCompras = new ArrayCollection();
 			    this.add.label = "Salvar";
+			    
 			}
 			
 			private function procurarFornecedor():void{
 				this.titleWindow_BuscaFornecedor = BuscaFornecedor(Util.abrePopUp(this,BuscaFornecedor,true));
 				this.titleWindow_BuscaFornecedor.addEventListener(FornecedorEvent.FORNECEDORSELECIONADO,result_buscaFornecedor);
+			
 			}
 			
 			private function pesquisarCompra():void{
 				this.titleWindow_BuscaCompra = BuscarCompra(Util.abrePopUp(this,BuscarCompra,true));
 				this.titleWindow_BuscaCompra.addEventListener(CompraEvent.COMPRASELECIONADA,itemSelecionado);
+			
 			}
 			
 			private function result_fornecedor(event:ResultEvent):void{
@@ -165,6 +170,7 @@
 			private function result_buscaFornecedor(event:FornecedorEvent):void{
 				this.fornecedor = event.fornecedor;
 				this.ti_nomeFornecedor.text = this.fornecedor.nome;
+			
 			}
 			
 			private function result_abrirCompra(event:ResultEvent):void{
