@@ -7,6 +7,9 @@
 	
 	<mx:Script>
 		<![CDATA[
+			import negocio.vo.VendaVO;
+			import modulos.venda.FechamentoVendaTitleWindow;
+			import events.VendaEvent;
 			import mx.events.ItemClickEvent;
 			import negocio.vo.ItemPreVendaVO;
 			import mx.managers.PopUpManager;
@@ -36,6 +39,9 @@
 			
 			[Bindable]
 			public var preVenda:PreVendaVO;
+			
+			[Bindable]
+			public var venda:VendaVO;
 			
 			public var ro:Remote = Remote.getInstance();
 			
@@ -187,6 +193,44 @@
 			
 			
 			
+			
+			private function finalizarVenda():void{
+				if(this.isProduto){
+					this.preVenda.valorTotal = this.valorTotal;
+					this.preVenda.itemPreVenda = this.array_itensPrevenda;
+					this.ro.fecharPreVenda(prefecharVenda,this.preVenda);
+				}else{
+					Alert.show("Não ha produtos inseridos!","Ops!",4,this);
+				}
+   			}
+			
+			private function prefecharVenda(event:ResultEvent):void{
+				var venda:VendaVO = new VendaVO();
+				venda.valorTotal = this.valorTotal;
+				venda.codPreVenda = event.result.codigo;
+				venda.codUsuario = 0;
+				venda.desconto = 0;
+				this.ro.abrirVenda(result_abrirVenda,venda);
+			}
+			
+			private function result_abrirVenda(event:ResultEvent):void{
+				var fin:FechamentoVendaTitleWindow = FechamentoVendaTitleWindow(Util.abrePopUp(this,FechamentoVendaTitleWindow,true));
+				venda= event.result as VendaVO;
+				fin.venda = venda;
+				fin.addEventListener(VendaEvent.FINALIZADASUCEESSO,fecharVenda);
+			}
+			
+			private function fecharVenda(event:VendaEvent):void{
+				this.ro.fecharVenda(result_fecharVenda,event.venda);
+			}
+			
+			private function result_fecharVenda(e:ResultEvent):void{
+				this.isFecharPreVenda = true;
+				this.close();
+			}
+			
+			
+			
 		]]>
 	</mx:Script>
 	
@@ -219,9 +263,8 @@
 		</mx:VBox>	
 		<mx:Panel width="100%" title="Fechamento" layout="absolute"  height="20%">
 			<mx:Button id="bt_cancelarPreVenda" label="Cancelar Pré-Venda" toolTip="Clique para cancelar pré-venda"  x="478" y="14"  click="{this.cancelarPreVenda()}"/>
-			
 			<mx:Button id="bt_gerarPreVenda" label="Gerar Pré-Venda" toolTip="Clique para gerar pré-venda"  click="{this.fecharPreVenda()}" x="298" y="14"/>
-			
+			<mx:Button x="736" y="14" label="Fechar Venda" click="{this.finalizarVenda()}"/>
 		</mx:Panel>
 	</mx:VBox>
 	<prevenda:Impressao id="i" pVenda="{this.preVenda}" visible="false"/>
