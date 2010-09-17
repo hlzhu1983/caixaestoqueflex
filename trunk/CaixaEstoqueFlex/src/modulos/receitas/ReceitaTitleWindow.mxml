@@ -20,7 +20,7 @@
 			import mx.events.CloseEvent;
 			import mx.events.ListEvent;
 			import mx.events.ItemClickEvent;
-			import negocio.vo.ItensReceitaVO;
+			import negocio.vo.ItemReceitaVO;
 			import events.ProdutoEvent;
 			import utilidades.Util;
 			import modulos.produto.BuscaProduto;
@@ -48,7 +48,7 @@
 			
 			private var receita:ReceitaVO;
 			
-			private var itemReceita:ItensReceitaVO;
+			private var itemReceita:ItemReceitaVO;
 			
 			private var ro:Remote = Remote.getInstance();
 			
@@ -106,7 +106,7 @@
 			
 			private function result_buscarItemReceita(event:ResultEvent):void{
 				var temp:ProdutoVO = event.result as ProdutoVO;
-				this.itemReceita = new ItensReceitaVO();
+				this.itemReceita = new ItemReceitaVO();
 				this.itemReceita.codProduto = temp.codigo;	
 				this.itemReceita.descricao = temp.descricao;
 				this.lb_codigoItemReceita.text =  temp.codigo.toString();			
@@ -114,7 +114,7 @@
 			}
 			
 			private function resulta_showBuscarItemReceitaTitleWindow(event:ProdutoEvent):void{
-				this.itemReceita = new ItensReceitaVO();
+				this.itemReceita = new ItemReceitaVO();
 				this.itemReceita.codProduto = event.produto.codigo;
 				this.itemReceita.descricao = event.produto.descricao;
 				this.lb_codigoItemReceita.text =  event.produto.codigo.toString();

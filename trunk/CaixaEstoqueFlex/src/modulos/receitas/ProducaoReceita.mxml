@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Window xmlns:mx="http://www.adobe.com/2006/mxml" title="Janela Produção"
 	 layout="absolute" xmlns:ns1="utilidades.inputs.*"
-	 creationComplete="this.init()" xmlns:ns2="utilidades.botoes.*" height="546" width="830">
+	 creationComplete="this.init()" xmlns:ns2="utilidades.botoes.*" height="546" width="830" xmlns:utilidades="utilidades.*">
 	 
 	 
-	 <!--<mx:states>
+	 <mx:states>
 		<mx:State name="telaCadastro">
-			<mx:SetProperty target="{this.cv_busca}" name="height" value="0"/>
-			<mx:SetProperty target="{this.cv_busca}" name="width" value="0"/>
-			<mx:SetProperty target="{this.cv_cadastro}" name="height" value="100%"/>
-			<mx:SetProperty target="{this.cv_cadastro}" name="width" value="100%"/>
+			<mx:SetProperty target="{this.cv_listaProducao}" name="height" value="0"/>
+			<mx:SetProperty target="{this.cv_listaProducao}" name="width" value="0"/>
+			<mx:SetProperty target="{this.cv_gerenciarPromocao}" name="height" value="100%"/>
+			<mx:SetProperty target="{this.cv_gerenciarPromocao}" name="width" value="100%"/>
 		</mx:State>
 		
-	</mx:states>-->
+	</mx:states>
 	
 
 	<mx:Script>
@@ -24,7 +24,7 @@
 			import mx.events.CloseEvent;
 			import mx.events.ListEvent;
 			import mx.events.ItemClickEvent;
-			import negocio.vo.ItensReceitaVO;
+			import negocio.vo.ItemReceitaVO;
 			import events.ProdutoEvent;
 			import utilidades.Util;
 			import modulos.produto.BuscaProduto;
@@ -39,10 +39,13 @@
 			
 			
 			[Bindable]
-			private var array_itensProducao:ArrayCollection;
+			private var array_receitas:ArrayCollection;
 			
 			[Bindable]
 			private var array_producoes:ArrayCollection;
+			
+			[Bindable]
+			private var array_itensProducao:ArrayCollection;
 			
 			private var receita:ReceitaVO;
 			
@@ -55,14 +58,14 @@
 			
 			private function init():void{
 				this.ro.parent = this;
-				this.array_itensProducao = new ArrayCollection();
+				this.array_receitas = new ArrayCollection();
 				this.array_producoes = new ArrayCollection();
-				//this.listarAllItems();
+				this.listarAllItems();
 			}
 			
 			private function buscarReceita():void{
 				if(this.ti_codReceita.validador.validate().type == ValidationResultEvent.VALID){
-					this.ro.pesquisarReceita(result_buscarReceita,this.ti_codReceita.text,"codigo");
+					this.ro.getReceita(result_buscarReceita,this.ti_codReceita.text);
 				}else{
 					Alert.show("Campo código produto vazio","Ops!",4,this);
 				}
@@ -75,23 +78,26 @@
 			}
 			
 			private function result_buscarReceita(event:ResultEvent):void{
-				this.array_itensProducao.addItem(event.result as ReceitaVO);
+				if(event.result == null){
+					Alert.show("Receita não existe!","Ops!",4,this);
+				}else{
+					this.array_receitas.addItem(event.result as ReceitaVO);
+				}
 			}
-			
-			
 			
 			private function salvarProducao():void{
 				if(this.ti_descricao.text == ""){
 					Alert.show("Descricao é necessária!","Ops!",4,this);
 				}else{
-					if(this.array_itensProducao.length == 0 ){
+					if(this.array_receitas.length == 0 ){
 						Alert.show("Insira itens na receita!","Ops!",4,this);
 					}else{
 						
 						this.producao = new ProducaoVO();
 						this.producao.descricao = this.ti_descricao.text;
 						this.producao.obs = this.ta_obs.text;
-						this.producao.itensProducao = this.array_itensProducao;
+						this.producao.itensProducao = this.toItemProducao();
+						this.producao.dataProducao = this.df_dataProducao.getStringData();
 						if(this.lb_codigoProducao.text == "")
 							this.ro.salvarProducao(result_salvarProducao,this.producao);
 						else{
@@ -100,6 +106,19 @@
 						}
 					}
 				}
+			}
+			
+			private function toItemProducao():ArrayCollection{
+				var a:ArrayCollection = new ArrayCollection();
+				var item:ItemProducaoVO;
+				var r:ReceitaVO;
+				for(var i:int = 0; i<this.array_receitas.length;i++){
+					item = new ItemProducaoVO;
+					r = this.array_receitas.getItemAt(i) as ReceitaVO;
+					item.codReceita = r.codigo;
+					a.addItem(item);			
+				}
+				return a;
 			}
 			
 			private function result_salvarProducao(event:ResultEvent):void{
@@ -119,7 +138,7 @@
 				this.ti_descricao.text = "";
 				this.ta_obs.text = "";
 				this.ti_codReceita.text = "";
-				this.array_itensProducao.removeAll();
+				this.array_receitas.removeAll();
 				this.receita = null;
 			}
 			
@@ -134,23 +153,6 @@
 				
 			}
 			
-			/* 
-			
-			private function procurarProducoes():void{
-				if(this.ti_pesquisa.text == ""){
-					this.listarAllItems();
-				}else if(this.ti_pesquisa.validador.validate().type == ValidationResultEvent.VALID ){
-					if(this.rb_codigo.selected){
-						this.ro.pesquisarCliente(result_listarItens,this.ti_pesquisa.text,"codigo");
-					}else if(this.rb_produto.selected){
-						this.ro.pesquisarCliente(result_listarItens,this.ti_pesquisa.text,"produto");
-					}else {
-						this.ro.pesquisarCliente(result_listarItens,this.ti_pesquisa.text,"quantidade");
-					}
-				}
-			}
-			
-			
 			
 			private function listarAllItems():void{
 				this.ro.listarAllProducao(result_listarItens);
@@ -161,8 +163,30 @@
 				this.array_producoes = event.result as ArrayCollection;
 			}
 			
+			private function procurarProducoes():void{
+				if(this.ti_pesquisa.text == ""){
+					this.listarAllItems();
+				}else if(this.ti_pesquisa.validador.validate().type == ValidationResultEvent.VALID ){
+					if(this.rb_codigo.selected){
+						this.ro.pesquisarProducao(result_listarItens,this.ti_pesquisa.text,"codigo");
+					}else  {
+						this.ro.pesquisarProducao(result_listarItens,this.ti_pesquisa.text,"descricao");
+					}
+				}
+			}
 			
+			private function removerProducao():void{
+				if(this.grid_producoes.selectedIndex == -1){
+					Alert.show("Selecione Item!","Ops!",4,this);
+				}else{
+					this.ro.removerProducao(result_removerProducao,this.grid_producoes.selectedItem as ProducaoVO);
+				}
+			}
 			
+			private function result_removerProducao(event:ResultEvent):void{
+				Alert.show("Producao removida!","Sucesso!",4,this);
+				this.array_producoes.removeItemAt(this.grid_producoes.selectedIndex);
+			}
 			
 			
 			
@@ -174,85 +198,45 @@
 			
 			
 			
-			/*private function limparCamposItem():void{
-				this.ti_codReceita.text = "";
-				this.itemProducao = null;
-			}
+		
 			
-			private function limparCamposProducao():void{
-				this.lb_codigoProduto.text = "";
-				this.lb_descricaoProduto.text = "";
-				this.lb_qtdEstoqueProduto.text = "";
-				this.ti_qtdreceita.reset();
-				this.array_itensProducao.removeAll();
-				this.receita = null;
-			}
 			
-			private function salvarProducao():void{
-				if(this.ti_descricao.text == ""){
-					Alert.show("Descricao é necessária!","Ops!",4,this);
-				}else{
-					if(this.array_itensProducao.length == 0 ){
-						Alert.show("Insira itens na receita!","Ops!",4,this);
-					}else{
-						
-						this.receita = new ProducaoVO();
-						this.receita.codProduto = Number(this.lb_codigoProduto.text);
-						this.receita.quantidade = this.ti_qtdreceita.getValor();
-						this.receita.itensProducao = this.array_itensProducao;
-						if(this.lb_codigoProducao.text == "")
-							this.ro.salvarProducao(result_salvarProducao,this.receita);
-						else{
-							this.receita.codigo = Number(this.lb_codigoProducao.text);
-							this.ro.atualizarProducao(result_salvarProducao,this.receita);
-						}
-					}
-				}
-			}
 			
-			private function result_salvarProducao(event:ResultEvent):void{
-				Alert.show("Producao salva!","Sucesso!",4,this);
-				this.array_producoes.addItem(event.result);
-				this.limparCamposItem();
-				this.limparCamposProducao();
-			}
 			
-			private function removerItemProducao():void{
-				if(this.itemProducao == null){
-					Alert.show("Busque um item!","Ops!",4,this);
-				}else{
-					if(this.array_itensProducao.contains(this.itemProducao)){
-						this.array_itensProducao.removeItemAt(this.array_itensProducao.getItemIndex(this.itemProducao));
-					}else{
-						Alert.show("O item não foi inserido previamente!","Ops!",4,this);
-					}
-				}
-			}
-			
-			private function removerProducao():void{
-				if(this.grid_Producaos.selectedIndex == -1){
-					Alert.show("Selecione Item!","Ops!",4,this);
-				}else{
-					this.ro.removerProducao(result_removerProducao,this.grid_Producaos.selectedItem as ProducaoVO);
-				}
-			}
-			
-			private function result_removerProducao(event:ResultEvent):void{
-				Alert.show("Producao removida!","Sucesso!",4,this);
-				this.array_producoes.removeItemAt(this.grid_Producaos.selectedIndex);
-			}
 			
 			private function result_selecionaProducao():void{
-				this.receita = this.grid_Producaos.selectedItem as ProducaoVO;
-			} */
+				this.producao = this.grid_producoes.selectedItem as ProducaoVO;
+			}
 			
 			
 		]]>
 	</mx:Script>
+	
+	<mx:Canvas id="cv_listaProducao" width="100%" height="100%">
+		
+		<ns2:BuscarButton x="321" y="25" id="bt_buscar" click="{this.procurarProducoes()}"/>
+		<ns1:TextoInput x="124" y="29" width="180" id="ti_pesquisa" enter="{this.procurarProducoes()}"/>
+		<mx:Label x="52" y="31" text="Pesquisar:"/>
+		<mx:RadioButton x="124" y="59" label="Código" selected="true" groupName="rg_grupo" id="rb_codigo"/>
+		<mx:RadioButton x="196" y="59" label="Descrição:" groupName="rg_grupo" id="rb_descricao"/>
+		<mx:DateField x="321" y="59" visible="false"/>
+		<mx:Button x="545" y="21" label="Adicionar" id="bt_adicionarPromocao" click="this.currentState = 'telaCadastro'"/>
+		<mx:Button x="633" y="21" label="Remover" id="bt_remover" click="{this.removerProducao()}"/>
+		
+		<mx:DataGrid id="grid_producoes" x="10" y="102" width="797" height="402" dataProvider="{this.array_producoes}">
+			<mx:columns>
+				<mx:DataGridColumn headerText="Código" dataField="codigo"/>
+				<mx:DataGridColumn headerText="Descrição" dataField="descricao"/>
+				<mx:DataGridColumn headerText="Data Produção" dataField="dataProducao"/>
+			</mx:columns>
+		</mx:DataGrid>
+		
+				
+	</mx:Canvas>
 	 
-	<mx:Canvas height="100%" width="100%">
-		<mx:Panel x="403" y="11" width="405" height="513" layout="absolute" title="Produtos Produzidos">
-			<mx:DataGrid y="10" height="378" width="343" id="grid_itensProducao" x="23" textAlign="center">
+	<mx:Canvas height="0%" width="0%" id="cv_gerenciarPromocao">
+		<mx:Panel x="403" y="11" width="405" height="513" layout="absolute" title="Produtos Produzidos" >
+			<mx:DataGrid y="10" height="378" width="343" id="grid_itensProducao" x="23" textAlign="center" dataProvider="{this.array_receitas}">
 				<mx:columns>
 					<mx:DataGridColumn headerText="Cod. Produto" dataField="codProduto"/>
 					<mx:DataGridColumn headerText="Descrição" dataField="descricao"/>
@@ -262,12 +246,12 @@
 			<mx:Button x="111.5" y="438" label="Adicionar" id="bt_addReceita" click="this.buscarReceita()"/>
 			<mx:Button x="208.5" y="438" label="Remover" id="bt_removerReceita"/>
 			<mx:Label x="9.5" y="410" text="Código Receita:"/>
-			<ns1:InteiroInput x="111.5" y="408" width="148" id="ti_codReceita"/>
+			<ns1:InteiroInput x="111.5" y="408" width="148" id="ti_codReceita" requerido="true"/>
 			<ns2:BuscarButton x="278.5" y="404" id="bt_buscarReceita"/>
 		</mx:Panel>
 		<mx:Panel x="20" y="10" width="363" height="358" layout="absolute" title="Informações Produção">
 			<mx:Label x="10" y="11" text="Código:"/>
-			<mx:DateField x="231" y="7" id="df_dataProducao"/>
+			<utilidades:DateInput x="231" y="7" id="df_dataProducao"/>
 			<mx:Label x="126" y="9" text="Data Produção:"/>
 			<mx:Label x="67" y="11" id="lb_codigoProducao"/>
 			<mx:TextArea x="10" y="99" height="157" width="323" id="ta_obs"/>
