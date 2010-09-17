@@ -148,10 +148,13 @@ public class ServicosCompra {
 		this.banco.getConexao().setAutoCommit(false);
 		Statement st = this.banco.getConexao().createStatement();
 	   for (int i = 0; i < item.itemCompra.size(); i++) {
-		   ItemCompraVO itemCompra = item.itemCompra.get(0);
-			itemCompra.codigoCompra = item.codigo;
+		   
+		   ItemCompraVO itemCompra = item.itemCompra.get(i);
+		   
+		   itemCompra.codigoCompra = item.codigo;
 			if(itemCompra.status==0){
 			this.updateItemCompra(itemCompra,st);
+			
 			}else{
 				
 				this.retirarItemCompra(itemCompra,st);
@@ -221,7 +224,7 @@ public class ServicosCompra {
 		
 		
 		if (itemCompra.codigo == 0) {
-
+        
 			this.adicionarItemCompra(itemCompra, st);
 
 		} else {
