@@ -25,6 +25,8 @@
 		private var ro:Remote = Remote.getInstance();
 		[Bindable] 
 		private var itensFornecedores:ArrayCollection;
+		[Bindable] 
+		private var itensFornecedoresT:ArrayCollection;
 		[Bindable]
 		
 		[Bindable] 
@@ -38,10 +40,17 @@
 				
 				
 				this.focusManager.setFocus(this.ti_pesquisa);
+				this.listarFornecedores();
 			}
 			
+			public function listarFornecedores():void{
+			this.ro.listarFornecedor(resultadoFornecedor);
+			}
 			
+			private function resultadoFornecedor(event:ResultEvent):void
+			{this.itensFornecedoresT = event.result as ArrayCollection;
 			
+			}
 			private function limpar():void{
 				this.ti_pesquisa.text = "";
 				this.itensFornecedores = new ArrayCollection();
@@ -133,6 +142,35 @@
 				}
 			}
 			
+			private function pesquisarPorData():void{
+				if(this.dataCompra.text!=""){	
+						this.ro.pesquisarCompra(resultListarItens,this.dataCompra.text,"dataCompra");
+					
+				}else{
+					Alert.show("erro");
+				}
+			}
+			private function pesquisarPorIntervalo():void{
+				if(this.dataInicial.text!=""){
+						if(this.dataFinal.text!=""){
+						this.ro.pesquisarCompra(resultListarItens,this.dataInicial.text+"#"+this.dataFinal.text,"dataIntervalo");
+				}else{
+					Alert.show("erro");
+				}	
+				}else{
+					Alert.show("erro");
+				}
+			}
+			
+			private function pesquisarPorFornecedor():void{
+			
+				if(this.cb_fornecedor.selectedIndex!=-1){	
+						this.ro.pesquisarCompra(resultListarItens,(this.itensFornecedoresT.getItemAt(this.cb_fornecedor.selectedIndex) as FornecedorVO).codigo+"","codFornecedor");
+					
+				}else{
+					Alert.show("Erro");
+				}
+			}
 			private function selecionarItem(event:ListEvent):void{
 				 
 				if(event.rowIndex == -1){
@@ -158,13 +196,14 @@
 	</mx:HBox>
 	<mx:Panel x="5" y="74" width="574" height="156" layout="absolute" title="Filtros">
 		<mx:Label text="Fornecedor: " y="12" x="19"/>
-		<mx:ComboBox id="cb_fornecedor"   editable="false"  dataProvider="{this.itensFornecedores}" labelField="nome" x="102" y="10" width="168"/>
+		<mx:ComboBox id="cb_fornecedor"   editable="false" selectedIndex="-1"  dataProvider="{this.itensFornecedoresT}" labelField="nome" x="102" y="10" width="168" enabled="true" change="{this.pesquisarPorFornecedor()}"/>
 		<mx:Label text="Data Compra:" x="300" y="13"/>
 		<mx:Label text="à" x="226" y="61"/>
 		<mx:Label text="Intervalo:" x="19" y="61"/>
-		<utilidades:DateInput  x="401" y="11" width="124" id="dataCompra"/>
+		<utilidades:DateInput change="{this.pesquisarPorData()}"   x="401" y="11" width="124" id="dataCompra"/>
 		<utilidades:DateInput  x="94" y="59" width="124" id="dataInicial"/>
 		<utilidades:DateInput  x="256" y="59" width="124" id="dataFinal"/>
+		<botoes:BuscarButton  x="401" y="57" click="{this.pesquisarPorIntervalo()}" height="27" width="124"/>
 	</mx:Panel>
 	<mx:DataGrid id="produtos"  width="568" doubleClickEnabled="true"  itemDoubleClick="{this.selecionarItem(event)}"  height="171" rowCount="10" dataProvider="{this.itensView}" x="6" y="261">
 		<mx:columns>
