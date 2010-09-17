@@ -8,7 +8,14 @@ import java.util.ArrayList;
 import vo.ItemProducaoVO;
 import vo.ItemReceitaVO;
 import vo.ProducaoVO;
-
+import vo.ProdutoVO;
+/*
+ * 
+ * 
+ * USA UPDATE PRODUTO, MAS SOH FOI MANTIDO OS QUE SOMAM; 
+ * 
+ * 
+ * */
 public class ServicosProducao {
 
 	private ServicosReceita servReceita = new ServicosReceita();
@@ -43,17 +50,30 @@ public class ServicosProducao {
 
 	public ItemProducaoVO adicionarItemProducao(ItemProducaoVO item,
 			Statement st) throws SQLException {
-
+				
 		ArrayList<ItemReceitaVO> itens = servReceita.recuperarItensReceita(item.codReceita+"");
 		
 		String sql;
 		for (ItemReceitaVO itensReceitaVO : itens) {
-			sql = "update produto set qtdEmEstoque = qtdEmEstoque - "
-					+ itensReceitaVO.quantidade + " where codigo = "
-					+ itensReceitaVO.codProduto;
-			if (st.executeUpdate(sql) == 0) {
-				throw new RuntimeException("Erro ao atualizar quantidade produto!");
+			 sql = "select * from produto where codigo = " + itensReceitaVO.codProduto;
+
+			ArrayList<ProdutoVO> itensProduto = new ServicosProduto().getProdutos(sql);
+			
+			if (itensProduto.size() == 0) {
+				throw new RuntimeException("Produto não existe");
 			}
+			
+			ProdutoVO registro = itensProduto.get(0);
+			
+			registro.qtdEmEstoque -= itensReceitaVO.quantidade;
+			(new ServicosProduto()).atualizarProduto(registro);
+		//	sql = "update produto set qtdEmEstoque = qtdEmEstoque - "
+		//		+ itensReceitaVO.quantidade + " where codigo = "
+		//			+ itensReceitaVO.codProduto;
+		//	if (st.executeUpdate(sql) == 0) {
+		//		throw new RuntimeException("Erro ao atualizar quantidade produto!");
+		//	}
+			
 		}
 		
 		sql = "update produto set qtdEmEstoque = qtdEmEstoque + " +

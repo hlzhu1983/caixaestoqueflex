@@ -5,13 +5,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+
+import javax.sql.rowset.spi.SyncResolver;
+
 import vo.ProdutoVO;
 
 
 public class ServicosProduto {
 	
 	
-	public ProdutoVO addProduto(ProdutoVO item){
+	public synchronized ProdutoVO addProduto(ProdutoVO item){
 		String sql = "insert into produto (codBarra,codGrupo,descricao ,referencia ,codLocal ,codUnidade ,qtdPorUnidade ,qtdEmEstoque ,codFornecedor ,precoCompra ,precoVenda,foto) values ('"+item.codBarra+"' ,"+item.codGrupo+" ,'"+item.descricao+"'"+
 	 ",'"+item.referencia+"' ,"+item.codLocal+""+
 		" ,"+item.codUnidade+" ,"+item.qtdPorUnidade+""+
@@ -35,7 +38,7 @@ public class ServicosProduto {
 		
 	}
 	
-	public boolean removerProduto(ProdutoVO item){
+	public synchronized boolean  removerProduto(ProdutoVO item){
 		String sql = "delete from produto  where codigo = "+item.codigo+"";
 		if(this.banco.executarNoQuery(sql)==0){
 			return false;
@@ -43,7 +46,7 @@ public class ServicosProduto {
 		return true;
 	}
 	
-	public ProdutoVO atualizarProduto(ProdutoVO produto) {
+	public synchronized ProdutoVO atualizarProduto(ProdutoVO produto) {
 		String sql = "UPDATE produto SET codBarra = '"+produto.codBarra+"', codGrupo = "+produto.codGrupo+", descricao = '"+produto.descricao+"', referencia = '"+produto.referencia+"',codLocal = "+produto.codLocal+",codUnidade="+produto.codUnidade+",qtdPorUnidade="+produto.qtdPorUnidade+",qtdEmEstoque="+produto.qtdEmEstoque+",codFornecedor="+produto.codFornecedor+",precoCompra="+produto.precoCompra+","+
 		"precoVenda="+produto.precoVenda+",foto='"+produto.foto+"' where codigo="+produto.codigo+"";
 		if(this.banco.executarNoQuery(sql)==0){

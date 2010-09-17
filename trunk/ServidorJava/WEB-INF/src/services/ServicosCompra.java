@@ -55,7 +55,7 @@ public class ServicosCompra {
 		if (itens.size() == 0) {
 			throw new RuntimeException("Produto não existe");
 		}
-		
+		ProdutoVO produto = itens.get(0);
 
 		sql = "insert into itensCompra (codCompra, codProduto, quantidade,valorCompra)"
 				+ " values ('"
@@ -72,13 +72,15 @@ public class ServicosCompra {
 			item.codigo = rs.getInt(1);
 
 		// adicionando ao produto a quantidade
-		sql = "UPDATE produto SET qtdEmEstoque = (qtdEmEstoque + "
-				+ item.quantidade + ") where codigo = " + item.codProduto;
+		//sql = "UPDATE produto SET qtdEmEstoque = (qtdEmEstoque + "
+		//		+ item.quantidade + ") where codigo = " + item.codProduto;
 
-		if (st.executeUpdate(sql) == 0) {
-			throw new RuntimeException("Erro ao atualizar itemprevenda");
-		}
-
+		//if (st.executeUpdate(sql) == 0) {
+			//throw new RuntimeException("Erro ao atualizar itemprevenda");
+		//}
+         produto.qtdEmEstoque = produto.qtdEmEstoque+item.quantidade;
+         (new ServicosProduto()).atualizarProduto(produto);
+			
 		return item;
 
 	}
@@ -96,13 +98,14 @@ public class ServicosCompra {
 		ProdutoVO registro = itens.get(0);
 		
      if(registro.qtdEmEstoque>=item.quantidade){
-		 sql = "UPDATE produto SET qtdEmEstoque = (qtdEmEstoque - "
-				+ item.quantidade + ")  WHERE codigo = " + item.codProduto;
+		// sql = "UPDATE produto SET qtdEmEstoque = (qtdEmEstoque - "
+			//	+ item.quantidade + ")  WHERE codigo = " + item.codProduto;
 
-		 if (st.executeUpdate(sql) == 0) {
-				throw new RuntimeException("Erro ao atualizar produto");
-			}
-		
+		 //if (st.executeUpdate(sql) == 0) {
+		//		throw new RuntimeException("Erro ao atualizar produto");
+		//	}
+    	 registro.qtdEmEstoque-=item.quantidade;
+		(new ServicosProduto()).atualizarProduto(registro);
 		sql = "DELETE FROM itensCompra WHERE codigo = " + item.codigo;
 		if (st.executeUpdate(sql) == 0) {
 			throw new RuntimeException("Erro ao Deletar ItemCompra");
@@ -201,7 +204,6 @@ public class ServicosCompra {
 		this.banco.getConexao().setAutoCommit(false);
 		Statement st = this.banco.getConexao().createStatement();
 		
-		
 		for (int i = 0; i < item.itemCompra.size(); i++) {
 			ItemCompraVO itemCompra = item.itemCompra.get(i);
 		
@@ -210,10 +212,9 @@ public class ServicosCompra {
 				
 				this.retirarItemCompra(itemCompra,st);
 				
-				item.itemCompra.remove(itemCompra);
+			
 				
 		}
-
 		
 		String sql = "DELETE FROM compra where  codigo =" + item.codigo;
 
@@ -224,7 +225,7 @@ public class ServicosCompra {
 		}
 		
 		
-		
+				
 		this.banco.getConexao().commit();
 		
 	}
@@ -298,11 +299,8 @@ public class ServicosCompra {
 				}
 				registro.qtdEmEstoque = quantidade;
 				//atualizando o produto resultante
-				sql = "UPDATE produto SET qtdEmEstoque = (qtdEmEstoque - "
-					+ registro.qtdEmEstoque + ") where codigo = " + registro.codigo;
-				if(st.executeUpdate(sql)==0){
-					 throw new RuntimeException("Não foi possível atualizar o produto");
-				 }
+				(new ServicosProduto()).atualizarProduto(registro);
+				
 		}
 	}
 
