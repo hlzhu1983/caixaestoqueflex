@@ -8,6 +8,16 @@ import vo.ItemPreVendaVO;
 import vo.PreVendaVO;
 import vo.ProdutoVO;
 
+/*
+ * AKI SE USA UPDATE DE PRODUTO.
+ * EU DEIXEI OS UPDATES ONDE QUANTIDADEESTOQUE EH INCREMENTADO PRA CIMA
+ * E RETIREI QUANDO ELE EH RETIRADO PRA BAIXO
+ * 
+ * 
+ * 
+ * 
+ * */
+
 public class ServicosPreVenda {
 
 	public PreVendaVO abrirPreVenda(PreVendaVO item) {
@@ -69,12 +79,14 @@ public class ServicosPreVenda {
 		if (rs.next())
 			item.codigo = rs.getInt(1);
 
-		sql = "UPDATE produto SET qtdEmEstoque = (qtdEmEstoque - "
-				+ item.quantidade + ") where codigo = " + item.codProduto;
+		//sql = "UPDATE produto SET qtdEmEstoque = (qtdEmEstoque - "
+		//		+ item.quantidade + ") where codigo = " + item.codProduto;
 
-		if (st.executeUpdate(sql) == 0) {
-			throw new RuntimeException("Erro ao atualizar itemprevenda");
-		}
+		//if (st.executeUpdate(sql) == 0) {
+		//	throw new RuntimeException("Erro ao atualizar itemprevenda");
+		//}
+		registro.qtdEmEstoque-=item.quantidade;
+		new ServicosProduto().atualizarProduto(registro);
 		this.banco.getConexao().commit();
 
 		return item;
