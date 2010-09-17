@@ -1,11 +1,7 @@
 import java.sql.Date;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Map;
 
-import exception.ClienteJaexisteException;
 import services.ServicosCliente;
 import services.ServicosCompra;
 import services.ServicosFormadePagto;
@@ -13,26 +9,30 @@ import services.ServicosFornecedor;
 import services.ServicosGrupoProduto;
 import services.ServicosLocalProduto;
 import services.ServicosPreVenda;
+import services.ServicosProducao;
 import services.ServicosProduto;
+import services.ServicosReceita;
 import services.ServicosUnidade;
 import services.ServicosUsuario;
 import services.ServicosVenda;
-import util.UtilData;
 import vo.ClienteVO;
 import vo.CompraVO;
-import vo.FormaPgtoVendaVO;
 import vo.FormadePagtoVO;
 import vo.FornecedorVO;
 import vo.GrupoProdutoVO;
 import vo.ItemCompraVO;
 import vo.ItemGraficoVO;
 import vo.ItemPreVendaVO;
+import vo.ItemProducaoVO;
+import vo.ItensReceitaVO;
 import vo.LocalProdutoVO;
 import vo.PreVendaVO;
+import vo.ProducaoVO;
 import vo.ProdutoVO;
 import vo.RankingClienteVO;
 import vo.RankingFormaPagamentoVO;
 import vo.RankingProdutoVO;
+import vo.ReceitaVO;
 import vo.UnidadeVO;
 import vo.UsuarioVO;
 import vo.VendaVO;
@@ -50,6 +50,8 @@ public class FachadaServicos {
 	private ServicosPreVenda servPreVenda;
 	private ServicosVenda servVenda;
 	private ServicosCompra servCompra;
+	private ServicosReceita servReceita;
+	private ServicosProducao servProducao;
 
 	public FachadaServicos() {
 		this.servCliente = new ServicosCliente();
@@ -63,6 +65,8 @@ public class FachadaServicos {
 		this.servPreVenda = new ServicosPreVenda();
 		this.servVenda = new ServicosVenda();
 		this.servCompra = new ServicosCompra();
+		this.servReceita = new ServicosReceita();
+		this.servProducao = new ServicosProducao();
 	}
 
 	public CompraVO fecharCompra(CompraVO item) {
@@ -70,32 +74,33 @@ public class FachadaServicos {
 			throw new RuntimeException("Parametro invalido");
 		return this.servCompra.fecharCompra(item);
 	}
-	
-    public CompraVO atualizarCompra(CompraVO item){
-    	if(item==null)
-    		throw new RuntimeException("Parametro invalido");
+
+	public CompraVO atualizarCompra(CompraVO item) {
+		if (item == null)
+			throw new RuntimeException("Parametro invalido");
 		return this.servCompra.atualizarCompra(item);
-    }
-    
-	public ArrayList<CompraVO> pesquisarCompra(String texto, String coluna){
+	}
+
+	public ArrayList<CompraVO> pesquisarCompra(String texto, String coluna) {
 		return this.servCompra.pesquisarCompra(texto, coluna);
 	}
 
-	public ArrayList<ItemCompraVO> pesquisarItensCompra(String texto, String coluna){
+	public ArrayList<ItemCompraVO> pesquisarItensCompra(String texto,
+			String coluna) {
 		return this.servCompra.pesquisarItens(texto, coluna);
 	}
-    public ArrayList<CompraVO> listAllCompra(){
-    	
-		return this.servCompra.getItens();	
-    }
 
-    public boolean removerCompra(CompraVO item){
-    	if(item==null)
-    		throw new RuntimeException("Parametro invalido");
-		  this.servCompra.removerCompra(item);
-		  return true;
-    }
-    
+	public ArrayList<CompraVO> listAllCompra() {
+
+		return this.servCompra.getItens();
+	}
+
+	public void removerCompra(CompraVO item) {
+		if (item == null)
+			throw new RuntimeException("Parametro invalido");
+		this.servCompra.removerCompra(item);
+	}
+
 	public ClienteVO addCliente(ClienteVO item) throws SQLException {
 		if (item == null)
 			throw new RuntimeException("Parametro invalido");
@@ -109,8 +114,6 @@ public class FachadaServicos {
 		return this.servCliente.removerCliente(item);
 
 	}
-	
-	
 
 	public ArrayList<ClienteVO> pesquisarCliente(String texto, String coluna) {
 		if (texto == null || coluna == null)
@@ -637,14 +640,89 @@ public class FachadaServicos {
 		for (int i = 1; i < str.size(); i++) {
 			sql += " and " + str.get(i);
 		}
-		// throw new RuntimeException(sql);
-		if (1 == 1)
-			throw new RuntimeException(sql + " and status = 1");
+		// if (1 == 1)
+		// throw new RuntimeException(sql + " and status = 1");
 		return this.servVenda.getVendas(sql + " and status = 1");
 	}
 
 	// **********************************************************************************//
 
+	// **********************************************************************************//
+
+	public ReceitaVO adicionarReceita(ReceitaVO item) {
+		if (item == null)
+			throw new RuntimeException("Parametro invalido");
+		return this.servReceita.addReceita(item);
+	}
+
+	public ReceitaVO atualizarReceita(ReceitaVO item) {
+		if (item == null)
+			throw new RuntimeException("Parametro invalido");
+		return this.servReceita.atualizarReceita(item);
+	}
+
+	public ArrayList<ReceitaVO> pesquisarReceita(String texto, String coluna) {
+		return this.servReceita.pesquisarReceita(texto, coluna);
+	}
+	
+	public ReceitaVO getReceita(String codigo){
+		return this.servProduto.pegarReceita();
+	}
+
+	public ArrayList<ItensReceitaVO> pesquisarItensReceita(String texto,
+			String coluna) {
+		return this.servReceita.pesquisarItens(texto, coluna);
+	}
+
+	public ArrayList<ReceitaVO> listAllReceita() {
+
+		return this.servReceita.getItens();
+	}
+
+	public void removerReceita(ReceitaVO item) {
+		if (item == null)
+			throw new RuntimeException("Parametro invalido");
+		this.servReceita.removerReceita(item);
+	}
+
+	// **********************************************************************************//
+
+	// **********************************************************************************//
+
+	public ProducaoVO adicionarProducao(ProducaoVO item) {
+		if (item == null)
+			throw new RuntimeException("Parametro invalido");
+		return this.servProducao.addProducao(item);
+	}
+
+	public ProducaoVO atualizarProducao(ProducaoVO item) {
+		if (item == null)
+			throw new RuntimeException("Parametro invalido");
+		return this.servProducao.atualizarProducao(item);
+	}
+
+	public ArrayList<ProducaoVO> pesquisarProducao(String texto, String coluna) {
+		return this.servProducao.pesquisarProducao(texto, coluna);
+	}
+
+	public ArrayList<ItemProducaoVO> pesquisarItensProducao(String texto,
+			String coluna) {
+		return this.servProducao.pesquisarItens(texto, coluna);
+	}
+
+	public ArrayList<ProducaoVO> listAllProducao() {
+
+		return this.servProducao.getItens();
+	}
+
+	public void removerProducao(ProducaoVO item) {
+		if (item == null)
+			throw new RuntimeException("Parametro invalido");
+		this.servProducao.removerProducao(item);
+	}
+
+	// **********************************************************************************//
+	
 	public String mensagemCliente() {
 		return "Pegou";
 	}
@@ -669,9 +747,13 @@ public class FachadaServicos {
 	}
 
 	public static void main(String[] args) throws Exception {
-		ClienteVO p = new ClienteVO();
-		p.nome = "cliente";
+		ReceitaVO p = new ReceitaVO();
+		p.codigo = 1;
+		p.itensReceita = new ArrayList<ItensReceitaVO>();
+		ItensReceitaVO i = new ItensReceitaVO();
+		i.codigo = 1;
+		p.itensReceita.add(i);
 		FachadaServicos f = new FachadaServicos();
-		f.getVendas();
+		f.pesquisarReceita("1", "codigo");
 	}
 }
