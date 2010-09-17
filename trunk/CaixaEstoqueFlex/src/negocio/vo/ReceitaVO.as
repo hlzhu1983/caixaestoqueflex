@@ -7,7 +7,6 @@ package negocio.vo
 	[RemoteClass(alias="vo.ReceitaVO")]
 	public class ReceitaVO {
 		
-		
 		public var codigo:int;
 		public var codProduto:int;
 		public var descricao:String;
