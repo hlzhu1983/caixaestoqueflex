@@ -70,7 +70,7 @@
 	<mx:Label x="289" y="52" id="lb_quantEstoque" text="{this.produto.qtdEmEstoque}"/>
 	
 	<mx:FormItem defaultButton="{this.bt_ok}" id="fi_quant" label="Quantidade:" fontSize="16" x="10" y="130" width="282" required="true">
-		<inputs:NumberInput id="quantProduto" enter="{inserirInsercaoProduto()}" width="144" x="158" y="108"  change="{this.valorTotal()}"/>
+		<inputs:NumberInput id="quantProduto"  width="144" x="158" y="108"  change="{this.valorTotal()}"/>
 	</mx:FormItem>
 	<mx:Label x="17" y="173" text="Valor Total:" fontWeight="bold" color="#000000" fontSize="20"/>
 	<mx:Label x="161" y="173" id="lb_valoTotal" fontWeight="bold" color="#000000" fontSize="20" text="{this.valor}"/>
