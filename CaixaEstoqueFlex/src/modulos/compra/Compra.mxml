@@ -130,7 +130,9 @@
 					
 				this.array_itensCompras = this.compra.itemCompra;
 				this.array_viewItensCompras = new ArrayCollection();
+				
 				for(var i:int = 0; i<array_itensCompras.length;i++){
+					
 				var item:ItemCompraVO = this.array_itensCompras.getItemAt(i) as ItemCompraVO;	
 				 this.ro.pesquisarProduto(result_produto,item.codProduto+"","codigo");
 				}
@@ -148,7 +150,8 @@
 		     
 		     var produto:ProdutoVO = a.getItemAt(0) as ProdutoVO; 
 		      if(icomp.codProduto==produto.codigo){
-		        vcomp.codigo = icomp.codigo;
+		       
+		        vcomp.codProduto = icomp.codProduto;
 		        vcomp.quantidade = icomp.quantidade;
 		        vcomp.valorCompra = icomp.valorCompra;
 		      	vcomp.descricao = produto.descricao;
@@ -179,6 +182,7 @@
 				var i:ItemCompraVO = event.itemCompra as ItemCompraVO;
 				var v:viewItemCompra= new viewItemCompra();
 				v.codigo = i.codigo;
+				v.codProduto = i.codProduto;
 				v.descricao  = i.descricao;
 				v.quantidade = i.quantidade;
 				v.valorCompra = i.valorCompra;
@@ -275,6 +279,8 @@
 					if(this.fornecedor!=null){
 					if(this.array_itensCompras.length>0){
 					this.compra.itemCompra = this.array_itensCompras;
+					
+					Alert.show((this.compra.itemCompra.getItemAt(1) as ItemCompraVO).codigo+" a");
 					this.compra.codFornecedor = this.fornecedor.codigo;
 					this.compra.NF = this.ti_NF.text;
 					this.compra.codUsuario = ConfiguracoesSistema.usuario.codigo;

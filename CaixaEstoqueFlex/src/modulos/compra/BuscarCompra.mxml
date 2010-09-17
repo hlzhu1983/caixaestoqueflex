@@ -8,6 +8,7 @@
 	<mx:Script
 	>
 		<![CDATA[
+			import mx.collections.ArrayList;
 			import mx.events.ListEvent;
 			import events.CompraEvent;
 			import negocio.vo.CompraVO;
@@ -29,7 +30,8 @@
 		[Bindable] 
 		private var itensView:ArrayCollection;
 		private var itensCompra:ArrayCollection;
-		private var contando:int = 0;    
+		private var adicionou:ArrayCollection;
+		    
 		    private function init():void{
 				this.ro.parent = this;
 				this.limpar();
@@ -57,28 +59,39 @@
 				this.ro.listarCompra(resultListarItens);
 				
 			}
-				private function resultadoPesquisaItem(event:ResultEvent):void{
-				this.itensCompra = event.result as ArrayCollection;
-			}
+				//private function resultadoPesquisaItem(event:ResultEvent):void{
+				//this.itensCompra = event.result as ArrayCollection;
+			//}
 			
 			 private function resultadoPesquisaFornecedor(event:ResultEvent):void{
 		    
 		      var a:ArrayCollection = event.result as ArrayCollection;
+		     if(a.length!=0){
+		     var forn:FornecedorVO = a.getItemAt(0) as FornecedorVO;
+		     for(var i:int=0;i<this.itensCompra.length;i++){
+		     var comp:CompraVO = this.itensCompra.getItemAt(i) as CompraVO;
 		     
-		       for(var i:int=0;i<a.length;i++){
-		      
-		      this.itensFornecedores.addItem(a.getItemAt(i)); 
-		      
-		       }
-		     	var view:ViewCompra = new ViewCompra();
-				var forn:FornecedorVO = this.itensFornecedores.getItemAt(this.contando) as FornecedorVO;
-				var comp:CompraVO = this.itensCompra.getItemAt(this.contando) as CompraVO;
-				view.codigo = comp.codigo;
+		     if(comp.codFornecedor==forn.codigo){
+		    
+		     var view:ViewCompra = new ViewCompra();
+		       
+		        view.codigo = comp.codigo;
 				view.dataCompra = comp.dataCompra;
 				view.NF = comp.NF;
 				view.fornecedor = forn.nome;
+				
+				if(!this.adicionou.contains(view.codigo)){
 				this.itensView.addItem(view);
-			   this.contando++;	
+				this.adicionou.addItem(view.codigo);
+				}
+		     }
+		     }
+		     
+		     }else{
+		     
+		     }
+		       
+		     	
 			
 		    }
 		
@@ -86,11 +99,14 @@
 		
 			private function resultListarItens(event:ResultEvent):void{
 				this.itensCompra = event.result as ArrayCollection;
+			 	
 				this.itensFornecedores = new ArrayCollection();
+				this.adicionou = new ArrayCollection();
 				this.itensView = new ArrayCollection();
-				this.contando=0;
+
 				for(var i:int=0;i<this.itensCompra.length;i++){
 				var comp:CompraVO = this.itensCompra.getItemAt(i) as CompraVO;	
+				  
 				this.ro.pesquisarFornecedor(resultadoPesquisaFornecedor,""+comp.codFornecedor,"codigo");
 			
 				
@@ -107,9 +123,9 @@
 				}else if(this.ti_pesquisa.validador.validate().type == ValidationResultEvent.VALID ){
 					
 					if(this.radio_codigo.selected){
-						this.ro.pesquisarCompra(resultadoPesquisaItem,this.ti_pesquisa.text,"codigo");
+						this.ro.pesquisarCompra(resultListarItens,this.ti_pesquisa.text,"codigo");
 					}else if(this.radio_NF.selected){
-						this.ro.pesquisarCompra(resultadoPesquisaItem,this.ti_pesquisa.text,"NF");
+						this.ro.pesquisarCompra(resultListarItens,this.ti_pesquisa.text,"NF");
 					}
 					
 				}else{
