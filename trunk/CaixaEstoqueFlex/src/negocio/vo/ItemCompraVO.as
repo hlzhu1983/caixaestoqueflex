@@ -6,9 +6,9 @@ package negocio.vo
 	public var codigo:int;
 	public var codigoCompra:int;
 	public var descricao:String;
-	public var status:int;
 	public var codProduto:int;
 	public var quantidade:int;
 	public var valorCompra:Number;
+	public var status:int;
 	}
 }
