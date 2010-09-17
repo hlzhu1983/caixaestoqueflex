@@ -14,7 +14,7 @@ import vo.ProdutoVO;
 public class ServicosProduto {
 	
 	
-	public synchronized ProdutoVO addProduto(ProdutoVO item){
+	public ProdutoVO addProduto(ProdutoVO item){
 		String sql = "insert into produto (codBarra,codGrupo,descricao ,referencia ,codLocal ,codUnidade ,qtdPorUnidade ,qtdEmEstoque ,codFornecedor ,precoCompra ,precoVenda,foto) values ('"+item.codBarra+"' ,"+item.codGrupo+" ,'"+item.descricao+"'"+
 	 ",'"+item.referencia+"' ,"+item.codLocal+""+
 		" ,"+item.codUnidade+" ,"+item.qtdPorUnidade+""+
@@ -38,7 +38,7 @@ public class ServicosProduto {
 		
 	}
 	
-	public synchronized boolean  removerProduto(ProdutoVO item){
+	public boolean  removerProduto(ProdutoVO item){
 		String sql = "delete from produto  where codigo = "+item.codigo+"";
 		if(this.banco.executarNoQuery(sql)==0){
 			return false;
@@ -46,7 +46,7 @@ public class ServicosProduto {
 		return true;
 	}
 	
-	public synchronized ProdutoVO atualizarProduto(ProdutoVO produto) {
+	public ProdutoVO atualizarProduto(ProdutoVO produto) {
 		String sql = "UPDATE produto SET codBarra = '"+produto.codBarra+"', codGrupo = "+produto.codGrupo+", descricao = '"+produto.descricao+"', referencia = '"+produto.referencia+"',codLocal = "+produto.codLocal+",codUnidade="+produto.codUnidade+",qtdPorUnidade="+produto.qtdPorUnidade+",qtdEmEstoque="+produto.qtdEmEstoque+",codFornecedor="+produto.codFornecedor+",precoCompra="+produto.precoCompra+","+
 		"precoVenda="+produto.precoVenda+",foto='"+produto.foto+"' where codigo="+produto.codigo+"";
 		if(this.banco.executarNoQuery(sql)==0){
@@ -56,6 +56,24 @@ public class ServicosProduto {
 		
 	}
 	
+	public ProdutoVO modificarProduto(ProdutoVO produto) throws SQLException{
+		String sql = "UPDATE produto SET codBarra = '"+produto.codBarra+"', codGrupo = "+produto.codGrupo+", descricao = '"+produto.descricao+"', referencia = '"+produto.referencia+"',codLocal = "+produto.codLocal+",codUnidade="+produto.codUnidade+",qtdPorUnidade="+produto.qtdPorUnidade+",qtdEmEstoque="+produto.qtdEmEstoque+",codFornecedor="+produto.codFornecedor+",precoCompra="+produto.precoCompra+","+
+		"precoVenda="+produto.precoVenda+",foto='"+produto.foto+"' where codigo="+produto.codigo+"";
+		Statement st;
+		this.banco.conectar();
+		this.banco.getConexao().setAutoCommit(false);
+		st = this.banco.getConexao().createStatement();
+		
+		
+		if (st.executeUpdate(sql) == 0) {
+			throw new RuntimeException("Erro ao abrir Compra!");
+		}
+
+			
+		this.banco.getConexao().commit();
+		return produto;	
+		
+	}
 	public ArrayList<ProdutoVO> pesquisarProduto(String texto,String coluna){
 		String sql = "select * from produto where "+coluna+" like '%"+texto+"%'";
 		ResultSet rs =  banco.executar(sql);

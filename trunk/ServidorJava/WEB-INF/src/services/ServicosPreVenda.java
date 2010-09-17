@@ -79,14 +79,14 @@ public class ServicosPreVenda {
 		if (rs.next())
 			item.codigo = rs.getInt(1);
 
-		//sql = "UPDATE produto SET qtdEmEstoque = (qtdEmEstoque - "
-		//		+ item.quantidade + ") where codigo = " + item.codProduto;
+		sql = "UPDATE produto SET qtdEmEstoque = (qtdEmEstoque - "
+				+ item.quantidade + ") where codigo = " + item.codProduto;
 
-		//if (st.executeUpdate(sql) == 0) {
-		//	throw new RuntimeException("Erro ao atualizar itemprevenda");
-		//}
-		registro.qtdEmEstoque-=item.quantidade;
-		new ServicosProduto().atualizarProduto(registro);
+		if (st.executeUpdate(sql) == 0) {
+			throw new RuntimeException("Erro ao atualizar itemprevenda");
+		}
+	//	registro.qtdEmEstoque-=item.quantidade;
+	//	new ServicosProduto().atualizarProduto(registro);
 		this.banco.getConexao().commit();
 
 		return item;
