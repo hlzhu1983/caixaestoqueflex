@@ -285,7 +285,7 @@
 					if(this.array_itensCompras.length>0){
 					this.compra.itemCompra = this.array_itensCompras;
 					
-					Alert.show((this.compra.itemCompra.getItemAt(1) as ItemCompraVO).codigo+" a");
+					
 					this.compra.codFornecedor = this.fornecedor.codigo;
 					this.compra.NF = this.ti_NF.text;
 					this.compra.codUsuario = ConfiguracoesSistema.usuario.codigo;
