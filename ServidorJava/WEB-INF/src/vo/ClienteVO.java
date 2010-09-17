@@ -1,6 +1,4 @@
 package vo;
-import java.util.Date;
-
 
 public class ClienteVO {
 

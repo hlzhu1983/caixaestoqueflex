@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import vo.ItensReceitaVO;
+import vo.ItemReceitaVO;
 import vo.ReceitaVO;
 
 public class ServicosReceita {
@@ -26,7 +26,7 @@ public class ServicosReceita {
 		ResultSet rs = st.getGeneratedKeys();
 		if (rs.next()) {
 			item.codigo = rs.getInt(1);
-			for (ItensReceitaVO itemReceita : item.itensReceita) {
+			for (ItemReceitaVO itemReceita : item.itensReceita) {
 				itemReceita.codReceita = item.codigo;
 				this.adicionarItemReceita(itemReceita, st);
 			}
@@ -38,7 +38,7 @@ public class ServicosReceita {
 		return item;
 	}
 
-	public ItensReceitaVO adicionarItemReceita(ItensReceitaVO item, Statement st)
+	public ItemReceitaVO adicionarItemReceita(ItemReceitaVO item, Statement st)
 			throws SQLException {
 
 		String sql = "insert into itensreceita (codReceita, codProduto, quantidade)"
@@ -56,7 +56,7 @@ public class ServicosReceita {
 
 	}
 
-	public void excluirItemReceita(ItensReceitaVO item, Statement st) throws SQLException {
+	public void excluirItemReceita(ItemReceitaVO item, Statement st) throws SQLException {
 
 		String sql = "DELETE FROM itensReceita WHERE codigo = " + item.codigo;
 		if (st.executeUpdate(sql) == 0) {
@@ -65,7 +65,15 @@ public class ServicosReceita {
 
 	}
 
-	public ArrayList<ItensReceitaVO> getAllItensReceita(String codigo) {
+	public ArrayList<ItemReceitaVO> getAllItensReceita(String codigo) {
+		String sql = "select i.codigo, p.descricao, i.codReceita, i.codProduto, i.quantidade" +
+				" FROM itensReceita i, produto p WHERE i.codProduto = p.codigo and i.codReceita  = " + codigo;
+		ResultSet resultado = banco.executar(sql);
+
+		return this.toItemReceita(resultado);
+	}
+	
+	public ArrayList<ItemReceitaVO> recuperarItensReceita(String codigo) throws SQLException {
 		String sql = "select i.codigo, p.descricao, i.codReceita, i.codProduto, i.quantidade" +
 				" FROM itensReceita i, produto p WHERE i.codProduto = p.codigo and i.codReceita  = " + codigo;
 		ResultSet resultado = banco.executar(sql);
@@ -94,7 +102,7 @@ public class ServicosReceita {
 		String sql = "select r.codigo as codigo, " +
 				"p.descricao as descricao, p.codigo as codproduto, p.qtdEmEstoque " +
 				"as qtdEstoque, r.quantidade as quantidade" +
-				" from receita r, produto p where p.codigo = r.codProduto and p.codigo = " + codigo;
+				" from receita r, produto p where p.codigo = r.codProduto and r.codigo = " + codigo;
 		ResultSet resultado = banco.executar(sql);
 
 		ArrayList<ReceitaVO> retorno = this.toReceita(resultado);
@@ -106,7 +114,7 @@ public class ServicosReceita {
 	}
 
 
-	public ArrayList<ItensReceitaVO> pesquisarItens(String texto, String coluna) {
+	public ArrayList<ItemReceitaVO> pesquisarItens(String texto, String coluna) {
 		String sql = "select i.codigo, p.descricao, i.codReceita, i.codProduto, i.quantidade" +
 				" FROM itensReceita i, produto p WHERE i.codProduto = p.codigo and " + coluna + " like '%"
 				+ texto + "%'";
@@ -130,7 +138,7 @@ public class ServicosReceita {
 		if (st.executeUpdate(sql) == 0) {
 			throw new RuntimeException("Erro ao remover itens receita!");
 		}
-		for (ItensReceitaVO itemReceita : item.itensReceita) {
+		for (ItemReceitaVO itemReceita : item.itensReceita) {
 			itemReceita.codReceita = item.codigo;
 			this.adicionarItemReceita(itemReceita, st);
 		}
@@ -145,7 +153,7 @@ public class ServicosReceita {
 		this.banco.getConexao().setAutoCommit(false);
 		Statement st = this.banco.getConexao().createStatement();
 
-		for (ItensReceitaVO itemReceita : item.itensReceita) {
+		for (ItemReceitaVO itemReceita : item.itensReceita) {
 			itemReceita.codReceita = item.codigo;
 			this.excluirItemReceita(itemReceita, st);
 		}
@@ -159,7 +167,7 @@ public class ServicosReceita {
 
 	}
 
-	public ArrayList<ItensReceitaVO> getItensReceita(String codigo) {
+	public ArrayList<ItemReceitaVO> getItensReceita(String codigo) {
 		String sql = "select i.codigo, p.descricao, i.codReceita, i.codProduto, i.quantidade" +
 				" FROM itensReceita i, produto p WHERE i.codProduto = p.codigo and codigo  = " + codigo;
 		ResultSet resultado = banco.executar(sql);
@@ -190,7 +198,7 @@ public class ServicosReceita {
 			dados_item.qtdEstoque = rs.getDouble("qtdEstoque");
 			dados_item.descricao = rs.getString("descricao");
 
-			ArrayList<ItensReceitaVO> itens;
+			ArrayList<ItemReceitaVO> itens;
 			itens = this.pegarItensReceita(dados_item);
 			if (itens.size() != 0)
 				dados_item.itensReceita = itens;
@@ -201,7 +209,7 @@ public class ServicosReceita {
 		return gp;
 	}
 
-	private ArrayList<ItensReceitaVO> pegarItensReceita(ReceitaVO item) throws SQLException {
+	private ArrayList<ItemReceitaVO> pegarItensReceita(ReceitaVO item) throws SQLException {
 		String sql = "select i.codigo, p.descricao, i.codReceita, i.codProduto, i.quantidade" +
 				" FROM itensReceita i, produto p WHERE i.codProduto = p.codigo and i.codReceita = "
 				+ item.codigo;
@@ -209,11 +217,11 @@ public class ServicosReceita {
 		return this.toItemReceita(rs);
 	}
 
-	private ArrayList<ItensReceitaVO> toItemReceita(ResultSet rs)
+	private ArrayList<ItemReceitaVO> toItemReceita(ResultSet rs)
 			throws SQLException {
-		ArrayList<ItensReceitaVO> gp = new ArrayList<ItensReceitaVO>();
+		ArrayList<ItemReceitaVO> gp = new ArrayList<ItemReceitaVO>();
 		while (rs.next()) {
-			ItensReceitaVO dados_item = new ItensReceitaVO();
+			ItemReceitaVO dados_item = new ItemReceitaVO();
 			dados_item.codigo = rs.getInt("codigo");
 			dados_item.codReceita = rs.getInt("codReceita");
 			dados_item.codProduto = rs.getInt("codProduto");

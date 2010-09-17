@@ -6,13 +6,16 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import vo.ItemProducaoVO;
+import vo.ItemReceitaVO;
 import vo.ProducaoVO;
 
 public class ServicosProducao {
 
+	private ServicosReceita servReceita = new ServicosReceita();
+
 	public ProducaoVO addProducao(ProducaoVO item) {
-		String sql = "insert into receita (dataProducao,obs) values ("
-				+ item.dataProducao + "," + item.obs + ")";
+		String sql = "insert into producao (dataProducao,obs,descricao) values ('"
+				+ item.dataProducao + " ','" + item.obs + "','"+item.descricao+"')";
 
 		Statement st;
 		this.banco.conectar();
@@ -41,11 +44,33 @@ public class ServicosProducao {
 	public ItemProducaoVO adicionarItemProducao(ItemProducaoVO item,
 			Statement st) throws SQLException {
 
-		String sql = "insert into itensproducao (codProducao, codReceita)"
+		ArrayList<ItemReceitaVO> itens = servReceita.recuperarItensReceita(item.codReceita+"");
+		
+		String sql;
+		for (ItemReceitaVO itensReceitaVO : itens) {
+			sql = "update produto set qtdEmEstoque = qtdEmEstoque - "
+					+ itensReceitaVO.quantidade + " where codigo = "
+					+ itensReceitaVO.codProduto;
+			if (st.executeUpdate(sql) == 0) {
+				throw new RuntimeException("Erro ao atualizar quantidade produto!");
+			}
+		}
+		
+		sql = "update produto set qtdEmEstoque = qtdEmEstoque + " +
+					"(select quantidade from receita where codigo = "+item.codReceita +") " +
+			  "where codigo = (select codProduto from receita where codigo = "+item.codReceita +")";
+		
+		if (st.executeUpdate(sql) == 0) {
+			throw new RuntimeException("Erro ao atualizar quantidade produto!");
+		}
+		
+		sql = "insert into itensproducao (codProducao, codReceita)"
 				+ " values ('" + item.codProducao + "','" + item.codReceita + "')";
 		if (st.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS) == 0) {
 			throw new RuntimeException("Erro ao Adicionar ItemProducao");
 		}
+		
+		
 
 		ResultSet rs = st.getGeneratedKeys();
 		if (rs.next())
@@ -67,33 +92,26 @@ public class ServicosProducao {
 
 	public ArrayList<ItemProducaoVO> getAllItensProducao(String codigo) {
 		String sql = "select i.codigo, p.descricao, i.codProducao, i.codReceita"
-				+ " FROM itensproducao i, receita r, produto p " +
-				"WHERE i.codReceita = r.codigo and r.codProduto = p.codigo and i.codProducao  = "+ codigo;
+				+ " FROM itensproducao i, receita r, produto p "
+				+ "WHERE i.codReceita = r.codigo and r.codProduto = p.codigo and i.codProducao  = "
+				+ codigo;
 		ResultSet resultado = banco.executar(sql);
 
 		return this.toItemProducao(resultado);
 	}
 
 	public ArrayList<ProducaoVO> pesquisarProducao(String texto, String coluna) {
-		String sql = "select r.codigo as codigo, "
-				+ "p.descricao as descricao, p.codigo as codproduto, p.qtdEmEstoque "
-				+ "as qtdEstoque, r.quantidade as quantidade"
-				+ " from receita r, produto p where produto.codigo = receita.codProduto and "
+		String sql = "select * from producao where "
 				+ coluna + " like '%" + texto + "%'";
 		ResultSet resultado = banco.executar(sql);
-
-		ArrayList<ProducaoVO> retorno = this.toProducao(resultado);
-		for (ProducaoVO receitaVO : retorno) {
-			receitaVO.itensProducao = this.getItensProducao(receitaVO);
-		}
-		return retorno;
+		return this.toProducao(resultado);
 
 	}
 
 	public ArrayList<ItemProducaoVO> pesquisarItens(String texto, String coluna) {
 		String sql = "select i.codigo, p.descricao, r.quantidade, i.codProducao, i.codReceita"
-				+ " FROM itensProducao i, receita r, produto p " +
-				"WHERE i.codReceita = r.codigo and r.codProduto = p.codigo and "
+				+ " FROM itensProducao i, receita r, produto p "
+				+ "WHERE i.codReceita = r.codigo and r.codProduto = p.codigo and "
 				+ coluna + " like '%" + texto + "%'";
 		ResultSet resultado = banco.executar(sql);
 
@@ -103,7 +121,7 @@ public class ServicosProducao {
 
 	public ProducaoVO atualizarProducao(ProducaoVO item) {
 		String sql = "UPDATE producao set dataProducao =" + item.dataProducao
-				+ " , obs =" + item.obs + "where  codigo ="+ item.codigo;
+				+ " , obs =" + item.obs + "where  codigo =" + item.codigo;
 
 		this.banco.conectar();
 		this.banco.getConexao().setAutoCommit(false);
@@ -145,8 +163,8 @@ public class ServicosProducao {
 
 	public ArrayList<ItemProducaoVO> getItensProducao(String codigo) {
 		String sql = "select i.codigo, p.descricao, r.quantidade, i.codProducao, i.codReceita"
-				+ " FROM itensProducao i, receita r, produto p " +
-				"WHERE i.codReceita = r.codigo and r.codProduto = p.codigo and i.codigo  = "
+				+ " FROM itensProducao i, receita r, produto p "
+				+ "WHERE i.codReceita = r.codigo and r.codProduto = p.codigo and i.codigo  = "
 				+ codigo;
 		ResultSet resultado = banco.executar(sql);
 		return this.toItemProducao(resultado);
@@ -156,11 +174,8 @@ public class ServicosProducao {
 		String sql = "select * from producao";
 
 		ResultSet rs = banco.executar(sql);
-		ArrayList<ProducaoVO> retorno = this.toProducao(rs);
-		for (ProducaoVO compraVO : retorno) {
-			compraVO.itensProducao = this.getItensProducao(compraVO);
-		}
-		return retorno;
+		
+		return toProducao(rs);
 	}
 
 	private ArrayList<ProducaoVO> toProducao(ResultSet rs) throws SQLException {
@@ -184,9 +199,7 @@ public class ServicosProducao {
 	}
 
 	private ArrayList<ItemProducaoVO> getItensProducao(ProducaoVO item) {
-		String sql = "select i.codigo, p.descricao, i.codProducao, i.codProduto, i.quantidade"
-				+ " FROM itensProducao i, receita r, produto p WHERE i.codProduto = p.codigo and i.codProducao = "
-				+ item.codigo;
+		String sql = "select * FROM itensProducao WHERE codProducao = "+ item.codigo;
 		ResultSet rs = banco.executar(sql);
 		return this.toItemProducao(rs);
 	}
@@ -198,8 +211,8 @@ public class ServicosProducao {
 			ItemProducaoVO dados_item = new ItemProducaoVO();
 			dados_item.codigo = rs.getInt("codigo");
 			dados_item.codProducao = rs.getInt("codProducao");
-			dados_item.codReceita = rs.getInt("codProduto");
-			dados_item.descricao = rs.getString("descricao");
+			dados_item.codReceita = rs.getInt("codReceita");
+			//dados_item.descricao = rs.getString("descricao");
 			gp.add(dados_item);
 		}
 		return gp;

@@ -24,7 +24,7 @@ import vo.ItemCompraVO;
 import vo.ItemGraficoVO;
 import vo.ItemPreVendaVO;
 import vo.ItemProducaoVO;
-import vo.ItensReceitaVO;
+import vo.ItemReceitaVO;
 import vo.LocalProdutoVO;
 import vo.PreVendaVO;
 import vo.ProducaoVO;
@@ -666,10 +666,14 @@ public class FachadaServicos {
 	}
 	
 	public ReceitaVO getReceita(String codigo){
-		return this.servProduto.pegarReceita();
+		ArrayList<ReceitaVO> a = this.servReceita.pesquisarReceita(codigo);
+		if(a.size()==0)
+			return null;
+		else
+			return a.get(0);
 	}
 
-	public ArrayList<ItensReceitaVO> pesquisarItensReceita(String texto,
+	public ArrayList<ItemReceitaVO> pesquisarItensReceita(String texto,
 			String coluna) {
 		return this.servReceita.pesquisarItens(texto, coluna);
 	}
@@ -747,13 +751,17 @@ public class FachadaServicos {
 	}
 
 	public static void main(String[] args) throws Exception {
-		ReceitaVO p = new ReceitaVO();
-		p.codigo = 1;
-		p.itensReceita = new ArrayList<ItensReceitaVO>();
-		ItensReceitaVO i = new ItensReceitaVO();
-		i.codigo = 1;
-		p.itensReceita.add(i);
+		ProducaoVO p = new ProducaoVO();
+		p.dataProducao = "2010/09/17";
+		p.descricao = "Teste";
+		
+		ItemProducaoVO i = new ItemProducaoVO();
+		i.codReceita = 2;
+		i.descricao = "sgsg";
+		p.itensProducao = new ArrayList<ItemProducaoVO>();
+		p.itensProducao.add(i);
+		
 		FachadaServicos f = new FachadaServicos();
-		f.pesquisarReceita("1", "codigo");
+		f.listAllProducao();
 	}
 }
