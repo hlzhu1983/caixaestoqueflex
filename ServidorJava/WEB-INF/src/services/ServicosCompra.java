@@ -4,6 +4,7 @@ package services;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 
@@ -122,8 +123,19 @@ public class ServicosCompra {
 	}
 
 	public ArrayList<CompraVO> pesquisarCompra(String texto, String coluna) {
-		String sql = "select * from compra where " + coluna + " like '%"
-				+ texto + "%'";
+		String sql  ="";
+		
+		if(coluna.equals("dataCompra")){
+			 sql = "select *,date_format(dataCompra, '%d/%m/%Y') as dataEntrada from compra where date_format(" + coluna + ",'%d/%m/%Y')='"
+			+ texto + "'";
+		}else if(coluna.equals("dataIntervalo")){
+			String[] valor = texto.split("#");
+			sql = "select *,date_format(dataCompra, '%d/%m/%Y') as dataEntrada from compra where date_format(datacompra,'%d/%m/%Y') BETWEEN '"+valor[0]+"' AND '"+valor[1]+"'";
+			//throw new RuntimeException(sql);
+		}else{
+		 sql = "select *,date_format(dataCompra, '%d/%m/%Y') as dataEntrada from compra where " + coluna + " like '%"
+		+ texto + "%'";			
+				}
 		ResultSet resultado = banco.executar(sql);
 
 		ArrayList<CompraVO> retorno = this.toCompra(resultado);
@@ -302,7 +314,7 @@ public class ServicosCompra {
 	}
 
 	public ArrayList<CompraVO> getItens() {
-		String sql = "select * from compra";
+		String sql = "select *,date_format(dataCompra, '%d/%m/%Y') as dataEntrada from compra";
 
 		ResultSet rs = banco.executar(sql);
 		ArrayList<CompraVO> retorno = this.toCompra(rs);
@@ -319,7 +331,7 @@ public class ServicosCompra {
 			dados_item.codigo = rs.getInt("codigo");
 			dados_item.codUsuario = rs.getInt("codUsuario");
 			
-			dados_item.dataCompra = rs.getString("dataCompra");
+			dados_item.dataCompra =  rs.getString("dataEntrada");
 			
 			dados_item.NF = rs.getString("NF");
 			dados_item.codFornecedor = rs.getInt("codFornecedor");
