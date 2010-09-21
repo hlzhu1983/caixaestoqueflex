@@ -8,8 +8,6 @@
 
 	<mx:Script>
 		<![CDATA[
-			import relatorios.reports.rListagem;
-			import relatorios.reports.ReportPreview;
 			import mx.printing.FlexPrintJobScaleType;
 			import mx.printing.FlexPrintJob;
 			import mx.formatters.SwitchSymbolFormatter;
@@ -201,7 +199,7 @@
 			}
 			
 			private function imprimirRelatorio():void{
-				var isImpressao:Boolean = false;
+				/* var isImpressao:Boolean = false;
 			   var report:ReportPreview = new ReportPreview();
 			   var listagem:rListagem = new rListagem();
 				report.addChild(listagem);
@@ -249,7 +247,7 @@
 			  		titleW.activate();
 				}else{
 					Alert.show("Selecione algum relatorio!","Ops!",4,this);
-				} 
+				}  */
 			}
 			
 			
