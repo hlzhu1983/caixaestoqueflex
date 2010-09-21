@@ -148,13 +148,13 @@ public class ServicosVenda {
 	}
 	
 	public ArrayList<ItemGraficoVO> getGraficoVendaIntervalo(String str){
-		String sql = "select Month(datavenda) as mes, Year(datavenda) as ano, sum(valortotal) as valor from venda where status = 1 and "+str+"group by Year(datavenda), Month(datavenda)";
+		String sql = "select Day(datavenda) as dia , Month(datavenda) as mes, Year(datavenda) as ano, sum(valortotal) as valor from venda where status = 1 and "+str+"group by Year(datavenda), Month(datavenda), Day(datavenda)";
 		ResultSet rs = banco.executar(sql);
 		ArrayList<ItemGraficoVO> gp = new ArrayList<ItemGraficoVO>();
 		ItemGraficoVO dados_item;
 		while (rs.next()) {
 			dados_item = new ItemGraficoVO();
-			dados_item.yField = rs.getString("mes")+"/"+ rs.getString("ano");
+			dados_item.yField =  rs.getString("dia")+"/"+rs.getString("mes")+"/"+ rs.getString("ano");
 			dados_item.valor = rs.getDouble("valor");
 			gp.add(dados_item);
 		}

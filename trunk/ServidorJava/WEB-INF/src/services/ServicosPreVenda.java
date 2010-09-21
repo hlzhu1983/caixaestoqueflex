@@ -4,6 +4,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
 import vo.ItemPreVendaVO;
 import vo.PreVendaVO;
 import vo.ProdutoVO;
@@ -244,6 +250,25 @@ public class ServicosPreVenda {
 				+ item.codigo;
 		ResultSet rs = banco.executar(sql);
 		return this.toItemPreVenda(rs);
+	}
+	
+	public JasperPrint gerarImpressaoPedido(PreVendaVO prevenda){
+		JasperPrint rel = null;
+		try {
+			this.banco.conectar();
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("codPreVenda",""+prevenda.codigo);
+			map.put("nomeEmpresa", "Delicia & Arte");
+			map.put("nomeCliente",""+ prevenda.codUsuario);
+			map.put("codCliente", ""+prevenda.codUsuario);
+			map.put("valorTotal", ""+prevenda.valorTotal);
+			String arquivoJasper = "C:\\xampp\\tomcat\\webapps\\blazeds\\WEB-INF\\classes\\reports\\PreVendaReport.jasper";
+			rel = JasperFillManager.fillReport(arquivoJasper, map, this.banco.getConexao());
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException(e.getMessage()+"Erro ao gerar relatorio pedido.");
+		}
+		return rel;
 	}
 
 	private ArrayList<ItemPreVendaVO> toItemPreVenda(ResultSet rs)
