@@ -3,10 +3,11 @@
 	width="1024" height="700" title="Pré-Venda"
 	xmlns:utilidades="utilidades.*" fontSize="12" closing="{this.onCloseCommand(event)}"
 	keyDown="keyEvento(event)"  backgroundAlpha="1.0" xmlns:inputs="utilidades.inputs.*" 
-	xmlns:botoes="utilidades.botoes.*" xmlns:local="*" creationComplete="init()" alpha="1.0" borderColor="#009DFF" xmlns:prevenda="modulos.prevenda.*">
+	xmlns:botoes="utilidades.botoes.*" xmlns:local="*" creationComplete="init()" alpha="1.0" borderColor="#009DFF" xmlns:prevenda="modulos.prevenda.*" xmlns:viewer="com.jaspersoft.reports.viewer.*">
 	
 	<mx:Script>
 		<![CDATA[
+			import relatorios.PreViewImpressaoWindow;
 			import negocio.vo.VendaVO;
 			import modulos.venda.FechamentoVendaTitleWindow;
 			import events.VendaEvent;
@@ -124,7 +125,6 @@
 			
 			
 			public function previewProduto():void{
-				
 				if(this.codProduto.validador.validate().type == ValidationResultEvent.INVALID){
 					this.codProduto.setFocus();
 				}else{
@@ -136,6 +136,7 @@
 				if(e.result == null){
 					Alert.show("Produto não exite","Ops!",4,this,focusTextCodProduto);
 				}else{
+					trace("Criou tela preview");
 					var pvProduto:PreviewProdutoTitleWindow = PreviewProdutoTitleWindow(Util.abrePopUp(this,PreviewProdutoTitleWindow,true));
 					pvProduto.addEventListener(ItemPreVendaEvent.ADICIONADOSUCEESSO,addItemProduto)
 					pvProduto.setProduto(e.result as ProdutoVO);
@@ -158,9 +159,6 @@
 					this.preVenda.valorTotal = this.valorTotal;
 					this.preVenda.itemPreVenda = this.array_itensPrevenda;
 					this.ro.fecharPreVenda(result_fecharPreVenda,this.preVenda);
-					//Util.abrePopUp(this,Impressao,true);
-					
-					new PrintPreVenda(this.i);
 				}else{
 					Alert.show("Não ha produtos inseridos!","Ops!",4,this);
 				}
@@ -169,7 +167,23 @@
 			private function result_fecharPreVenda(e:ResultEvent):void{
 				this.isFecharPreVenda = true;
 				Alert.show("Pré-venda gerada com sucesso","Aew!",4,this,this.fechando);
+				ro.printPedido(result_print,e.result as PreVendaVO);
 			}
+			
+			private function result_print(event:ResultEvent):void{
+				var report:XML = new XML(event.result);
+ 				var newWindow:PreViewImpressaoWindow =  new PreViewImpressaoWindow();
+ 				newWindow.setViewer(report);
+				newWindow.maximizable=true;
+				newWindow.minimizable = true;
+				newWindow.resizable = true;
+				newWindow.open(false);
+				newWindow.nativeWindow.x = 0;
+				newWindow.nativeWindow.y = 0;
+				newWindow.activate();
+ 				
+			}
+			
 			
 			private function fechando(event:Event):void{
 				this.stage.nativeWindow.close();
@@ -267,5 +281,5 @@
 			<mx:Button x="736" y="14" label="Fechar Venda" click="{this.finalizarVenda()}"/>
 		</mx:Panel>
 	</mx:VBox>
-	<prevenda:Impressao id="i" pVenda="{this.preVenda}" visible="false"/>
+	
 </mx:Window>
