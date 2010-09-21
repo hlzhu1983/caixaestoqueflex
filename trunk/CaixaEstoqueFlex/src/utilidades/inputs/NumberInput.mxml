@@ -92,7 +92,7 @@
 					this.lengthText++;
 					this.dispatchEvent(new Event(Event.CHANGE,true));
 				}
-				if(backSpace){
+				if(backSpace && lengthText > 0){
 					str = this.text;					
 					str = "," + str.charAt(this.length-4) +	 str.charAt(str.length-2);
 					if(lengthText < 4){
