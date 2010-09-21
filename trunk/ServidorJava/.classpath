@@ -13,6 +13,13 @@
 	<classpathentry kind="lib" path="WEB-INF/lib/flex-rds-server.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/xalan.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/mysql-connector-java-5.1.13-bin.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/jasperreports-3.7.4.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/commons-collections-3.2.1.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/commons-digester-1.7.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/commons-beanutils-1.8.2.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/commons-logging-1.1.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/groovy-all-1.5.5.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/iText-2.1.7.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
 	<classpathentry kind="output" path="WEB-INF/classes"/>
