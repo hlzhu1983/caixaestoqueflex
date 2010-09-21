@@ -49,8 +49,7 @@ public aspect ServicesHandler {
 			}
 			System.out.println(thisEnclosingJoinPointStaticPart.getId());
 			System.out.println(thisJoinPoint.getSignature());
-			throw new RuntimeException(e.getMessage()
-					+ str[thisJoinPoint.getStaticPart().getId()]);
+			throw new RuntimeException(str[thisJoinPoint.getStaticPart().getId()]);
 
 		} finally {
 			try {
