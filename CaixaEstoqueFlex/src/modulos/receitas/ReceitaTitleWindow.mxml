@@ -154,7 +154,7 @@
 					this.lb_codigoReceita.text = this.receita.codigo.toString();
 					this.lb_codigoProduto.text = this.receita.codProduto.toString();
 					this.lb_descricaoProduto.text = this.receita.descricao;
-					this.lb_qtdEstoqueProduto.text = this.receita.qtdEstoque.toPrecision(2);
+					this.lb_qtdEstoqueProduto.text = this.receita.qtdEstoque.toFixed(2);
 					this.ti_qtdreceita.setValor(this.receita.quantidade);
 					this.itensReceita = this.receita.itensReceita;
 					this.currentState = 'telaCadastro';

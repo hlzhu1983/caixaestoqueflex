@@ -136,6 +136,8 @@
 			}
 			
 			public function setValor(valor:Number):void{
+				if(valor == 0)
+					return;				
 				var valorStr:String = valor.toString();
 				var array_aux:Array = valorStr.split(".",2);
 				if(array_aux.length < 2){
@@ -156,6 +158,14 @@
 			
 			public function getValor():Number{
 				var array_aux:Array = this.text.split(",",2);
+				if(array_aux.length==0){
+					return 0
+				}				
+				return Number(array_aux[0].toString()+"."+array_aux[1].toString());
+			}
+			
+			public function getValorDefault():Number{
+				var array_aux:Array = this.valorDefault.split(",",2);
 				if(array_aux.length==0){
 					return 0
 				}				

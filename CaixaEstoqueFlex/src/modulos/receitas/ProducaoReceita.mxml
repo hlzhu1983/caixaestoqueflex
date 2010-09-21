@@ -97,7 +97,12 @@
 						this.producao.descricao = this.ti_descricao.text;
 						this.producao.obs = this.ta_obs.text;
 						this.producao.itensProducao = this.toItemProducao();
-						this.producao.dataProducao = this.df_dataProducao.getStringData();
+						try{
+							this.producao.dataProducao = this.df_dataProducao.getStringData();
+						}catch(e:Error){
+							Alert.show("Selecione a data de producao!","Ops!",4,this);
+							return;
+						}
 						if(this.lb_codigoProducao.text == "")
 							this.ro.salvarProducao(result_salvarProducao,this.producao);
 						else{
@@ -126,6 +131,7 @@
 				this.array_producoes.addItem(event.result);
 				this.limparCamposItem();
 				this.limparCamposProducao();
+				this.currentState = '';
 			}
 			
 			private function limparCamposItem():void{
@@ -137,6 +143,7 @@
 				this.lb_codigoProducao.text = "";
 				this.ti_descricao.text = "";
 				this.ta_obs.text = "";
+				this.df_dataProducao.text = "";
 				this.ti_codReceita.text = "";
 				this.array_receitas.removeAll();
 				this.receita = null;
@@ -189,6 +196,15 @@
 			}
 			
 			
+			private function removerReceita():void{
+				if(this.grid_itensProducao.selectedIndex !=-1){
+					this.array_receitas.removeItemAt(this.grid_itensProducao.selectedIndex);
+				}else{
+					Alert.show("Selecione receita!","Ops!",4,this);
+					
+				}
+			}
+			
 			
 			
 			/* public  function close():void{
@@ -198,7 +214,14 @@
 			
 			
 			
+		private function viewBuscaReceita():void{
+			var t:BuscaReceita = BuscaReceita(Util.abrePopUp(this,BuscaReceita,true));
+			t.addEventListener(ReceitaEvent.RECEITASELECIONADA,result_buscaReceita);
+		}
 		
+		private function result_buscaReceita(e:ReceitaEvent):void{
+			this.array_receitas.addItem(e.receita);
+		}
 			
 			
 			
@@ -244,10 +267,10 @@
 				</mx:columns>
 			</mx:DataGrid>
 			<mx:Button x="111.5" y="438" label="Adicionar" id="bt_addReceita" click="this.buscarReceita()"/>
-			<mx:Button x="208.5" y="438" label="Remover" id="bt_removerReceita"/>
+			<mx:Button x="208.5" y="438" label="Remover" id="bt_removerReceita" click="this.removerReceita()"/>
 			<mx:Label x="9.5" y="410" text="Código Receita:"/>
-			<ns1:InteiroInput x="111.5" y="408" width="148" id="ti_codReceita" requerido="true"/>
-			<ns2:BuscarButton x="278.5" y="404" id="bt_buscarReceita"/>
+			<ns1:InteiroInput enter="{this.buscarReceita()}" x="111.5" y="408" width="148" id="ti_codReceita" requerido="true"/>
+			<ns2:BuscarButton x="278.5" y="404" id="bt_buscarReceita" click="{this.viewBuscaReceita()}"/>
 		</mx:Panel>
 		<mx:Panel x="20" y="10" width="363" height="358" layout="absolute" title="Informações Produção">
 			<mx:Label x="10" y="11" text="Código:"/>

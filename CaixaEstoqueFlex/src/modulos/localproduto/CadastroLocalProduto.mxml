@@ -65,7 +65,7 @@
 			}
 			
 			private function resultListarLocalProdutos(event:ResultEvent):void{
-				this.localProdutosArray = new ArrayCollection(event.result as Array);
+				this.localProdutosArray = event.result as ArrayCollection;
 			}
 			
 			public function localProdutoSelecionado(event:Event):void{
