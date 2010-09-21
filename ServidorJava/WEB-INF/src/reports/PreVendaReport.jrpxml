@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE jasperPrint PUBLIC "-//JasperReports//DTD JasperPrint//EN" "http://jasperreports.sourceforge.net/dtds/jasperprint.dtd">
+
+<jasperPrint name="PreVendaReport" pageWidth="595" pageHeight="842" topMargin="20" leftMargin="20" bottomMargin="20" rightMargin="20" locale="pt_BR" timezone="GMT-03:00">
+	<property name="net.sf.jasperreports.export.xml.start.page.index" value="0"/>
+	<property name="net.sf.jasperreports.export.xml.end.page.index" value="0"/>
+	<property name="net.sf.jasperreports.export.xml.page.count" value="1"/>
+	<origin band="background"/>
+	<origin band="title"/>
+	<origin band="pageHeader"/>
+	<origin band="columnHeader"/>
+	<origin band="detail"/>
+	<origin band="columnFooter"/>
+	<origin band="pageFooter"/>
+	<origin band="summary"/>
+	<page>
+		<text textAlignment="Center" textHeight="17.746094" lineSpacingFactor="1.2675781" leadingOffset="-3.0761719">
+			<reportElement x="130" y="33" width="275" height="20" origin="1"/>
+			<font fontName="Serif" size="14" isBold="true" isItalic="false"/>
+			<textContent><![CDATA[Delicia]]></textContent>
+		</text>
+		<text textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656">
+			<reportElement x="424" y="33" width="100" height="20" origin="1"/>
+			<textContent><![CDATA[Página:]]></textContent>
+		</text>
+		<text textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656" valueClass="java.lang.Integer">
+			<reportElement x="470" y="33" width="100" height="20" origin="1"/>
+			<textContent><![CDATA[1]]></textContent>
+		</text>
+		<text textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656" valueClass="java.util.Date" pattern="dd/MM/yyyy">
+			<reportElement x="450" y="53" width="74" height="20" origin="1"/>
+			<textContent><![CDATA[20/09/2010]]></textContent>
+		</text>
+		<text textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656" valueClass="java.util.Date" pattern="HH.mm">
+			<reportElement x="514" y="53" width="61" height="20" origin="1"/>
+			<textContent><![CDATA[17.32]]></textContent>
+		</text>
+		<text textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656">
+			<reportElement x="370" y="53" width="100" height="20" origin="1"/>
+			<textContent><![CDATA[Data Impressão:]]></textContent>
+		</text>
+		<text verticalAlignment="Bottom" textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656">
+			<reportElement x="20" y="92" width="579" height="20" origin="1"/>
+			<textContent><![CDATA[__________________________________________________________________________________________________]]></textContent>
+		</text>
+		<text textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656">
+			<reportElement x="27" y="162" width="44" height="20" origin="2"/>
+			<textContent><![CDATA[Cliente:]]></textContent>
+		</text>
+		<text textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656">
+			<reportElement x="71" y="162" width="100" height="20" origin="2"/>
+			<textContent><![CDATA[1]]></textContent>
+		</text>
+		<text textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656">
+			<reportElement x="171" y="161" width="199" height="20" origin="2"/>
+			<textContent><![CDATA[1]]></textContent>
+		</text>
+		<text textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656">
+			<reportElement x="27" y="141" width="78" height="20" origin="2"/>
+			<textContent><![CDATA[Código Pedido:]]></textContent>
+		</text>
+		<text textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656">
+			<reportElement x="105" y="141" width="100" height="20" origin="2"/>
+			<textContent><![CDATA[10]]></textContent>
+		</text>
+		<text textAlignment="Center" textHeight="16.478516" lineSpacingFactor="1.2675781" leadingOffset="-2.8564453">
+			<reportElement x="190" y="117" width="204" height="20" origin="2"/>
+			<font fontName="Serif" size="13" isBold="true"/>
+			<textContent><![CDATA[Impressão Pedido]]></textContent>
+		</text>
+		<text textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656">
+			<reportElement x="371" y="141" width="68" height="20" origin="2"/>
+			<textContent><![CDATA[Data Pedido:]]></textContent>
+		</text>
+		<text textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656">
+			<reportElement x="371" y="161" width="68" height="20" origin="2"/>
+			<textContent><![CDATA[Data Entrega:]]></textContent>
+		</text>
+		<text textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656">
+			<reportElement x="27" y="181" width="24" height="20" origin="2"/>
+			<textContent><![CDATA[Obs:]]></textContent>
+		</text>
+		<text textAlignment="Justified" textHeight="0.0" lineSpacingFactor="0.0" leadingOffset="0.0">
+			<reportElement x="51" y="182" width="488" height="37" origin="2"/>
+			<textContent><![CDATA[]]></textContent>
+		</text>
+		<text verticalAlignment="Bottom" textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656">
+			<reportElement x="20" y="211" width="579" height="20" origin="2"/>
+			<textContent><![CDATA[__________________________________________________________________________________________________]]></textContent>
+		</text>
+		<text textAlignment="Center" textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656">
+			<reportElement x="34" y="235" width="71" height="20" origin="3"/>
+			<textContent><![CDATA[Código ]]></textContent>
+		</text>
+		<text textAlignment="Center" textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656">
+			<reportElement x="105" y="234" width="251" height="20" origin="3"/>
+			<textContent><![CDATA[Descrição]]></textContent>
+		</text>
+		<text textAlignment="Center" textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656">
+			<reportElement x="356" y="234" width="100" height="20" origin="3"/>
+			<textContent><![CDATA[Qtd.	]]></textContent>
+		</text>
+		<text textAlignment="Center" textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656">
+			<reportElement x="456" y="234" width="100" height="20" origin="3"/>
+			<textContent><![CDATA[Valor]]></textContent>
+		</text>
+		<text verticalAlignment="Bottom" textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656">
+			<reportElement x="20" y="235" width="579" height="20" origin="3"/>
+			<textContent><![CDATA[__________________________________________________________________________________________________]]></textContent>
+		</text>
+		<text textAlignment="Center" textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656" valueClass="java.lang.Integer">
+			<reportElement x="34" y="256" width="71" height="20" origin="4"/>
+			<textContent><![CDATA[1]]></textContent>
+		</text>
+		<text textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656">
+			<reportElement x="105" y="256" width="251" height="20" origin="4"/>
+			<textContent><![CDATA[PREGO GRANDE]]></textContent>
+		</text>
+		<text textAlignment="Center" textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656" valueClass="java.math.BigDecimal">
+			<reportElement x="356" y="256" width="100" height="20" origin="4"/>
+			<textContent><![CDATA[1.00]]></textContent>
+		</text>
+		<text textAlignment="Center" textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656" valueClass="java.math.BigDecimal">
+			<reportElement x="456" y="256" width="100" height="20" origin="4"/>
+			<textContent><![CDATA[1.00]]></textContent>
+		</text>
+		<text verticalAlignment="Bottom" textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656">
+			<reportElement x="20" y="257" width="579" height="20" origin="4"/>
+			<textContent><![CDATA[__________________________________________________________________________________________________]]></textContent>
+		</text>
+		<text textAlignment="Center" textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656" valueClass="java.lang.Integer">
+			<reportElement x="34" y="278" width="71" height="20" origin="4"/>
+			<textContent><![CDATA[1]]></textContent>
+		</text>
+		<text textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656">
+			<reportElement x="105" y="278" width="251" height="20" origin="4"/>
+			<textContent><![CDATA[PREGO GRANDE]]></textContent>
+		</text>
+		<text textAlignment="Center" textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656" valueClass="java.math.BigDecimal">
+			<reportElement x="356" y="278" width="100" height="20" origin="4"/>
+			<textContent><![CDATA[1.00]]></textContent>
+		</text>
+		<text textAlignment="Center" textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656" valueClass="java.math.BigDecimal">
+			<reportElement x="456" y="278" width="100" height="20" origin="4"/>
+			<textContent><![CDATA[1.00]]></textContent>
+		</text>
+		<text verticalAlignment="Bottom" textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656">
+			<reportElement x="20" y="279" width="579" height="20" origin="4"/>
+			<textContent><![CDATA[__________________________________________________________________________________________________]]></textContent>
+		</text>
+		<text textAlignment="Center" textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656" valueClass="java.lang.Integer">
+			<reportElement x="34" y="300" width="71" height="20" origin="4"/>
+			<textContent><![CDATA[1]]></textContent>
+		</text>
+		<text textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656">
+			<reportElement x="105" y="300" width="251" height="20" origin="4"/>
+			<textContent><![CDATA[PREGO GRANDE]]></textContent>
+		</text>
+		<text textAlignment="Center" textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656" valueClass="java.math.BigDecimal">
+			<reportElement x="356" y="300" width="100" height="20" origin="4"/>
+			<textContent><![CDATA[1.00]]></textContent>
+		</text>
+		<text textAlignment="Center" textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656" valueClass="java.math.BigDecimal">
+			<reportElement x="456" y="300" width="100" height="20" origin="4"/>
+			<textContent><![CDATA[1.00]]></textContent>
+		</text>
+		<text verticalAlignment="Bottom" textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656">
+			<reportElement x="20" y="301" width="579" height="20" origin="4"/>
+			<textContent><![CDATA[__________________________________________________________________________________________________]]></textContent>
+		</text>
+		<text textAlignment="Center" textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656" valueClass="java.lang.Integer">
+			<reportElement x="34" y="322" width="71" height="20" origin="4"/>
+			<textContent><![CDATA[1]]></textContent>
+		</text>
+		<text textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656">
+			<reportElement x="105" y="322" width="251" height="20" origin="4"/>
+			<textContent><![CDATA[PREGO GRANDE]]></textContent>
+		</text>
+		<text textAlignment="Center" textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656" valueClass="java.math.BigDecimal">
+			<reportElement x="356" y="322" width="100" height="20" origin="4"/>
+			<textContent><![CDATA[1.00]]></textContent>
+		</text>
+		<text textAlignment="Center" textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656" valueClass="java.math.BigDecimal">
+			<reportElement x="456" y="322" width="100" height="20" origin="4"/>
+			<textContent><![CDATA[1.00]]></textContent>
+		</text>
+		<text verticalAlignment="Bottom" textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656">
+			<reportElement x="20" y="323" width="579" height="20" origin="4"/>
+			<textContent><![CDATA[__________________________________________________________________________________________________]]></textContent>
+		</text>
+		<text textAlignment="Center" textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656" valueClass="java.lang.Integer">
+			<reportElement x="34" y="344" width="71" height="20" origin="4"/>
+			<textContent><![CDATA[1]]></textContent>
+		</text>
+		<text textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656">
+			<reportElement x="105" y="344" width="251" height="20" origin="4"/>
+			<textContent><![CDATA[PREGO GRANDE]]></textContent>
+		</text>
+		<text textAlignment="Center" textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656" valueClass="java.math.BigDecimal">
+			<reportElement x="356" y="344" width="100" height="20" origin="4"/>
+			<textContent><![CDATA[1.00]]></textContent>
+		</text>
+		<text textAlignment="Center" textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656" valueClass="java.math.BigDecimal">
+			<reportElement x="456" y="344" width="100" height="20" origin="4"/>
+			<textContent><![CDATA[1.00]]></textContent>
+		</text>
+		<text verticalAlignment="Bottom" textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656">
+			<reportElement x="20" y="345" width="579" height="20" origin="4"/>
+			<textContent><![CDATA[__________________________________________________________________________________________________]]></textContent>
+		</text>
+		<text textAlignment="Center" textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656" valueClass="java.lang.Integer">
+			<reportElement x="34" y="366" width="71" height="20" origin="4"/>
+			<textContent><![CDATA[1]]></textContent>
+		</text>
+		<text textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656">
+			<reportElement x="105" y="366" width="251" height="20" origin="4"/>
+			<textContent><![CDATA[PREGO GRANDE]]></textContent>
+		</text>
+		<text textAlignment="Center" textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656" valueClass="java.math.BigDecimal">
+			<reportElement x="356" y="366" width="100" height="20" origin="4"/>
+			<textContent><![CDATA[1.00]]></textContent>
+		</text>
+		<text textAlignment="Center" textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656" valueClass="java.math.BigDecimal">
+			<reportElement x="456" y="366" width="100" height="20" origin="4"/>
+			<textContent><![CDATA[1.00]]></textContent>
+		</text>
+		<text verticalAlignment="Bottom" textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656">
+			<reportElement x="20" y="367" width="579" height="20" origin="4"/>
+			<textContent><![CDATA[__________________________________________________________________________________________________]]></textContent>
+		</text>
+		<text textHeight="15.09375" lineSpacingFactor="1.2578125" leadingOffset="-2.6367188">
+			<reportElement x="370" y="435" width="78" height="20" origin="5"/>
+			<font size="12" isBold="true"/>
+			<textContent><![CDATA[Valor Total:]]></textContent>
+		</text>
+		<text textAlignment="Center" textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656">
+			<reportElement x="456" y="435" width="100" height="20" origin="5"/>
+			<textContent><![CDATA[1]]></textContent>
+		</text>
+		<text verticalAlignment="Bottom" textHeight="12.578125" lineSpacingFactor="1.2578125" leadingOffset="-2.1972656">
+			<reportElement x="20" y="438" width="579" height="20" origin="5"/>
+			<textContent><![CDATA[__________________________________________________________________________________________________]]></textContent>
+		</text>
+	</page>
+</jasperPrint>
