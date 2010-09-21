@@ -1,7 +1,9 @@
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperPrint;
 import services.ServicosCliente;
 import services.ServicosCompra;
 import services.ServicosFormadePagto;
@@ -478,6 +480,13 @@ public class FachadaServicos {
 		return this.servPreVenda.fecharPreVenda(item);
 
 	}
+	
+	public String printPedido(PreVendaVO item) throws JRException{
+		JasperPrint relat;
+		relat = this.servPreVenda.gerarImpressaoPedido(item);
+		//JasperViewer.viewReport(relat);
+		return JasperExportManager.exportReportToXml(relat);
+	}
 
 	public boolean removerItemPreVenda(ItemPreVendaVO item) {
 		if (item == null) {
@@ -751,17 +760,14 @@ public class FachadaServicos {
 	}
 
 	public static void main(String[] args) throws Exception {
-		ProducaoVO p = new ProducaoVO();
-		p.dataProducao = "2010/09/17";
-		p.descricao = "Teste";
+		ProdutoVO p = new ProdutoVO();
+		p.codFornecedor = 3;
+		p.codGrupo = 2;
+		p.codLocal = 2;
+		p.codUnidade = 2;
 		
-		ItemProducaoVO i = new ItemProducaoVO();
-		i.codReceita = 2;
-		i.descricao = "sgsg";
-		p.itensProducao = new ArrayList<ItemProducaoVO>();
-		p.itensProducao.add(i);
 		
 		FachadaServicos f = new FachadaServicos();
-		f.listAllProducao();
+		f.adicionarProduto(p);
 	}
 }
