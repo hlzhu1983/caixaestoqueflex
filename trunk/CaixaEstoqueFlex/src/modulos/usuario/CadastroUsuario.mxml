@@ -26,7 +26,6 @@
 	
 	<mx:Script>
 		<![CDATA[
-			import org.idmedia.as3commons.util.AbstractCollection;
 			import mx.events.ValidationResultEvent;
 			import mx.validators.ValidationResult;
 			import negocio.vo.UsuarioVO;
