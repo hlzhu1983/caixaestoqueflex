@@ -233,7 +233,7 @@ public class ServicosCompra {
 	private void updateItemCompra(ItemCompraVO itemCompra, Statement st) throws SQLException {
 		
 		String sql = "";
-		int quantidade = 0;
+		double quantidade = 0;
 		
 		
 		if (itemCompra.codigo == 0) {
