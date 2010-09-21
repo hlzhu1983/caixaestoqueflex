@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Window xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="1024" height="700" 
+	xmlns:viewer="com.jaspersoft.reports.viewer.*" creationComplete="this.init()">
+	
+	<mx:Script>
+		<![CDATA[
+			
+			private var report:XML;
+			
+			
+			public function init():void{
+				viewer.disableJasperServer();
+				viewer.showClassicToolbar();
+				viewer.showReport(report);
+			}
+			public function setViewer(report:XML):void{
+				this.report = report;
+			}
+		]]>
+	</mx:Script>
+	
+	<viewer:Viewer id="viewer" width="100%" height="100%" backgroundColor="#000000"/>
+	
+</mx:Window>
