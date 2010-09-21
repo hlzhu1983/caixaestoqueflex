@@ -7,7 +7,7 @@
 	
 	<mx:Script>
 		<![CDATA[
-			import negocio.vo.ItensReceitaVO;
+			import negocio.vo.ItemReceitaVO;
 			import events.CompraEvent;
 			import modulos.fornecedor.BuscaFornecedor;
 			import events.FornecedorEvent;
