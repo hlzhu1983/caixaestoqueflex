@@ -8,8 +8,8 @@ public class ProdutoVO {
 	public String referencia;
 	public int codLocal;
 	public int codUnidade;
-	public int qtdPorUnidade;
-	public int qtdEmEstoque;
+	public double qtdPorUnidade;
+	public double qtdEmEstoque;
 	public int codFornecedor;
 	public double precoCompra;
 	public double precoVenda;
