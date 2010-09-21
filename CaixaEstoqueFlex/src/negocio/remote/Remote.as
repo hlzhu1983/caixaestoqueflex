@@ -306,7 +306,13 @@ package negocio.remote{
 			var async:AsyncToken = _remote.abrirPreVenda(preVenda);
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}
-		
+
+		public function printPedido(result:Function,preVenda:PreVendaVO):void{
+ 			_remote.source = "ServicosPreVenda";
+			var async:AsyncToken = _remote.printPedido(preVenda);
+			async.addResponder(new Responder(result, defaultFaultHandler));
+		}
+				
 		public function addItemPreVenda(result:Function,item:ItemPreVendaVO):void{
  			_remote.source = "ServicosPreVenda";
 			var async:AsyncToken = _remote.addItemPreVenda(item);
