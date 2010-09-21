@@ -1,4 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute">
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
+	layout="absolute" title="Busca Receita" alpha="1.0" width="404" height="302" 
+	showCloseButton="true" close="PopUpManager.removePopUp(this)" creationComplete="{this.init()}" backgroundAlpha="0.0">
+
+
+	<mx:Metadata>
+		[Event(name='receitaSelecionadaEvent',type='events.ReceitaEvent')]
+	</mx:Metadata>
+
+	<mx:Script>
+		<![CDATA[
+			import mx.managers.PopUpManager;
+			import mx.controls.PopUpButton;
+			import negocio.vo.ReceitaVO;
+			import events.ReceitaEvent;
+			import mx.events.ListEvent;
+			import mx.rpc.events.ResultEvent;
+			import negocio.remote.Remote;
+			import mx.collections.ArrayCollection;
+			[Bindable]
+			private var array_receitas:ArrayCollection;
+			
+			private var ro:Remote = Remote.getInstance();
+			
+			private function init():void{
+				this.ro.parent = this;
+				this.array_receitas = new ArrayCollection;
+				this.ro.listarAllReceita(result_listarReceitas);
+				
+			}
+			
+			private function result_listarReceitas(event:ResultEvent):void{
+				this.array_receitas = event.result as ArrayCollection;
+			}
+			
+			private function receitaSelecionada(event:ListEvent):void{
+				this.dispatchEvent(new ReceitaEvent(event.itemRenderer.data as ReceitaVO,ReceitaEvent.RECEITASELECIONADA));
+				PopUpManager.removePopUp(this);
+			}
+			
+		]]>
+	</mx:Script>
+
+	<mx:DataGrid x="0" y="0" width="100%" height="100%" dataProvider="{this.array_receitas}"
+			doubleClickEnabled="true" itemDoubleClick="{this.receitaSelecionada(event)}" >
+		<mx:columns>
+			<mx:DataGridColumn headerText="Cód. Receita" dataField="codigo"/>
+			<mx:DataGridColumn headerText="Desc. Receita" dataField="descricao"/>
+			<mx:DataGridColumn headerText="Qtd. Produzida" dataField="quantidade"/>
+		</mx:columns>
+	</mx:DataGrid>
 	
 </mx:TitleWindow>
