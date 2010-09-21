@@ -88,6 +88,7 @@
 									u.precoVenda = this.ti_pVenda.getValor();
 									u.qtdPorUnidade = Number(this.ti_qtdUnidade.text);
 									u.referencia = this.ti_referencia.text;
+									u.qtdEmEstoque = 0;
 									u.foto = "";
 									if(this.ti_codigo.text!=""){
 										u.codigo = Number(this.ti_codigo.text);
