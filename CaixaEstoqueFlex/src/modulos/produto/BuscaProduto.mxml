@@ -3,7 +3,7 @@
 	 layout="absolute" xmlns:inputs="utilidades.inputs.*"
 	  height="522" title="Produto Pesquisa" width="722" 
 	  creatingContentPane="{this.init()}" 
-	  borderColor="#D2D2D2" showCloseButton="true" close="{PopUpManager.removePopUp(this)}" xmlns:botoes="utilidades.botoes.*">
+	  borderColor="#D2D2D2" showCloseButton="true"  close="{PopUpManager.removePopUp(this)}" xmlns:botoes="utilidades.botoes.*">
 
 	<mx:Metadata>
 		[Event(name='produtoSelecionadoEvent',type='events.ProdutoEvent')]
@@ -46,6 +46,8 @@
 			
 			private function init():void{
 				this.sql = ["","","","","","",""];
+		
+				this.focusManager.setFocus(this.ti_descricao);
 				this.ro.listarFornecedor(preencheFornecedor);
 				this.ro.listarUnidade(preencheCBUnidade);
 				this.ro.listarGrupoProduto(preencheCBGrupo);

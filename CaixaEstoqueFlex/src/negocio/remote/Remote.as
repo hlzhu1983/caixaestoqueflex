@@ -492,7 +492,7 @@ package negocio.remote{
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}	
 		public function pesquisarCompra(result:Function,texto:String,coluna:String):void{
-			_remote.source = "ServicosPreVenda";
+			_remote.source = "ServicosCompra";
 			var async:AsyncToken = _remote.pesquisarCompra(texto,coluna);
 			async.addResponder(new Responder(result, defaultFaultHandler));
 		}	

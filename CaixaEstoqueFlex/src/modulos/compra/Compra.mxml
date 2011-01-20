@@ -7,6 +7,7 @@
 	
 	<mx:Script>
 		<![CDATA[
+			import modulos.produto.ProdutoWindow;
 			import negocio.vo.ItemReceitaVO;
 			import events.CompraEvent;
 			import modulos.fornecedor.BuscaFornecedor;
@@ -98,6 +99,7 @@
 				this.compra.codUsuario = 0;
 				this.compra.codFornecedor = 0;
 				this.compra.NF = "";
+				this.compra.valorTotalCompra = 0;
 				this.codProduto.text = "";
 				this.produtos.selectedIndex = -1;
 				this.array_itensCompras = new ArrayCollection();
@@ -189,8 +191,11 @@
 				v.codigo = i.codigo;
 				v.codProduto = i.codProduto;
 				v.descricao  = i.descricao;
-				v.quantidade = i.quantidade;
-				v.valorCompra = i.valorCompra;
+				
+				v.quantidade = Number(i.quantidade);
+				
+				v.valorCompra = Number(i.valorCompra);
+				this.compra.valorTotalCompra+= Number(i.valorCompra*i.quantidade);
 				this.array_itensCompras.addItem(i);
 				this.array_viewItensCompras.addItem(v);				
 				this.isProduto = true;
@@ -279,8 +284,12 @@
 				p.addEventListener(ProdutoEvent.PRODUTOSELECIONADO,produtoSelecionado);
 			}
 			
-			private function fecharCompra():void{
+			public function novoProduto():void{
+				var p:ProdutoWindow = ProdutoWindow(Util.abrePopUp(this,ProdutoWindow,true));
 				
+			}
+			private function fecharCompra():void{
+			
 					if(this.fornecedor!=null){
 					if(this.array_itensCompras.length>0){
 					this.compra.itemCompra = this.array_itensCompras;
@@ -289,6 +298,10 @@
 					this.compra.codFornecedor = this.fornecedor.codigo;
 					this.compra.NF = this.ti_NF.text;
 					this.compra.codUsuario = ConfiguracoesSistema.usuario.codigo;
+					
+					
+					
+					
 					if(this.compra.codigo==0){
 					this.ro.fecharCompra(result_fecharCompra,this.compra);}else
 					{
@@ -299,7 +312,7 @@
 			//		new PrintCompra(this.i);
 					}else Alert.show("Adicione um Produto","Ops!",4,this);
 					}else{
-						Alert.show("Selecione um Fornecedor","Ops!",4,this);
+						Alert.show("Selecione o Fornecedor","Ops!",4,this);
 					}
 				
 			}
@@ -314,7 +327,7 @@
 			}
 			
 			private function cancelarCompra():void{
-				Alert.show("Deseja realemente cancelar a Compra?","Opa!",Alert.YES|Alert.NO,this,resposta_cancelarCompra);
+				Alert.show("Deseja realmente cancelar a Compra?","Opa!",Alert.YES|Alert.NO,this,resposta_cancelarCompra);
 			}
 			
 			private function resposta_cancelarCompra(event:CloseEvent):void{
@@ -344,6 +357,7 @@
 				<mx:Label text="Código Produto:" x="18" y="17" fontSize="12"/>
 				<inputs:InteiroInput  id="codProduto" requerido="true"  enter="{this.previewProduto()}" isEnter="false" x="129" y="15" fontSize="12" width="159"/>
 				<botoes:BuscarButton  x="296" y="13" click="{this.pesquisarProduto()}" height="27"/>
+				<mx:Button x="413" y="13" label="Novo Produto" width="121" height="27" id="add_produto" click="{this.novoProduto()}"/>
 			</mx:Panel>
 	
 	<!--<prevenda:Impressao id="i" pVenda="{this.compra}" visible="false"/>-->

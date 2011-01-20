@@ -16,7 +16,7 @@
 			
 			public function init():void{	
 					
-				this.restrict = "A-Z a-z 0-9 , @ . : / _ ";
+				//this.restrict = "A-Z a-z 0-9 , @ . : / _ ";
 			}
 			
 			private function focoIn():void{
