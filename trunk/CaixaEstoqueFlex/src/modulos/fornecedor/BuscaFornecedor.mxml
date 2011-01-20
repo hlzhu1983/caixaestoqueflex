@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" 
 	width="612" height="366" xmlns:inputs="utilidades.inputs.*" 
-	xmlns:botoes="utilidades.botoes.*" title="Busca Fornecedores" showCloseButton="true" close="{this.fechar(event)}">
+	xmlns:botoes="utilidades.botoes.*" creationComplete="{this.init()}" title="Busca Fornecedores" showCloseButton="true" close="{this.fechar(event)}">
 	
 	<mx:Metadata>
 		[Event(name='fornecedorSelecionadoEvent',type='events.FornecedorEvent')]
@@ -25,7 +25,9 @@
 			
 			private var ro:Remote = Remote.getInstance();
 			
-			
+			private function init():void{
+			this.focusManager.setFocus(this.ti_nome);
+			}
 			private function filtrarFornecedor():void{
 				var array_String:ArrayCollection = new ArrayCollection();
 				if(this.ti_nome.text !=""){

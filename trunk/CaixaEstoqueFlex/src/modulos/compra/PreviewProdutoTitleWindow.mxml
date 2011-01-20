@@ -46,9 +46,10 @@
 				}else{ */
 					var itemCompra:ItemCompraVO = new ItemCompraVO();
 					itemCompra.codProduto = this.produto.codigo;
-					itemCompra.quantidade = this.quantProduto.getValor();
+					itemCompra.quantidade = Number(this.quantProduto.getValor());
 					itemCompra.descricao = this.produto.descricao;
 					itemCompra.valorCompra = Number(this.valorCompra.getValor());
+					
 					this.dispatchEvent(new ItemCompraEvent(itemCompra,ItemCompraEvent.ADICIONADOSUCEESSO));
 					PopUpManager.removePopUp(this);
 				//}

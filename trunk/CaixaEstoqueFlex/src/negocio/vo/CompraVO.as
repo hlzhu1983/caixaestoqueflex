@@ -12,5 +12,6 @@ package negocio.vo
 		public var codFornecedor:int;
 	    public var dataCompra:String;
 	    public var itemCompra:ArrayCollection;
+	    public var valorTotalCompra:Number;
 	}
 }

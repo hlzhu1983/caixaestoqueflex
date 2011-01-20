@@ -26,6 +26,7 @@
 			private var ro:Remote = Remote.getInstance();
 			
 			private function init():void{
+				this.focusManager.setFocus(this.txt_login);
 				PopUpManager.centerPopUp(this);
 				this.ro.parent = this;
 			}

@@ -134,9 +134,13 @@
 	
 	private function itemClickTile(event:ListEvent):void {
 		this.tl_itens.visible = false;
+		
 		try{
 			if(this.usuario.codigo == 1){
-				this.listArray[2][(event.rowIndex * 4) + event.columnIndex].funcao();
+				this.listArray[this.currentMenu][(event.rowIndex * 4) + event.columnIndex].funcao();
+				//MOSTRANDO AKI
+			//Alert.show((event.rowIndex * 4) + event.columnIndex+""+this.listArray[2][(event.rowIndex * 4) + event.columnIndex].label);
+			//TERMINANDO DE MOSTRAR
 			}else{
 				this.listArray[this.currentMenu][(event.rowIndex * 4) + event.columnIndex].funcao();
 			}

@@ -5,7 +5,7 @@ package modulos.compra
 	public var codigo:int;	
 	public var codProduto:int;
 	public var descricao:String;
-	public var quantidade:int;
+	public var quantidade:Number;
 	public var valorCompra:Number;
 	}
 }

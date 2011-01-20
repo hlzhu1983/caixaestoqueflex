@@ -54,7 +54,7 @@
 			private function init():void{
 				this.ro.parent = this;
 				this.preVenda = new PreVendaVO();
-				this.preVenda.codUsuario = 0;
+				this.preVenda.codUsuario = ConfiguracoesSistema.usuario.codigo;
 				this.ro.abrirPreVenda(result_abrirPreVenda,this.preVenda);
 				this.focusManager.setFocus(this.codProduto);
 			}

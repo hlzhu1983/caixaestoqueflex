@@ -52,7 +52,7 @@
 			private function init():void{
 				this.venda = new VendaVO();
 				this.venda.desconto = 0;
-				this.venda.codUsuario = 0;
+				this.venda.codUsuario = ConfiguracoesSistema.usuario.codigo;
 				if(this.preVenda == null){
 					this.getPreVenda();
 				}else {
