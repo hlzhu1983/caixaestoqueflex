@@ -1,0 +1,1 @@
+Projeto consiste em criar um sistema de automação empresarial completo.
